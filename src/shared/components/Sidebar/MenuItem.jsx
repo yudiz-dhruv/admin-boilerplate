@@ -3,18 +3,30 @@ import { NavLink, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-function MenuItem ({ item, isMenuOpen }) {
+function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
   const [isOpen, setIsOpen] = useState(false)
   const childPaths = item.children && item?.children?.map((i) => i?.path?.split('/')[1])
   const location = useLocation()
   const currentPathSlashIndex = location.pathname.split('/').length
-  // useEffect(() => {
-  //   !isMenuOpen && setIsOpen(false)
-  // }, [isMenuOpen])
-  const toggle = () => setIsOpen(!isOpen);
+  
+  useEffect(() => {
+    !isMenuOpen && setIsOpen(false)
+  }, [isMenuOpen])
+
+  useEffect(() => {
+    setIsOpen(activeSubMenu === item?.path);
+  }, [activeSubMenu, item?.path]);
+
+  const toggle = () => {
+    setIsOpen(!isOpen);
+    toggleSubMenu(isOpen ? null : item?.path);
+  }
+
+  //remove onClick event from the li
+  
   return (
     <li onClick={toggle} className={isOpen ? 'open' : ''}>
-      <span className={isOpen == true ? "toggle-btn-open" : ""} >
+      <span className={isOpen === true ? "toggle-btn-open" : ""} >
         <NavLink
           onClick={toggle}
           to={item.path}

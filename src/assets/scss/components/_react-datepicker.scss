@@ -15,6 +15,25 @@
     color: var(--text-color);
   }
 }
+
+.react-datepicker__year-read-view--down-arrow, 
+.react-datepicker__month-read-view--down-arrow, 
+.react-datepicker__month-year-read-view--down-arrow, 
+.react-datepicker__navigation-icon::before {
+  border-color: var(--white-color) !important;
+}
+
+.react-datepicker__year-dropdown--scrollable, .react-datepicker__month-dropdown--scrollable, .react-datepicker__month-year-dropdown--scrollable {
+  background-color: var(--white-color) !important;
+  border: none !important;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.318);
+}
+
+.react-datepicker__day--outside-month {
+  background-color: var(--secondary-200) !important;
+  border-radius: 5px;
+}
+
 .react-datepicker-wrapper{
   width: 100%;
 }
@@ -23,10 +42,13 @@
 }
 .react-datepicker {
   background-color: var(--boxes-color) !important;
-  border-color: var(--text-color) !important;
+  border-color: transparent !important;
+  border: none !important;
   overflow: hidden;
-  border-radius: 7px !important;
+  border-radius: 10px !important;
+  box-shadow: 1px 1px 15px 1px #00000050;
 }
+
 .react-datepicker__navigation--previous {
   margin-top: 5px;
 }
@@ -55,9 +77,8 @@
 }
 .react-datepicker__header {
   background-color: var(--primary-color) !important;
-}
-.react-datepicker__header {
   border: none;
+  border-bottom: 1px transparent !important;
 }
 .react-datepicker-popper[data-placement^='bottom']
   .react-datepicker__triangle::after {
@@ -94,6 +115,19 @@
 body.dark {
   .react-datepicker-time__caption {
     color: white !important
+  }
+
+  .react-datepicker__day--outside-month {
+    background-color: var(--secondary-700) !important;
+  }
+
+  .react-datepicker__header  {
+    border-bottom: 1px solid var(--white-color) !important;
+  }
+
+  .react-datepicker {
+    border: 1px solid var(--white-color) !important;
+    box-shadow: 0px 2px 10px 2px rgba(156, 181, 216, 0.3803921569) !important;
   }
 }
 
@@ -198,3 +232,83 @@ body.dark {
     }
   }
 }
+
+// date and time picker
+.rdtPicker {
+  background-color: var(--boxes-color) !important;
+  border-color: transparent !important;
+  border: none !important;
+  overflow: hidden;
+  border-radius: 10px !important;
+  box-shadow: 1px 1px 15px 1px #00000050 !important;
+  padding: 0 !important;
+}
+
+.rdtPicker table thead ,th {
+  background-color: var(--primary-color);
+  border: none !important;
+  font-family: 'helvetica-bold';
+  color: var(--white-color);
+}
+
+.rdtSwitch:hover {
+  color: black !important;
+}
+
+.rdtTimeToggle, .rdtSwitch {
+  border: none !important;
+  // background-color: var(--primary-color) !important;
+}
+
+.rdtSwitch {
+  padding: 10px;
+}
+
+.reSchedule-datepicker .rdtPicker .rdtCounter .rdtBtn:hover {
+  background-color: var(--primary-color);
+  color: var(--secondary-100);
+  border-radius: 5px;
+}
+
+.reSchedule-datepicker .rdtPicker thead tr:first-of-type th.rdtPrev:hover, 
+.reSchedule-datepicker .rdtPicker thead tr:first-of-type th.rdtNext:hover {
+  background-color: var(--primary-color);
+  color: black;
+}
+
+.rdtDay.rdtToday, .rdtDay:hover {
+  border-radius: 5px;
+  background-color: var(--primary-color-light);
+}
+
+.rdtDay {
+  margin: 2px;
+}
+
+.rdtPicker td.rdtToday:before {
+  border-bottom: none !important;
+}
+
+.rdtDisabled {
+  cursor: not-allowed !important;
+}
+
+body.dark {
+  .rdtPicker {
+    border: 1px solid var(--white-color) !important;
+  }
+
+  .rdtPicker table thead {
+    border-bottom: 1px solid var(--white-color) !important;
+  }
+
+  .rdtMonth.rdtDisabled:hover,
+  .rdtYear.rdtDisabled:hover {
+    background-color: var(--boxes-color) !important;
+  }
+
+  .rdtMonth:hover, .rdtYear:hover {
+    background-color: var(--primary-color) !important;
+  }
+}
+

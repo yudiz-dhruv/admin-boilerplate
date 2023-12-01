@@ -18,13 +18,10 @@
     padding-bottom: 160px;
     opacity: 1;
     color: rgb(52, 71, 103);
-    background: linear-gradient(
-          310deg,
-          rgba(0, 0, 0, 0.497),
-          rgba(59, 59, 59, 0.294)
-        )
-        center top / cover no-repeat,
-      url('../../../images/Background-2.png') transparent;
+    background: linear-gradient(310deg,
+        rgba(0, 0, 0, 0.497),
+        rgba(59, 59, 59, 0.294)) center top / cover no-repeat,
+      url('../../../images/logo.png') transparent;
     border-radius: 12px;
     background-position: center center;
     background-repeat: no-repeat;

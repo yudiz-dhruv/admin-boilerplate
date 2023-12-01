@@ -25,6 +25,11 @@
 
   .label {
     color: var(--primary-color);
+
+    &::selection {
+      background-color: var(--primary-color);
+      color: var(--secondary-800);
+    }
   }
 
   .data-table-header {
@@ -41,6 +46,21 @@
 
       .icon-filter-list {
         margin-left: 5px;
+      }
+    }
+
+    .add-button {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+
+      .icon-add {
+        font-size: 20px;
+      }
+      
+      >div {
+        margin-left: 5px;
+        transform: translateY(1px);
       }
     }
 
@@ -107,6 +127,16 @@
       span:not(.select__indicator-separator) {
         margin-right: 9px;
       }
+
+      .react-select {
+        .select__control {
+          .select__value-container {
+            .select__single-value {
+              padding-top: 4px;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -159,6 +189,7 @@
       vertical-align: middle;
       height: 48px;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
       text-align: center;
 
       &:nth-child(2) {
@@ -270,6 +301,11 @@ body.dark {
 
     .label {
       color: white;
+
+      &::selection {
+        background-color: var(--secondary-200);
+        color: var(--secondary-800);
+      }
     }
 
     .data-table-header {

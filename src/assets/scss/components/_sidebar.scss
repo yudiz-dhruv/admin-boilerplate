@@ -56,7 +56,7 @@
         }
 
         &:nth-child(9) a i {
-          color: #cb26e4;
+          color: #7e1bff;
         }
 
         &+li {
@@ -273,6 +273,42 @@ body.dark {
         li {
           .dropdown-menu {
             box-shadow: 0px 5px 20px 0px rgb(219 219 219 / 14%);
+          }
+
+          &:nth-child(1) a i {
+            color: #677eff;
+          }
+  
+          &:nth-child(2) a i {
+            color: #fa7658;
+          }
+  
+          &:nth-child(3) a i {
+            color: #2dce89;
+          }
+  
+          &:nth-child(4) a i {
+            color: #11cdef;
+          }
+  
+          &:nth-child(5) a i {
+            color: #f5365c;
+          }
+  
+          &:nth-child(6) a i {
+            color: #36b05a;
+          }
+  
+          &:nth-child(7) a i {
+            color: #ff7500;
+          }
+  
+          &:nth-child(8) a i {
+            color: #2163ff;
+          }
+  
+          &:nth-child(9) a i {
+            color: #8b26e4;
           }
         }
       }

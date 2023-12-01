@@ -18,12 +18,12 @@ function Breadcrumbs () {
         const to = location.pathname.split(value)[0]
         return last ? (
           <Breadcrumb.Item active key={value}>
-            {value}
+            {value?.replaceAll('-', ' ')}
           </Breadcrumb.Item>
         ) : (
           <Fragment key={value}>
             <Breadcrumb.Item linkAs={RouterLink} linkProps={{ to: to + value }}>
-              {value}
+              {value?.replaceAll('-', ' ')}
             </Breadcrumb.Item>
             <FontAwesomeIcon icon={faSlash} className='breadcrumb-slash' />
           </Fragment>

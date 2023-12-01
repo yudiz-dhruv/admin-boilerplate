@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Dropdown } from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
@@ -7,13 +7,12 @@ import { logout } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
 import { toaster } from 'helper/helper'
 import CustomModal from 'shared/components/Modal'
-import logo from 'assets/images/Rummy-One-Logo.png'
-import textLogo from 'assets/images/textLogo.png'
+// import textLogo from 'assets/images/bg-removed.png'
 import { profile } from 'query/profile/profile.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSun, faMoon, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 
-function Header ({ isOpen }) {
+function Header({ isOpen }) {
   const navigate = useNavigate()
   const query = useQueryClient()
   const [clickedLogOut, setClickedLogOut] = useState(false)
@@ -24,7 +23,6 @@ function Header ({ isOpen }) {
   const temp = localStorage.getItem('mode') === 'true'
 
   const [mode, setMode] = useState(temp)
-
 
   const { isLoading, isFetching } = useQuery('logoutUser', () => logout(), {
     enabled: clickedLogOut,
@@ -56,15 +54,13 @@ function Header ({ isOpen }) {
     query.invalidateQueries('logoutUser')
   }
 
-  function handleEditProfile () {
+  function handleEditProfile() {
     navigate(route.editProfile)
   }
 
-  function handleChangePass () {
+  function handleChangePass() {
     navigate(route.changePassword)
   }
-
-
 
   useEffect(() => {
     localStorage.setItem('mode', mode)
@@ -77,13 +73,13 @@ function Header ({ isOpen }) {
     <header className='header'>
       <div className='header-left'>
         <Link className='logo' to={route.dashboard}>
-          <img src={logo} className="logoIcon" alt='run to learn' />
-          <img src={textLogo} className="textLogo" alt='run to learn' />
+          {/* <img src={logo} className="logoIcon" alt='run to learn' /> */}
+          {/* <img src={textLogo} className="textLogo" alt='Poker Logo' /> */}
           {/* <div className='logo-text'>Rummy One</div> */}
         </Link>
       </div>
       <div className='header-right'>
-        <div className='user-name'>Hi, {profileName}</div>
+        <div className='user-name'>{profileName}</div>
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>
             <div className='img d-flex align-items-center justify-content-center'>

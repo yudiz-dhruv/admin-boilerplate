@@ -24,8 +24,10 @@
       }
 
       &.textLogo {
-        width: 180px;
+        width: 115px;
         height: auto;
+        margin-left: 15px;
+        margin-top: 5px;
       }
     }
   }
@@ -158,7 +160,7 @@ body.dark {
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #2b0e45;
+      background-color: #fff;
       transition: 0.4s;
 
       &.round {
@@ -196,7 +198,7 @@ body.dark {
   .header {
     .header-right {
       .slider {
-        background-color: #7f1190;
+        background-color: #0096db;
       }
 
       input {
@@ -212,6 +214,18 @@ body.dark {
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .header {
+    .logo {
+      img {
+        &.textLogo {
+          display: none;
         }
       }
     }

@@ -23,6 +23,36 @@ export function getDirtyFormValues(dirtyFields, allValues) {
   return Object.fromEntries(Object.keys(dirtyFields).map((key) => [key, getDirtyFormValues(dirtyFields[key], allValues[key])]))
 }
 
+export const fileToDataUri = (file) => {
+  return new Promise((resolve) => {
+    if (typeof file === 'string') {
+      // If file is a URL, fetch it and convert to Blob
+      fetch(file)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+          reader.readAsDataURL(blob);
+        })
+        .catch((error) => {
+          console.error('Error fetching or converting URL to Blob: ', error);
+          resolve(null); // Handle the error as needed
+        });
+    } else if (file instanceof Blob) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        resolve(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      console.error('Invalid file type. It should be a Blob or a URL string.');
+      resolve(null); // Handle the error as needed
+    }
+  });
+}
+
 export async function getImageFileFromUrl (url) {
   try {
       const response = await fetch(url);
@@ -37,4 +67,3 @@ export async function getImageFileFromUrl (url) {
       console.error('Error occurred while fetching the image:', error);
   }
 }
-

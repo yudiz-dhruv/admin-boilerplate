@@ -19,6 +19,12 @@ const Dashboard = lazy(() => import('views/crmManagement/dashboard'))
 const TransactionStats = lazy(() => import('views/crmManagement/transactionStats'))
 const Statistics = lazy(() => import('views/crmManagement/statistics'))
 
+// //User
+// const UserManagement = lazy(() => import('views/user/userManagement'))
+// const AddUser = lazy(() => import('views/user/userManagement/addUser'))
+// const ViewUser = lazy(() => import('views/user/userManagement/viewUser'))
+// const EditUser = lazy(() => import('views/user/userManagement/editUser'))
+
 const RoutesDetails = [
   {
     defaultRoute: '',
@@ -47,6 +53,12 @@ const RoutesDetails = [
       { path: route.dashboard, Component: Dashboard, exact: true },
       { path: route.transactionStats, Component: TransactionStats, exact: true },
       { path: route.statistics, Component: Statistics, exact: true },
+
+
+      // { path: route.userManagement, Component: UserManagement, exact: true },
+      // { path: route.addUser, Component: AddUser, exact: true },
+      // { path: route.viewUser(':id'), Component: ViewUser, exact: true },
+      // { path: route.editUser(':id'), Component: EditUser, exact: true },
     ]
   }
 ]

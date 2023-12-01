@@ -42,8 +42,8 @@ function DataTable ({
             {header.left.rows && (
               <Form.Group className='bulk-action only-border form-group mb-0 d-flex align-items-center'>
                 <Select
-                  options={[10, 20, 30, 40, 50].map((e) => ({ label: e, value: e }))}
-                  value={[{ label: Number(params.size) || 10, value: Number(params.size) || 10 }]}
+                  options={[10, 20, 30, 40, 50, 100].map((e) => ({ label: e, value: e }))}
+                  value={[{ label: Number(params.nLimit) || 10, value: Number(params.nLimit) || 10 }]}
                   className='react-select only-border sm'
                   classNamePrefix='select'
                   isSearchable={false}
@@ -69,6 +69,14 @@ function DataTable ({
                   Filter
                 </div>
                 <i className='icon-filter-list' />
+              </Button>
+            )}
+            {header.right.addMode && (
+              <Button variant='primary' className='square add-button' size='sm' onClick={() => headerEvent('add', true)}>
+                <i className='icon-add' />
+                <div>
+                  Add
+                </div>
               </Button>
             )}
             {header.right.component && component}

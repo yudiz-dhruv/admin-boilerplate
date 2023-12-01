@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Loader } from 'shared/components/Loader'
 const AllRoutes = React.lazy(() => import('routes'))
@@ -44,6 +44,14 @@ export const queryClient = new QueryClient({
 })
 
 function App() {
+  const temp = localStorage.getItem('mode') === 'true'
+
+  useEffect(() => {
+    localStorage.setItem('mode', temp)
+
+    document.body.classList.remove(!temp ? 'light' : 'dark')
+    document.body.classList.add(temp ? 'light' : 'dark');
+  }, [temp])
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={<Loader />}>
