@@ -1,0 +1,12 @@
+.game-list {
+    img {
+        object-fit: contain;
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+    }
+
+    .single-line {
+        text-wrap: nowrap;
+    }
+}

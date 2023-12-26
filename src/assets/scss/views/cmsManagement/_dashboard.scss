@@ -1,0 +1,200 @@
+.card-box {
+  margin-bottom: 10px;
+
+  svg.dashboard-card-icon-1 {
+    background: linear-gradient(310deg, #1171ef, #11cdef) !important;
+  }
+
+  svg.dashboard-card-icon-2 {
+    background: linear-gradient(310deg, #d88b06, #f1ef38) !important;
+  }
+
+  svg.dashboard-card-icon-3 {
+    background: linear-gradient(310deg, #01b869, #2dcecc) !important;
+  }
+
+  svg.dashboard-card-icon-4 {
+    background: linear-gradient(310deg, #ff0000, #ff81fc) !important;
+  }
+
+  svg.dashboard-card-icon-5 {
+    background: linear-gradient(310deg, #eb4a4a, #df70e3) !important;
+  }
+
+  svg.dashboard-card-icon-6 {
+    background: linear-gradient(310deg, #f5365c, #f56036) !important;
+  }
+
+  svg.dashboard-card-icon-7 {
+    background: linear-gradient(310deg, #1171ef, #11cdef) !important;
+  }
+
+  svg.dashboard-card-icon-8 {
+    background: linear-gradient(310deg, #2dce89, #2dcecc) !important;
+  }
+
+  svg.dashboard-card-icon-9 {
+    background: linear-gradient(310deg, #eb4a4a, #df70e3) !important;
+  }
+}
+
+.dashboard-card-1 {
+  .dash-card {
+    overflow: hidden;
+    height: auto;
+    padding: 0px;
+
+    .up-card-1 {
+      padding: 19px 25px 0;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .currency {
+      word-break: break-word;
+    }
+
+    .down-card-1 {
+      align-content: space-around;
+      padding: 18px 25px !important;
+      align-content: space-around;
+      margin: 25px 0 0;
+      background: linear-gradient(130deg, #00d4ff, #3843e6) !important;
+
+      .card-text {
+        color: var(--white-color) !important;
+      }
+
+      .card-title {
+        margin-bottom: 10px !important;
+        color: var(--white-color) !important;
+      }
+    }
+  }
+}
+
+.dashboard-card-2 {
+  .dash-card {
+    overflow: hidden;
+    height: auto;
+    padding: 0px;
+
+    .up-card-1 {
+      padding: 25px 25px 0;
+    }
+
+    .down-card-1 {
+      align-content: space-around;
+      padding: 18px 25px !important;
+      align-content: space-around;
+      margin: 11px 0 0;
+      background: linear-gradient(130deg, #f1ef38, #955f00) !important;
+
+      .card-text {
+        color: var(--white-color) !important;
+      }
+
+      .card-title {
+        color: var(--white-color) !important;
+      }
+    }
+  }
+}
+
+.dashboard-card-3 {
+  .dash-card {
+    overflow: hidden;
+    height: auto;
+    padding: 0px;
+
+    .up-card-1 {
+      padding: 25px 25px 0;
+    }
+
+    .down-card-1 {
+      align-content: space-around;
+      padding: 18px 25px !important;
+      align-content: space-around;
+      margin: 11px 0 0;
+      background: linear-gradient(130deg, #37cc8c, #005d28) !important;
+
+      .card-text {
+        color: var(--white-color) !important;
+      }
+
+      .card-title {
+        color: var(--white-color) !important;
+      }
+    }
+  }
+}
+
+.dashboard-card-4 {
+  .dash-card {
+    overflow: hidden;
+    height: auto;
+    padding: 0px;
+
+    .up-card-1 {
+      padding: 25px 25px 0;
+    }
+
+    .down-card-1 {
+      align-content: space-around;
+      padding: 18px 25px !important;
+      align-content: space-around;
+      margin: 11px 0 0;
+      background: linear-gradient(130deg, #ff81fc, #961515) !important;
+
+      .card-text {
+        color: var(--white-color) !important;
+      }
+
+      .card-title {
+        color: var(--white-color) !important;
+      }
+    }
+  }
+}
+
+body.dark {
+  .card-box {
+    margin-bottom: 10px;
+
+    svg.dashboard-card-icon-1 {
+      background: linear-gradient(310deg, #0059cc, #1f99a4) !important;
+    }
+
+    svg.dashboard-card-icon-2 {
+      background: linear-gradient(310deg, #f1ef38, #a56800) !important;
+    }
+
+    svg.dashboard-card-icon-3 {
+      background: linear-gradient(310deg, #37cc8c, #005d28) !important;
+    }
+
+    svg.dashboard-card-icon-4 {
+      background: linear-gradient(310deg, #ff81fc, #bc1212) !important;
+    }
+
+    svg.dashboard-card-icon-5 {
+      background: linear-gradient(310deg, #af4141, #a348a6) !important;
+    }
+
+    svg.dashboard-card-icon-6 {
+      background: linear-gradient(310deg, #971f37, #ba4828) !important;
+    }
+
+    svg.dashboard-card-icon-7 {
+      background: linear-gradient(310deg, #0059cc, #1f99a4) !important;
+    }
+
+    svg.dashboard-card-icon-8 {
+      background: linear-gradient(310deg, #1f8f5f, #239997) !important;
+    }
+
+    svg.dashboard-card-icon-9 {
+      background: linear-gradient(310deg, #af4141, #a348a6) !important;
+    }
+  }
+}
