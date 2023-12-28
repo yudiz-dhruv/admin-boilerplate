@@ -1,10 +1,4 @@
-import { faCube, faGamepad } from '@fortawesome/free-solid-svg-icons'
-import {
-  iconGrid,
-  privacypolicy,
-  aboutus,
-} from 'assets/images/icons'
-
+import { faCube, faGamepad, faUser } from '@fortawesome/free-solid-svg-icons'
 import { route } from 'shared/constants/AllRoutes'
 
 export const sidebarConfig = [
@@ -12,29 +6,28 @@ export const sidebarConfig = [
     path: route.dashboard,
     icon: faCube,
     title: 'CRM Management',
+    role: ['superAdmin', 'admin'],
     children: [
       {
         path: route.dashboard,
-        icon: iconGrid,
         title: 'Dashboard'
       },
       {
         path: route.statistics,
-        icon: privacypolicy,
         title: 'Statistics'
       },
     ]
   },
   {
+    path: route.patient,
+    icon: faUser,
+    title: 'Patient Management',
+    role: ['superAdmin']
+  },
+  {
     path: route.game,
     icon: faGamepad,
-    title: 'Game',
-    children: [
-      {
-        path: route.game,
-        icon: iconGrid,
-        title: 'Game Management'
-      },
-    ]
+    title: 'Game Management',
+    role: ['superAdmin']
   },
 ]

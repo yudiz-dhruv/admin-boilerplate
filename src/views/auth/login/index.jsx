@@ -6,9 +6,10 @@ import { FormattedMessage } from 'react-intl'
 import { login } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { toaster } from 'helper/helper'
 import { EMAIL } from 'shared/constants'
+import { profile } from 'query/profile/profile.query'
 
 function Login () {
   const navigate = useNavigate()
@@ -16,10 +17,12 @@ function Login () {
   const {
     register: fields,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm({ mode: 'onSubmit' })
 
   const [showPassword, setShowPassword] = useState(true)
+  const [isLoginSuccess, setIsLoginSuccess] = useState(false)
 
   function handlePasswordToggle () {
     setShowPassword(!showPassword)
@@ -28,8 +31,32 @@ function Login () {
   const { mutate, isLoading } = useMutation(login, {
     onSuccess: (response) => {
       localStorage.setItem('token', response?.headers?.authorization)
-      toaster(response?.data?.message, 'success')
+      setIsLoginSuccess(true)
+    },
+    onError: (err) => {
+      setIsLoginSuccess(false)
+      reset({
+        sEmail: '',
+        sPassword: ''
+      })
+    }
+  })
+
+  const { isLoading: profileLoader, isFetching: profileFetching } = useQuery('getProfile', profile, {
+    enabled: !!isLoginSuccess,
+    select: (data) => data?.data?.data,
+    onSuccess: (data) => {
+      toaster('Login Successfully', 'success')
+      localStorage.setItem('type', data?.eUserType)
       navigate(route.dashboard)
+    },
+    onError: (data) => {
+      toaster('Oops! Something went wrong.', 'error')
+      localStorage.removeItem('token')
+      reset({
+        sEmail: '',
+        sPassword: ''
+      })
     }
   })
 
@@ -64,7 +91,7 @@ function Login () {
             className={errors.sEmail && 'error'}
             {...fields('sEmail', {
               required: { value: true, message: validationErrors.emailRequired },
-              pattern: { value: EMAIL, message: validationErrors.email }
+              pattern: { value: EMAIL, message: 'Invalid Email Format.' }
             })}
           />
           {errors.sEmail && <Form.Control.Feedback type='invalid'>{errors.sEmail.message}</Form.Control.Feedback>}
@@ -98,13 +125,13 @@ function Login () {
           {errors.sPassword && <Form.Control.Feedback type='invalid'>{errors.sPassword.message}</Form.Control.Feedback>}
         </Form.Group>
         <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
-          <FormattedMessage id='Login' /> {isLoading && <Spinner animation='border' size='sm' />}
+          <FormattedMessage id='Login' /> {(isLoading || profileLoader || profileFetching) && <Spinner animation='border' size='sm' />}
         </Button>
-      </Form>
 
-      {/* <Link to={route.forgotPassword} className='b-link'>
-        <FormattedMessage id='forgotPassword' />?
-      </Link> */}
+        <Link to={route.forgotPassword} className='b-link'>
+          <FormattedMessage id='forgotPassword' />?
+        </Link>
+      </Form>
     </>
   )
 }

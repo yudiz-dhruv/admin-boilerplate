@@ -1,32 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
-import { FormattedMessage } from 'react-intl'
-import { useMutation } from 'react-query'
+import { Button, Col, Form, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
+import { useMutation, useQuery } from 'react-query'
 import { Controller, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
 import Wrapper from 'shared/components/Wrap'
-import { EMAIL, PASSWORD, URL_REGEX } from 'shared/constants'
+import { URL_REGEX } from 'shared/constants'
 import { route } from 'shared/constants/AllRoutes'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import Select from 'react-select'
 import { fileToDataUri, toaster } from 'helper/helper'
-import { addGame } from 'query/game/game.mutation'
+import { addGame, updateGame } from 'query/game/game.mutation'
+import { getGameById } from 'query/game/game.query'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 
 const AddGame = () => {
+    const location = useLocation()
     const navigate = useNavigate()
-    const { register, handleSubmit, formState: { errors }, control, reset, getValues, resetField, setError, clearErrors, watch } = useForm({ mode: 'all' })
+    const { id } = useParams()
+    
+    const { register, handleSubmit, formState: { errors }, control, reset, watch } = useForm({ mode: 'all' })
     const fileInputRef = useRef(null)
 
-    const eGenderOptions = [
-        { label: 'Male', value: 'male' },
-        { label: 'Female', value: 'female' },
-        { label: 'Other', value: 'other' }
-    ]
+    const [show, setShow] = useState(false)
+    const target = useRef(null)
 
-    const [showPassword, setShowPassword] = useState(true)
-    const [modal, setModal] = useState(false)
-    const [formData, setFormData] = useState()
+    // SPEICIFC GAME
+    useQuery('gameDataById', () => getGameById(id), {
+        enabled: !!id,
+        select: (data) => data?.data?.data,
+        onSuccess: (data) => {
+            console.log('specific data: ', data);
+            reset({
+                ...data,
+                sName: data?.sName || ''
+            })
+        }
+    })
 
     // ADD GAME
     const { mutate } = useMutation(addGame, {
@@ -37,6 +47,20 @@ const AddGame = () => {
         }
     })
 
+    // EDIT GAME
+    const { mutate: updateMutate } = useMutation(updateGame, {
+        onSettled: (response, err) => {
+            if (response) {
+                toaster('Game Updated Successfully.', 'success')
+                navigate(route.game)
+    
+                reset()
+            } else {
+                toaster(response.data.message, 'error')
+            }
+        }
+    })
+
     async function onSubmit (data) {
         let addData = {
             sName: data?.sName || '',
@@ -44,20 +68,36 @@ const AddGame = () => {
             sUrl: data?.sUrl || '',
             sAvatar: '',
         };
+
+        let editData = {
+            sName: data?.sName || '',
+            sAvatar: '',
+            id
+        }
         const sAvatarFile = data?.sAvatar;
 
         if (sAvatarFile) {
             const dataUri = await fileToDataUri(sAvatarFile);
             addData.sAvatar = dataUri;
+            editData.sAvatar = dataUri
         }
 
-        mutate(addData)
+        location?.state === 'edit' ? updateMutate(editData) : mutate(addData)
     }
 
     const handleFileInputClick = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click()
         }
+    }
+
+    const renderTooltip = (props) => {
+        const tooltip = 'Image upload limit: 1 MB. Please ensure your file size is within this limit.'
+        return (
+            <Tooltip id="game-logo-tooltip" {...props}>
+                <span style={{ fontSize: '10px', display: 'block' }}>{tooltip}</span>
+            </Tooltip>
+        )
     }
 
     useEffect(() => {
@@ -108,6 +148,7 @@ const AddGame = () => {
                                                         label='URL'
                                                         placeholder='Enter game URL'
                                                         required
+                                                        disabled={location?.state === 'edit'}
                                                         onChange={(e) => {
                                                             e.target.value =
                                                                 e.target.value?.trim() &&
@@ -138,6 +179,7 @@ const AddGame = () => {
                                                 label='Description'
                                                 placeholder='Enter game description...'
                                                 required
+                                                disabled={location?.state === 'edit'}
                                                 validation={{
                                                     required: {
                                                         value: true,
@@ -154,7 +196,15 @@ const AddGame = () => {
 
                                         <Col lg={6} md={6} sm={12} className='mt-md-2'>
                                             <div className='fileinput'>
-                                                <label>Add Game Logo<span className='inputStar'>*</span></label>
+                                                <label className='d-flex justify-content-between'>
+                                                    <span>Add Game Logo<span className='inputStar'>*</span></span>
+                                                    <OverlayTrigger
+                                                        delay={{ show: 250, hide: 400 }}
+                                                        overlay={renderTooltip}
+                                                    >
+                                                        <span ref={target} onClick={() => setShow(!show)} className='information'><FontAwesomeIcon icon={faCircleInfo} color='var(--primary-color)' size='lg' /></span>
+                                                    </OverlayTrigger>
+                                                </label>
                                                 <div className='inputtypefile'>
                                                     <div className='inputMSG'>
                                                         {watch('sAvatar') ? <>
@@ -220,11 +270,11 @@ const AddGame = () => {
 
                                         <Row className='mt-3'>
                                             <Col sm={12}>
-                                                <Button variant='secondary' className='me-2' onClick={() => navigate(route.game)}>
-                                                    Cancel
+                                                <Button variant='primary' type='submit' className='me-2'>
+                                                    {location?.state === 'edit' ? 'Update Game' : 'Add Game'}
                                                 </Button>
-                                                <Button variant='primary' type='submit'>
-                                                    Add Game
+                                                <Button variant='secondary' onClick={() => navigate(route.game)}>
+                                                    Cancel
                                                 </Button>
                                             </Col>
                                         </Row>

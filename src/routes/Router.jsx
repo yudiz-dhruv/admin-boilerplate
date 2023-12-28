@@ -8,7 +8,7 @@ const PrivateRoute = lazy(() => import('routes/PrivateRoutes'))
 const Login = lazy(() => import('views/auth/login'))
 const ForgotPassword = lazy(() => import('views/auth/forgot-password'))
 const ResetPassword = lazy(() => import('views/auth/reset-password'))
-const PageNotFound = lazy(() => import('shared/components/404'))
+// const PageNotFound = lazy(() => import('shared/components/404'))
 
 // Private Routes Files
 const Profile = lazy(() => import('views/profile'))
@@ -47,7 +47,7 @@ const RoutesDetails = [
     props: {},
     isPrivateRoute: true,
     children: [
-      { path: route.pageNotFound, Component: PageNotFound, exact: true },
+      // { path: route.pageNotFound, Component: PageNotFound, exact: true },
       { path: route.editProfile, Component: Profile, exact: true },
       { path: route.changePassword, Component: ChangePassword, exact: true },
 
@@ -57,7 +57,7 @@ const RoutesDetails = [
       { path: route.game, Component: GameManagement, exact: true },
       { path: route.addGame, Component: AddGame, exact: true },
       // { path: route.viewUser(':id'), Component: ViewUser, exact: true },
-      // { path: route.editUser(':id'), Component: EditUser, exact: true },
+      { path: route.editGame(':id'), Component: AddGame, exact: true },
     ]
   }
 ]

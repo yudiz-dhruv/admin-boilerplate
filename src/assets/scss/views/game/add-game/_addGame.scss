@@ -1,5 +1,7 @@
 .game-form {
-    .form-group, .form-label {
+
+    .form-group,
+    .form-label {
         margin-bottom: 0;
 
         textarea {
@@ -13,11 +15,17 @@
             text-align: start;
             width: 100%;
             padding: 0;
+
+            .information {
+                display: flex;
+                justify-content: end;
+                align-items: end;
+            }
         }
 
         .inputtypefile {
             margin: 10px 0;
-            padding: 7px 10px 7px 12px;
+            padding: 5px;
             position: relative;
             background-color: var(--input-background-color);
             border-radius: 4px;
@@ -78,7 +86,7 @@
                     border-radius: 5px;
                     font-family: 'helvetica-regular';
                     font-weight: 400;
-                  }
+                }
             }
 
             input {
@@ -89,11 +97,24 @@
                 height: 100%;
                 margin-bottom: 0;
                 position: absolute;
-            
+
                 &:disabled {
-                  display: none;
+                    display: none;
                 }
-              }
+            }
         }
+    }
+}
+
+#game-logo-tooltip {
+    opacity: 1;
+    z-index: 10;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    position: absolute;
+    left: 0px !important;
+
+    .tooltip-arrow::before {
+        border-top-color: var(--primary-color) !important;
     }
 }

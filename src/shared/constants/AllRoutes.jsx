@@ -7,10 +7,12 @@ export const route = {
 
   dashboard: '/dashboard',
   statistics: '/Statistics',
-  pageNotFound: '/404',
+  // pageNotFound: '/404',
 
   game: '/game-management',
   addGame: '/add-new-game',
   // viewUser: (id) => `/view-user-profile/${id}`,
-  // editUser: (id) => `/edit-user-profile/${id}`,
+  editGame: (id) => `/edit-game-details/${id}`,
+
+  patient: '/patient-management'
 }

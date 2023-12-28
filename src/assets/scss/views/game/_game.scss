@@ -6,6 +6,16 @@
         min-width: 100px;
     }
 
+    .dropdown-datatable-menu {
+        a.edit:hover {
+            color: rgb(241, 153, 0) !important;
+        }
+
+        a.delete:hover {
+            color: rgb(241, 0, 0) !important;
+        }
+    }
+
     .single-line {
         text-wrap: nowrap;
     }

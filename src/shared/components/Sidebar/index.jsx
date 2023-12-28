@@ -7,6 +7,7 @@ import useMediaQuery from 'shared/hooks/useMediaQuery'
 function SideBar ({ isOpen, setIsOpen }) {
   const width = useMediaQuery('(max-width: 800px)')
   const [activeSubMenu, setActiveSubMenu] = useState(null)
+  const type = localStorage.getItem('type')
 
   const toggleSubMenu = (submenu) => {
     if (activeSubMenu === submenu) {
@@ -21,7 +22,7 @@ function SideBar ({ isOpen, setIsOpen }) {
       <div className='menu'>
         <ul className='p-0 m-0'>
           {sidebarConfig.map((item, index) => {
-            return <MenuItem key={index} item={item} isMenuOpen={width ? !isOpen : isOpen} activeSubMenu={activeSubMenu} toggleSubMenu={toggleSubMenu} />
+            return item?.role?.includes(type) ? <MenuItem key={index} item={item} isMenuOpen={width ? !isOpen : isOpen} activeSubMenu={activeSubMenu} toggleSubMenu={toggleSubMenu} /> : <></>
           })}
         </ul>
         <Button onClick={() => setIsOpen(!isOpen)} variant='link' className='open-btn square lh-1 p-1'>

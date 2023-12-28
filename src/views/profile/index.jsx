@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Form, Button, Spinner, Row, Col } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
-
 import EditProfileComponent from 'shared/components/Profile'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { profile, UpdateProfile } from 'query/profile/profile.query'
@@ -17,7 +16,6 @@ import { faPenToSquare, faUser, faXmark } from '@fortawesome/free-solid-svg-icon
 function EditProfile () {
   const navigate = useNavigate()
   const query = useQueryClient()
-  const [isChanged, setIsChanged] = useState(false)
   const [updateFlag, setUpdateFlag] = useState(false)
   const [profileData, setProfileData] = useState({})
 
@@ -31,7 +29,6 @@ function EditProfile () {
     reset,
     handleSubmit,
     setValue,
-    watch
   } = useForm({
     mode: 'all',
     defaultValues: {
@@ -47,10 +44,8 @@ function EditProfile () {
       setProfileData(data)
       reset({
         sUserName: data?.sUserName,
-        sFullName: data?.sFullName,
         sEmail: data?.sEmail,
         sMobile: data?.sMobile,
-        eGender: data?.eGender
       })
     },
     onError: () => {
@@ -68,16 +63,14 @@ function EditProfile () {
 
   function handleChange (e) {
     const { name, value } = e.target
-    setIsChanged(true)
     setProfileData({ ...profileData, [name]: value })
   }
 
   const onsubmit = (data) => {
     mutate({
-      sUserName: data.sUserName,
-      sFullName: data.sFullName,
-      sMobile: data.sMobile,
-      eGender: data.eGender?.value
+      sUserName: data?.sUserName || '',
+      sMobile: data?.sMobile || '',
+      sEmail: data?.sEmail || ''
     })
   }
 
@@ -122,15 +115,17 @@ function EditProfile () {
                     genderUpdate={genderUpdate}
                   />
                   {updateFlag !== false &&
-                  <>
-                    <Button variant='secondary' className='me-2' disabled={isLoading} onClick={() => navigate(route.dashboard)}>
-                      Cancel
-                    </Button>
-                    <Button variant='primary' type='submit' disabled={!updateFlag || isLoading}>
-                      <FormattedMessage id='update' />
-                      {isLoading && <Spinner animation='border' size='sm' />}
-                    </Button>
-                  </>
+                    <>
+                      <div className='d-flex justify-content-end'>
+                        <Button variant='primary' type='submit' className='me-2' disabled={!updateFlag || isLoading}>
+                          <FormattedMessage id='update' />
+                          {isLoading && <Spinner animation='border' size='sm' />}
+                        </Button>
+                        <Button variant='secondary' disabled={isLoading} onClick={() => navigate(route.dashboard)}>
+                          Cancel
+                        </Button>
+                      </div>
+                    </>
                   }
                 </Form>
               </div>

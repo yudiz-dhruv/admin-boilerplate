@@ -30,12 +30,12 @@
 
         &:nth-child(2) a i,
         &:nth-child(2) .list-name i {
-          color: #fb6340;
+          color: #2dce89;
         }
 
         &:nth-child(3) a i,
         &:nth-child(3) .list-name i {
-          color: #2dce89;
+          color: #fb2e00;
         }
 
         &:nth-child(4) a i,
@@ -228,9 +228,18 @@
             display: flex;
             align-items: center;
 
+            .side-bar-text {
+              letter-spacing: 0.5px;
+            }
+
             i {
               margin-right: 5px;
               background-color: transparent;
+            }
+
+            i.icon-arrow-drop-down {
+              margin-right: 0;
+              font-size: 20px;
             }
           }
         }
@@ -266,6 +275,10 @@
   left: 0 !important;
   width: 100%;
   transition: 0.3s;
+
+  li {
+    letter-spacing: 0.5px;
+  }
 }
 
 .sidebar-dropdown.active {
@@ -292,12 +305,12 @@ body.dark {
 
           &:nth-child(2) a i,
           &:nth-child(2) .list-name i {
-            color: #fa7658;
+            color: #2dce89;
           }
-
+          
           &:nth-child(3) a i,
           &:nth-child(3) .list-name i {
-            color: #2dce89;
+            color: #fa7658;
           }
 
           &:nth-child(4) a i,

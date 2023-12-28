@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown, Spinner } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
@@ -24,20 +24,22 @@ function Header({ isOpen }) {
 
   const [mode, setMode] = useState(temp)
 
-  const { isLoading, isFetching } = useQuery('logoutUser', () => logout(), {
+  const { isLoading, isFetching } = useQuery('logoutUser', logout, {
     enabled: clickedLogOut,
     onSuccess: (res) => {
       localStorage.removeItem('token')
+      localStorage.removeItem('type')
       navigate('/login')
       toaster(res?.data?.message)
     },
     onError: () => {
       localStorage.removeItem('token')
+      localStorage.removeItem('type')
       navigate('/login')
     }
   })
 
-  useQuery('profile', () => profile(), {
+  const { isLoading: profileLoader } = useQuery('profile', () => profile(), {
     select: (data) => data?.data?.data,
     onSuccess: (res) => {
       setProfileName(res.sUserName)
@@ -79,7 +81,7 @@ function Header({ isOpen }) {
         </Link>
       </div>
       <div className='header-right'>
-        <div className='user-name'>{profileName}</div>
+        <div className='user-name'>{profileLoader ? <Spinner animation='border' size='sm' /> : profileName}</div>
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>
             <div className='img d-flex align-items-center justify-content-center'>

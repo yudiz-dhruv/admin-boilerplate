@@ -13,22 +13,22 @@ export async function forgotPassword({ sEmail }) {
   })
 }
 
-export async function resetPassWord({ sNewPassword, token }) {
+export async function resetPassWord(data) {
   return await axios.post(
     `/auth/password/reset`,
-    { sPassword: sNewPassword },
+    data,
     {
       headers: {
-        authorization: token
+        authorization: data?.token
       }
     }
   )
 }
 
 export async function logout() {
-  return await axios.get(`/auth/logout`)
+  return await axios.get(`/profile/logout`)
 }
 
-export async function changePassWord({ sPassword, sNewPassword }) {
-  return await axios.post(`/profile/changePassword`, { sPassword, sNewPassword })
+export async function changePassWord({ sOldPassword, sNewPassword }) {
+  return await axios.put(`/profile/password/change`, { sOldPassword, sNewPassword })
 }

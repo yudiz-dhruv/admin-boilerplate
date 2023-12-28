@@ -21,9 +21,10 @@ export default function ChangePassword () {
     register,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors },
+    clearErrors
   } = useForm({
-    mode: 'onTouched'
+    mode: 'all'
   })
   const sNewPassword = useRef({})
   sNewPassword.current = watch('sNewPassword')
@@ -43,7 +44,7 @@ export default function ChangePassword () {
   const onSubmit = (data) => {
     mutate({
       sNewPassword: data.sConfirmPassword,
-      sPassword: data.sCurrentPassword
+      sOldPassword: data.sCurrentPassword
     })
   }
 
@@ -69,8 +70,7 @@ export default function ChangePassword () {
                 </Form.Label>
                 <InputGroup>
                   <Form.Control
-                    className={`form-control ${errors.sCurrentPassword && 'error'
-                      }`}
+                    className={`form-control ${errors.sCurrentPassword && 'error'}`}
                     type={showCurrentPassword ? 'password' : 'text'}
                     name='sCurrentPassword'
                     onPaste={(e) => {
@@ -83,6 +83,12 @@ export default function ChangePassword () {
                         value: true,
                         message: validationErrors.currentPasswordRequired
                       },
+                      pattern: {
+                        value: PASSWORD,
+                        message: 'Provide a valid Password.'
+                      },
+                      maxLength: { value: 15, message: validationErrors.rangeLength(8, 15) },
+                      minLength: { value: 8, message: validationErrors.rangeLength(8, 15) },
                       onChange: (e) => {
                         e.target.value = e?.target?.value?.trim()
                       }
@@ -130,7 +136,7 @@ export default function ChangePassword () {
                       },
                       pattern: {
                         value: PASSWORD,
-                        message: validationErrors.passwordRegEx
+                        message: 'Provide a valid Password.'
                       },
                       maxLength: {
                         value: 12,
@@ -172,8 +178,7 @@ export default function ChangePassword () {
                 </Form.Label>
                 <InputGroup>
                   <Form.Control
-                    className={`form-control ${errors.sConfirmPassword && 'error'
-                      }`}
+                    className={`form-control ${errors.sConfirmPassword && 'error'}`}
                     onPaste={(e) => {
                       e.preventDefault()
                       return false
@@ -186,9 +191,10 @@ export default function ChangePassword () {
                         value: true,
                         message: 'Confirm Password is reaquired'
                       },
-                      validate: (value) =>
-                        value === sNewPassword.current ||
-                        'Password does not match'
+                      validate: (value) => value !== sNewPassword.current ? 'Password does not match.' : clearErrors('sConfirmPassword'),
+                      onChange: (e) => {
+                        e.target.value = e?.target?.value?.trim()
+                      }
                     })}
                   />
                   <Button
@@ -211,19 +217,18 @@ export default function ChangePassword () {
                   </Form.Control.Feedback>
                 )}
               </Form.Group>
-              <Col lg={12} className='d-flex align-items-center justify-content-center' style={{marginTop:'25px',}}>
+              <Col lg={12} className='d-flex align-items-center justify-content-end mt-3'>
                 <div className='top-d-button'>
+                  <Button variant='primary' type='submit' className='me-2' disabled={isLoading}>
+                    <FormattedMessage id='submit' />{' '}
+                    {isLoading && <Spinner animation='border' size='sm' />}
+                  </Button>
                   <Button
                     variant='secondary'
-                    className='me-2'
                     disabled={isLoading}
                     onClick={() => navigate(route.dashboard)}
                   >
                     Cancel
-                  </Button>
-                  <Button variant='primary' type='submit' disabled={isLoading}>
-                    <FormattedMessage id='submit' />{' '}
-                    {isLoading && <Spinner animation='border' size='sm' />}
                   </Button>
                 </div>
               </Col>

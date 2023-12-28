@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Alkatra&display=swap');
 .not-found {
   color: var(--primary-color);
   font-weight: 600;
@@ -7,10 +8,12 @@
   text-align: center;
   padding: 40px;
   display: block;
-  margin-top: 70px;
+  margin-top: 90px;
+  letter-spacing: 1px;
+  font-family: 'Alkatra';
   text-shadow: -6px 6px 6px #00000053;
   .page_not_found {
-    font-size: 50px;
+    font-size: 40px;
   }
   
   span {
@@ -41,7 +44,7 @@ body.dark {
     color: var(--primary-color);
     text-shadow: -6px 6px 6px #00000053;
     .page_not_found {
-      font-size: 50px;
+      font-size: 40px;
     }
     
     span {

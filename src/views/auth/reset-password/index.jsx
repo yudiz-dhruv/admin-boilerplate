@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
-import { PASSWORD } from 'shared/constants'
+import { OTP, PASSWORD } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { useMutation } from 'react-query'
 import { resetPassWord } from 'query/auth/auth.query'
@@ -18,24 +18,25 @@ function ResetPassword () {
 
   const [showPassword, setShowPassword] = useState({ newPassword: true, confirmPassword: true })
   const sNewPassword = useRef({})
-  
+
   const [tokneWrong, setTokenWrong] = useState(false)
 
-  const { mutate: tokenMutation, isLoading: tokenLoading } = useMutation(checkToken, {
-    onError: () => {
-      setTokenWrong(true)
-    }
-  })
+  // const { mutate: tokenMutation, isLoading: tokenLoading } = useMutation(checkToken, {
+  //   onError: () => {
+  //     setTokenWrong(true)
+  //   }
+  // })
 
-  useEffect(() => {
-    tokenMutation({ sVerifyToken: token })
-  }, [token])
+  // useEffect(() => {
+  //   tokenMutation({ sVerifyToken: token })
+  // }, [token])
 
   const {
     register: fields,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors },
+    clearErrors
   } = useForm({ mode: 'onTouched' })
   sNewPassword.current = watch('sNewPassword')
 
@@ -55,7 +56,7 @@ function ResetPassword () {
   })
 
   function onSubmit (data) {
-    mutate({ sNewPassword: data.sConfirmNewPassword, token })
+    mutate({ sNewPassword: data?.sNewPassword, sConfirmPassword: data?.sConfirmNewPassword, sAuthCode: data?.sAuthCode, token })
   }
 
   useEffect(() => {
@@ -64,7 +65,7 @@ function ResetPassword () {
 
   return (
     <Form noValidate onSubmit={handleSubmit(onSubmit)} className='login-form'>
-      {tokenLoading ? (
+      {false ? (
         <Loader />
       ) : (
         <>
@@ -82,6 +83,34 @@ function ResetPassword () {
             <>
               <Form.Group className='form-group'>
                 <Form.Label>
+                  <FormattedMessage id='OTP' />
+                </Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    type={'text'}
+                    required
+                    name='sAuthCode'
+                    placeholder='Enter One Time Password'
+                    className={errors.sAuthCode && 'error'}
+                    {...fields('sAuthCode', {
+                      required: 'OTP field is required.',
+                      pattern: {
+                        value: OTP,
+                        message: 'Invalid! OTP. Provide a valid OTP number.'
+                      },
+                      maxLength: { value: 4, message: 'OTP must be of 4 digits.' },
+                      minLength: { value: 4, message: 'OTP must be of 4 digits.' },
+                      onChange: (e) => {
+                        e.target.value = e?.target?.value?.trim()
+                      }
+                    })}
+                  />
+                </InputGroup>
+                {errors.sAuthCode && <Form.Control.Feedback type='invalid'>{errors.sAuthCode.message}</Form.Control.Feedback>}
+              </Form.Group>
+
+              <Form.Group className='form-group'>
+                <Form.Label>
                   <FormattedMessage id='newPassword' />
                 </Form.Label>
                 <InputGroup>
@@ -96,7 +125,7 @@ function ResetPassword () {
                     placeholder='Enter your new password'
                     className={errors.sNewPassword && 'error'}
                     {...fields('sNewPassword', {
-                      required: validationErrors.newPasswordRequired,
+                      required: 'New password is required.',
                       pattern: {
                         value: PASSWORD,
                         message: validationErrors.passwordRegEx
@@ -130,8 +159,8 @@ function ResetPassword () {
                     placeholder='Enter same new password'
                     className={errors.sConfirmNewPassword && 'error'}
                     {...fields('sConfirmNewPassword', {
-                      required: validationErrors.confirmRequired,
-                      validate: (value) => value === sNewPassword.current || validationErrors.passwordNotMatch,
+                      required: 'Confirm password is required.',
+                      validate: (value) => value !== sNewPassword.current ? 'Password does not match.' : clearErrors('sConfirmPassword'),
                       onChange: (e) => {
                         e.target.value = e?.target?.value?.trim()
                       }

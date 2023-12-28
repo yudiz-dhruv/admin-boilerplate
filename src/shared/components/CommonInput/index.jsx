@@ -4,6 +4,8 @@ import { Form } from 'react-bootstrap'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { FormattedMessage } from 'react-intl'
 import CommonSpinner from '../CommonSpinner'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 function CommonInput ({
   type,
@@ -26,6 +28,7 @@ function CommonInput ({
   veiwValue,
   isLoading,
   customerror,
+  updateFlag,
   onPaste
 }) {
   const splitName = name.split('.')
@@ -65,7 +68,7 @@ function CommonInput ({
           return <Form.Control as={type === 'text' ? 'input' : 'textarea'} className={className} disabled={disabled} value={veiwValue} />
         } else {
           return (
-            <div className='common-view-input'>
+            <div className='common-view-input profile-input'>
               <Form.Control
                 as={type === 'text' ? 'input' : 'textarea'}
                 name={name}
@@ -92,7 +95,8 @@ function CommonInput ({
                   onBlur && onBlur(e)
                   setRegister.onChange(e)
                 }}
-              />
+                />
+                {updateFlag && <FontAwesomeIcon icon={faPen} />}
               {isLoading && <CommonSpinner />}
             </div>
           )

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { appendParams, parseParams } from 'shared/utils'
-import { useForm } from 'react-hook-form'
 import TopBar from 'shared/components/Topbar'
 import { route } from 'shared/constants/AllRoutes'
 import DataTable from 'shared/components/DataTable'
@@ -19,8 +18,6 @@ const GameManagement = () => {
   const parsedData = parseParams(location.search)
   const params = useRef(parseParams(location.search))
 
-  const { register, formState: { errors }, reset, getValues } = useForm({ mode: 'all' })
-
   const navigate = useNavigate()
   const query = useQueryClient()
 
@@ -28,20 +25,13 @@ const GameManagement = () => {
     const data = e ? parseParams(e) : params.current
     return {
       pageNumber: +data?.pageNumber?.[0] || 1,
-      nStart: (+data?.pageNumber?.[0] - 1),
+      nStart: (+data?.pageNumber?.[0] - 1) || 0,
       search: data?.search || '',
       nLimit: data?.nLimit || 10,
       eStatus: data.eStatus || 'y',
-      startDate: data.startDate || '',
-      endDate: data.endDate || '',
       sort: data.sort || '',
       orderBy: +data.orderBy === 1 ? 'ASC' : 'DESC',
-      eGender: data.eGender || '',
-      isEmailVerified: '',
-      isMobileVerified: '',
-      dateFrom: data?.dateFrom || '',
-      dateTo: data?.dateTo || '',
-      selectedState: []
+      totalElements: +data?.totalElements || 0
     }
   }
 
@@ -51,39 +41,26 @@ const GameManagement = () => {
 
   const [requestParams, setRequestParams] = useState(getRequestParams())
   const [columns, setColumns] = useState(getSortedColumns(GameListColumn, parsedData))
-  const [deleteId, setDeleteId] = useState()
   const [modal, setModal] = useState({ open: false, type: '' })
-
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange
 
   // List
   const { isLoading, isFetching, data } = useQuery(['gameList', requestParams], () => getGameList(requestParams), {
     select: (data) => data.data.data,
   })
 
-  // // EDIT STATUS
-  // const { mutate: updateMutate } = useMutation(updateStoreStatus, {
-  //   onSuccess: (response) => {
-  //     toaster('Store Status Updated Successfullly.', 'success')
-  //     query.invalidateQueries('storeList')
-  //     setModal({ open: false, type: '' })
-  //     reset({})
-  //   }
-  // })
 
   // DELETE GAME
-  const { isLoading: deleteLoading, mutate } = useMutation((deleteId) => deleteGame(deleteId), {
-      onSettled: (res, err) => {
-          if (res) {
-              query.invalidateQueries('gameList')
-              toaster('Game Deleted Successfully.', 'success')
-              setModal({ open: false, type: '' })
-          } else {
-              toaster(err?.response?.data?.message, 'error')
-              setModal({ open: false, type: '' })
-          }
+  const { isLoading: deleteLoading, mutate } = useMutation(deleteGame, {
+    onSettled: (res, err) => {
+      if (res) {
+        query.invalidateQueries('gameList')
+        toaster('Game Deleted Successfully.', 'success')
+        setModal({ open: false, type: '' })
+      } else {
+        toaster(err?.response?.data?.message, 'error')
+        setModal({ open: false, type: '' })
       }
+    }
   })
 
   function handleSort (field) {
@@ -140,8 +117,7 @@ const GameManagement = () => {
   }
 
   const onDelete = (id) => {
-    setModal({ open: true, type: 'delete' })
-    setDeleteId(id)
+    setModal({ open: true, type: 'delete', id: id })
   }
 
   function handleFilterChange (e) {
@@ -175,12 +151,12 @@ const GameManagement = () => {
             },
             right: {
               search: true,
-              filter: true
+              filter: false
             }
           }}
           sortEvent={handleSort}
           headerEvent={(name, value) => handleHeaderEvent(name, value)}
-          totalRecord={data && (data?.count?.totalData || 0)}
+          totalRecord={data?.count?.totalData || 0}
           pageChangeEvent={handlePageEvent}
           isLoading={isLoading || isFetching}
           pagination={{ currentPage: requestParams.pageNumber, pageSize: requestParams.nLimit }}
@@ -192,7 +168,6 @@ const GameManagement = () => {
                 index={index}
                 game={game}
                 onDelete={onDelete}
-                // updateMutate={updateMutate}
               />
             )
           })}
@@ -216,12 +191,12 @@ const GameManagement = () => {
           disableHeader
           bodyTitle='Confirm Delete?'
           isLoading={deleteLoading}
-          confirmValue={deleteId}
+          confirmValue={modal?.id}
         >
           <article>
             <h5>
               <div>
-                Are you sure?
+                Are you sure you want to Delete this Game?
               </div>
             </h5>
           </article>

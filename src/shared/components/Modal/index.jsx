@@ -48,11 +48,11 @@ export default function CustomModal({
           <Modal.Footer>
             {!singleButton ? (
               <>
-                <Button variant='secondary' onClick={handleClose}>
-                  Cancel
-                </Button>
                 <Button variant='primary' onClick={() => handleConfirm(confirmValue)} disabled={isLoading}>
                   <FormattedMessage id='confirm' /> {isLoading && <Spinner animation='border' size='sm' />}
+                </Button>
+                <Button variant='secondary' onClick={handleClose}>
+                  Cancel
                 </Button>
               </>
             ) : (

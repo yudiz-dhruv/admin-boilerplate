@@ -43,34 +43,24 @@ const GameList = ({ key, index, game, updateMutate, onDelete }) => {
                             </div>
                         </Dropdown.Toggle>
                         <Dropdown.Menu className='dropdown-datatable-menu'>
-                            <Dropdown.Item className='dropdown-datatable-items' onClick={() => navigate(route.viewUser(game._id))}>
-                                <div className='dropdown-datatable-items-icon'>
-                                    <i className='icon-visibility d-block' />
-                                </div>
-                                <div className='dropdown-datatable-row-text'>
-                                    View
-                                </div>
-                            </Dropdown.Item>
-                            {
-                                game.eStatus !== 'd' && (<>
-                                    <Dropdown.Item className='dropdown-datatable-items edit' onClick={() => navigate(route.editUser(game._id))}>
-                                        <div className='dropdown-datatable-items-icon'>
-                                            <i className='icon-create d-block' />
-                                        </div>
-                                        <div className='dropdown-datatable-row-text'>
-                                            Update
-                                        </div>
-                                    </Dropdown.Item>
-                                    <Dropdown.Item className='dropdown-datatable-items' onClick={() => onDelete(game._id, game?.sUserName)}>
-                                        <div className='dropdown-datatable-items-icon'>
-                                            <i className='icon-delete d-block' />
-                                        </div>
-                                        <div className='dropdown-datatable-row-text'>
-                                            Delete
-                                        </div>
-                                    </Dropdown.Item>
-                                </>)
-                            }
+                            {game.eStatus !== 'd' && (<>
+                                <Dropdown.Item className='dropdown-datatable-items edit' onClick={() => navigate(route.editGame(game._id), { state: 'edit' })}>
+                                    <div className='dropdown-datatable-items-icon'>
+                                        <i className='icon-create d-block' />
+                                    </div>
+                                    <div className='dropdown-datatable-row-text'>
+                                        Update
+                                    </div>
+                                </Dropdown.Item>
+                                <Dropdown.Item className='dropdown-datatable-items delete' onClick={() => onDelete(game._id, game?.sUserName)}>
+                                    <div className='dropdown-datatable-items-icon'>
+                                        <i className='icon-delete d-block' />
+                                    </div>
+                                    <div className='dropdown-datatable-row-text'>
+                                        Delete
+                                    </div>
+                                </Dropdown.Item>
+                            </>)}
                         </Dropdown.Menu>
                     </Dropdown>
                 </td>

@@ -2,17 +2,12 @@ import React from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
-import Select from 'react-select'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
-import { Controller } from 'react-hook-form'
+import { EMAIL } from 'shared/constants'
+import CommonInput from '../CommonInput'
 function EditProfileComponent ({ register, errors, profileData, handleChange, control, updateFlag }) {
-  const genderOption = [
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-    { label: 'Others', value: 'others' }
-  ]
   return (
     <Row>
       <Col md={6}>
@@ -48,39 +43,29 @@ function EditProfileComponent ({ register, errors, profileData, handleChange, co
           {errors.sUserName && <Form.Control.Feedback type='invalid'>{errors.sUserName.message}</Form.Control.Feedback>}
         </Form.Group>
       </Col>
-      <Col md={6}>
-        <Form.Group className='form-group'>
-          <Form.Label className='light-font'>
-            <FormattedMessage id='fullName' />
-          </Form.Label>
-          <div className='profile-input'>
-            <Form.Control
-              type='text'
-              name='sFullName'
-              disabled={!updateFlag}
-              {...register('sFullName', {
-                required: validationErrors.fullNameRequired,
-              })}
-              errors={errors}
-              className={`form-control ${errors.sFullName && 'error'}`}
-              value={profileData?.sFullName}
-              onChange={(e) => {
-                handleChange(e)
-              }}
-            />
-            {updateFlag && <FontAwesomeIcon icon={faPen} />}
-          </div>
-          {errors.sFullName && <Form.Control.Feedback type='invalid'>{errors.sFullName.message}</Form.Control.Feedback>}
-        </Form.Group>
-      </Col>
 
       <Col md={6}>
-        <Form.Group className='form-group'>
-          <Form.Label className='light-font'>
-            <FormattedMessage id='emailAddress' />
-          </Form.Label>
-          <Form.Control type='text' name='sRole' value={profileData?.sEmail} disabled />
-        </Form.Group>
+        <CommonInput
+          type='text'
+          register={register}
+          errors={errors}
+          className={`form-control ${errors?.sEmail && 'error'}`}
+          name='sEmail'
+          label='Email'
+          disabled={!updateFlag}
+          updateFlag={updateFlag}
+          placeholder='Enter email address'
+          validation={{
+            pattern: {
+              value: EMAIL,
+              message: 'Provide a valid email format.'
+            },
+            required: {
+              value: true,
+              message: validationErrors?.emailRequired
+            }
+          }}
+        />
       </Col>
 
       <Col md={6}>
@@ -118,33 +103,13 @@ function EditProfileComponent ({ register, errors, profileData, handleChange, co
           {errors.sMobile && <Form.Control.Feedback type='invalid'>{errors.sMobile.message}</Form.Control.Feedback>}
         </Form.Group>
       </Col>
-      <Col lg={6}>
+
+      <Col md={6}>
         <Form.Group className='form-group'>
           <Form.Label className='light-font'>
-            Gender
+            User Type
           </Form.Label>
-          <div className='profile-input'>
-            <Controller
-              name='eGender'
-              control={control}
-              rules={{ required: 'gender require' }}
-              render={({ field: { onChange, value, ref } }) => {
-                return <Select
-                  inputRef={ref}
-                  value={genderOption?.find(item => item?.value === value)}
-                  options={genderOption}
-                  className={`react-select ${errors.eGender && 'error'} `}
-                  classNamePrefix='select'
-                  isSearchable={false}
-                  isDisabled={!updateFlag}
-                  onChange={onChange}
-                />
-              }
-              }
-            />
-            {updateFlag && <FontAwesomeIcon icon={faPen} />}
-          </div>
-          {errors.eGender && <Form.Control.Feedback type='invalid'>{errors.eGender.message}</Form.Control.Feedback>}
+          <Form.Control type='text' name='sRole' value={profileData?.eUserType} disabled />
         </Form.Group>
       </Col>
     </Row>
