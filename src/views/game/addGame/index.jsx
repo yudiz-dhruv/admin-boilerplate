@@ -30,10 +30,8 @@ const AddGame = () => {
         enabled: !!id,
         select: (data) => data?.data?.data,
         onSuccess: (data) => {
-            console.log('specific data: ', data);
             reset({
                 ...data,
-                sName: data?.sName || ''
             })
         }
     })
@@ -56,7 +54,7 @@ const AddGame = () => {
     
                 reset()
             } else {
-                toaster(response.data.message, 'error')
+                toaster(err.data.message, 'error')
             }
         }
     })
@@ -101,8 +99,8 @@ const AddGame = () => {
     }
 
     useEffect(() => {
-        document.title = 'Add Game | Vivid Vision'
-    }, [])
+        document.title = location?.state === 'edit' ? 'Edit Game | Vivid Vision' : 'Add Game | Vivid Vision'
+    }, [location])
 
     return (
         <>
@@ -207,7 +205,7 @@ const AddGame = () => {
                                                 </label>
                                                 <div className='inputtypefile'>
                                                     <div className='inputMSG'>
-                                                        {watch('sAvatar') ? <>
+                                                        {!errors?.sAvatar && watch('sAvatar') ? <>
                                                             <div className="document-preview-group">
                                                                 <div className='img-over' onClick={handleFileInputClick}>Change Game Logo</div>
                                                                 {watch('sAvatar') && (
@@ -251,7 +249,6 @@ const AddGame = () => {
                                                                     }}
                                                                     type='file'
                                                                     name={`sAvatar`}
-                                                                    // disabled={updateFlag}
                                                                     accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
                                                                     errors={errors}
                                                                     className={errors?.sAvatar && 'error'}

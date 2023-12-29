@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react'
-
 import { Link as RouterLink, useLocation, useParams } from 'react-router-dom'
 import { Breadcrumb } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSlash } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDoubleRight, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
 function Breadcrumbs () {
   const { id } = useParams()
@@ -25,7 +24,7 @@ function Breadcrumbs () {
             <Breadcrumb.Item linkAs={RouterLink} linkProps={{ to: to + value }}>
               {value?.replaceAll('-', ' ')}
             </Breadcrumb.Item>
-            <FontAwesomeIcon icon={faSlash} className='breadcrumb-slash' />
+            <FontAwesomeIcon icon={faAngleDoubleRight} className='breadcrumb-slash' />
           </Fragment>
         )
       })}

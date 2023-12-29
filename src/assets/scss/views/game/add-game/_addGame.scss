@@ -19,12 +19,14 @@
             .information {
                 display: flex;
                 justify-content: end;
-                align-items: end;
+                align-items: center;
+                cursor: pointer;
             }
         }
 
         .inputtypefile {
             margin: 10px 0;
+            margin-top: 3px;
             padding: 5px;
             position: relative;
             background-color: var(--input-background-color);

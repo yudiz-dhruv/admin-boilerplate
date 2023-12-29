@@ -1,0 +1,103 @@
+.patient {
+    .patient-name {
+        transition: all 0.3s ease-in-out;
+        &:hover {
+            cursor: pointer;
+            color: var(--text-hover);
+        }
+    }
+
+    .single-line,
+    th {
+        text-wrap: nowrap;
+    }
+
+    .single-icon {
+        i {
+            transition: all 0.3s ease-in-out;
+            font-size: 20px;
+
+            &:hover {
+                color: #2a9e2a;
+            }
+        }
+    }
+
+    .dominant-eye {
+        text-transform: capitalize;
+    }
+
+    .disease {
+        text-transform: uppercase;
+        font-size: 11px;
+
+        .present {
+            color: var(--white-color);
+            background: rgba(0, 200, 67, 0.884);
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-weight: 800;
+            font-family: 'Helvetica-Bold';
+        }
+
+        .not-present {
+            color: var(--white-color);
+            background: rgba(255, 14, 14, 0.763);
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-weight: 800;
+            font-family: 'Helvetica-Bold';
+        }
+    }
+
+    .dropdown-datatable-menu {
+        a.edit:hover {
+            color: rgb(241, 153, 0) !important;
+        }
+
+        a.delete:hover {
+            color: rgb(241, 0, 0) !important;
+        }
+    }
+}
+
+@media (max-width: 615px) {
+    .patient {
+        .right {
+            .patient-filter {
+                margin-left: 0;
+
+                .form-group {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+body.dark {
+    .patient {
+        .patient-name {
+            &:hover {
+                color: var(--text-hover);
+            }
+        }
+        .single-icon {
+            i {
+                &:hover {
+                    color: #21bb21;
+                }
+            }
+        }
+
+        .disease {
+            .present {
+                background: rgba(9, 171, 63, 0.764);
+            }
+
+            .not-present {
+                background: rgba(190, 17, 17, 0.832);
+            }
+        }
+    }
+}

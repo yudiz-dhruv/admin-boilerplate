@@ -1,5 +1,5 @@
 .form-group {
-  margin-bottom: 22px;
+  margin-bottom: 15px;
 
   .form-check-input:focus {
     box-shadow: none;
@@ -27,11 +27,11 @@
   .form-label {
     font-size: $fs-12;
     font-weight: $fw-500;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
     // text-transform: uppercase;
     color: var(--text-color) !important;
     line-height: 1.83;
-    margin-bottom: 8px;
+    margin-bottom: 3px;
 
     // span {
     //   color: var(--secondary-400);
@@ -82,6 +82,10 @@
     &.form-select-sm {
       padding: 4px 10px;
       font-size: $fs-13;
+    }
+
+    &::placeholder {
+      color: var(--secondary-400);
     }
   }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Form, InputGroup, Spinner } from 'react-bootstrap'
+import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
 import { OTP, PASSWORD } from 'shared/constants'
@@ -118,10 +118,10 @@ function ResetPassword () {
                     type={showPassword.newPassword ? 'password' : 'text'}
                     required
                     name='sNewPassword'
-                    onPaste={(e) => {
-                      e.preventDefault()
-                      return false
-                    }}
+                    // onPaste={(e) => {
+                    //   e.preventDefault()
+                    //   return false
+                    // }}
                     placeholder='Enter your new password'
                     className={errors.sNewPassword && 'error'}
                     {...fields('sNewPassword', {
@@ -152,10 +152,10 @@ function ResetPassword () {
                     type={showPassword.confirmPassword ? 'password' : 'text'}
                     required
                     name='sConfirmNewPassword'
-                    onPaste={(e) => {
-                      e.preventDefault()
-                      return false
-                    }}
+                    // onPaste={(e) => {
+                    //   e.preventDefault()
+                    //   return false
+                    // }}
                     placeholder='Enter same new password'
                     className={errors.sConfirmNewPassword && 'error'}
                     {...fields('sConfirmNewPassword', {
@@ -174,9 +174,12 @@ function ResetPassword () {
                   <Form.Control.Feedback type='invalid'>{errors.sConfirmNewPassword.message}</Form.Control.Feedback>
                 )}
               </Form.Group>
-              <Button variant='primary' type='submit' disabled={isLoading}>
-                <FormattedMessage id='submit' /> {isLoading && <Spinner animation='border' size='sm' />}
-              </Button>
+
+              <div className='button-section'>
+                <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
+                  <FormattedMessage id='reset' /> {isLoading && <Spinner animation='border' size='sm' />}
+                </Button>
+              </div>
             </>
           )}
         </>

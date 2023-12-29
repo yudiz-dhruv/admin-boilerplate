@@ -36,8 +36,13 @@ export default function ChangePassword () {
   const { mutate, isLoading } = useMutation(changePassWord, {
     onSuccess: (response) => {
       toaster(response?.data?.message)
-      localStorage.clear()
+      localStorage.removeItem('token')
+      localStorage.removeItem('type')
       navigate('/login')
+    },
+    onError: (err) => {
+      toaster(err?.data?.message)
+      navigate('/change-password')
     }
   })
 
@@ -73,10 +78,10 @@ export default function ChangePassword () {
                     className={`form-control ${errors.sCurrentPassword && 'error'}`}
                     type={showCurrentPassword ? 'password' : 'text'}
                     name='sCurrentPassword'
-                    onPaste={(e) => {
-                      e.preventDefault()
-                      return false
-                    }}
+                    // onPaste={(e) => {
+                    //   e.preventDefault()
+                    //   return false
+                    // }}
                     placeholder='Enter your current password'
                     {...register('sCurrentPassword', {
                       required: {
@@ -122,10 +127,10 @@ export default function ChangePassword () {
                 <InputGroup>
                   <Form.Control
                     className={`form-control ${errors.sNewPassword && 'error'}`}
-                    onPaste={(e) => {
-                      e.preventDefault()
-                      return false
-                    }}
+                    // onPaste={(e) => {
+                    //   e.preventDefault()
+                    //   return false
+                    // }}
                     placeholder='Enter new password'
                     type={showNewPassword ? 'password' : 'text'}
                     name='sNewPassword'
@@ -179,10 +184,10 @@ export default function ChangePassword () {
                 <InputGroup>
                   <Form.Control
                     className={`form-control ${errors.sConfirmPassword && 'error'}`}
-                    onPaste={(e) => {
-                      e.preventDefault()
-                      return false
-                    }}
+                    // onPaste={(e) => {
+                    //   e.preventDefault()
+                    //   return false
+                    // }}
                     placeholder='Enter same new password'
                     type={showConfirmPassword ? 'password' : 'text'}
                     name='sConfirmPassword'

@@ -13,7 +13,8 @@
   li {
     font-size: $fs-24;
     font-weight: $fw-700;
-    font-family: "Helvetica-Bold";
+    // font-family: "Helvetica-Bold";
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     color: $white;
     text-transform: capitalize;
     line-height: 1.4;
@@ -43,6 +44,8 @@
 }
 
 .breadcrumb-slash{
-  font-size: 16px;
-  transform: rotate(75deg) translate(-4px , -1px);
+  margin: 5px;
+  font-size: 20px;
+  font-weight: 800;
+  transform: translate(0px , -1px);
 }

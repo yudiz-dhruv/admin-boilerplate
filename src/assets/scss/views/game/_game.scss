@@ -1,22 +1,46 @@
 .game-list {
-    img {
-        object-fit: contain;
-        width: 100px;
-        height: 100px;
-        min-width: 100px;
-    }
-
-    .dropdown-datatable-menu {
-        a.edit:hover {
-            color: rgb(241, 153, 0) !important;
-        }
-
-        a.delete:hover {
-            color: rgb(241, 0, 0) !important;
+    .avatar {
+        img {
+            // object-fit: contain;
+            width: 70px;
+            height: 70px;
+            min-width: 70px;
+            border-radius: 50%;
+            border: 3px solid var(--boxes-color);
+            outline: 3px solid var(--secondary-400);
         }
     }
 
-    .single-line {
+    .single-line, th {
         text-wrap: nowrap;
+    }
+
+    .single-icon {
+        i {
+            transition: all 0.3s ease-in-out;
+            font-size: 20px;
+
+            &:hover {
+                color: #2a9e2a;
+            }
+        }
+    }
+}
+
+body.dark {
+    .game-list {
+        .avatar {
+            img {
+                outline: 3px solid var(--secondary-600);
+            }
+        }
+
+        .single-icon {
+            i {
+                &:hover {
+                    color: #21bb21;
+                }
+            }
+        }
     }
 }

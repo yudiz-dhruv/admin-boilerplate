@@ -54,9 +54,9 @@ function DataTable ({
                 />
               </Form.Group>
             )}
+            {header.left.search && <Search className='search-box only-border mx-2 my-0' searchEvent={(e) => headerEvent('search', e)} />}
           </div>
           <div className='right d-flex align-items-center mb-2'>
-            {header.right.search && <Search className='search-box only-border m-0' searchEvent={(e) => headerEvent('search', e)} />}
             {header.right.latestFirst && (
               <Button variant='outline-secondary' className='square' size='sm' onClick={() => headerEvent('latestFirst', 1)}>
                 <FormattedMessage id='latestFirst' />

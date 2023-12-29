@@ -78,7 +78,7 @@ function Login () {
             </h2>
           </div>
         </div>
-        <Form.Group className='form-group'>
+        <Form.Group className='form-group mt-5'>
           <Form.Label>
             <FormattedMessage id='emailAddress' />
           </Form.Label>
@@ -104,10 +104,10 @@ function Login () {
             <Form.Control
               type={showPassword ? 'password' : 'text'}
               required
-              onPaste={(e) => {
-                e.preventDefault()
-                return false
-              }}
+              // onPaste={(e) => {
+              //   e.preventDefault()
+              //   return false
+              // }}
               name='sPassword'
               placeholder='Enter your password'
               className={errors.sPassword && 'error'}
@@ -124,9 +124,11 @@ function Login () {
           </InputGroup>
           {errors.sPassword && <Form.Control.Feedback type='invalid'>{errors.sPassword.message}</Form.Control.Feedback>}
         </Form.Group>
-        <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
-          <FormattedMessage id='Login' /> {(isLoading || profileLoader || profileFetching) && <Spinner animation='border' size='sm' />}
-        </Button>
+        <div className='button-section mb-1'>
+          <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
+            <FormattedMessage id='Login' /> {(isLoading || profileLoader || profileFetching) && <Spinner animation='border' size='sm' />}
+          </Button>
+        </div>
 
         <Link to={route.forgotPassword} className='b-link'>
           <FormattedMessage id='forgotPassword' />?

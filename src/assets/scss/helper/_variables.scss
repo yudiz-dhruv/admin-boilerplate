@@ -33,6 +33,7 @@ body {
     --breadcrumb-item-active-color: #ffffff;
     --line-color: #cecece;
     --heighLight-text: #3cb6ff;
+    --text-hover: rgb(0, 169, 216);
   }
 
   &.dark {
@@ -50,6 +51,7 @@ body {
     --breadcrumb-item-active-color: #d6d6d6;
     --line-color: #525252;
     --heighLight-text: #009bfa;
+    --text-hover:  rgb(35, 130, 186);
   }
 }
 

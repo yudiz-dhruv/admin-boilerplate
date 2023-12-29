@@ -10,7 +10,7 @@
   height: calc(100% - 100px);
   border-radius: 10px;
   margin-left: 15px;
-  box-shadow: 5px 5px 30px 2px rgb(27 34 99 / 12%);
+  box-shadow: 5px 5px 30px 2px rgb(27 34 99 / 15%);
 
   .menu {
     height: 98%;
@@ -30,7 +30,7 @@
 
         &:nth-child(2) a i,
         &:nth-child(2) .list-name i {
-          color: #2dce89;
+          color: #2db5ce;
         }
 
         &:nth-child(3) a i,
@@ -229,7 +229,8 @@
             align-items: center;
 
             .side-bar-text {
-              letter-spacing: 0.5px;
+              letter-spacing: 0.7px;
+              font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
             }
 
             i {
@@ -305,7 +306,7 @@ body.dark {
 
           &:nth-child(2) a i,
           &:nth-child(2) .list-name i {
-            color: #2dce89;
+            color: #08abc8;
           }
           
           &:nth-child(3) a i,

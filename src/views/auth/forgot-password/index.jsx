@@ -10,7 +10,7 @@ import { validationErrors } from 'shared/constants/ValidationErrors'
 import { route } from 'shared/constants/AllRoutes'
 import { toaster } from 'helper/helper'
 
-function ForgotPassword() {
+function ForgotPassword () {
   const navigate = useNavigate()
 
   const {
@@ -25,8 +25,8 @@ function ForgotPassword() {
       toaster(response?.data?.message)
     }
   })
-  
-  function onSubmit(data) {
+
+  function onSubmit (data) {
     mutate({ sEmail: data?.sEmail })
   }
 
@@ -41,7 +41,7 @@ function ForgotPassword() {
             <FormattedMessage id='forgotPassword' />
           </h2>
         </div>
-        <Form.Group className='form-group'>
+        <Form.Group className='form-group mt-5'>
           <Form.Label>
             <FormattedMessage id='emailAddress' />
           </Form.Label>
@@ -58,10 +58,12 @@ function ForgotPassword() {
           />
           {errors.sEmail && <Form.Control.Feedback type='invalid'>{errors.sEmail.message}</Form.Control.Feedback>}
         </Form.Group>
-        <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
-          <FormattedMessage id='submit' /> {isLoading && <Spinner animation='border' size='sm' />}
-        </Button>
-
+        <div className='button-section mb-1'>
+          <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
+            <FormattedMessage id='submit' /> {isLoading && <Spinner animation='border' size='sm' />}
+          </Button>
+        </div>
+            
         <Link to={'/login'} className='b-link'>
           <FormattedMessage id='backToLogin' />
         </Link>

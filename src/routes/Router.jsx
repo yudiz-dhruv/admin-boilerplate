@@ -17,13 +17,16 @@ const ChangePassword = lazy(() => import('views/profile/changePassword'))
 
 //CRM Management
 const Dashboard = lazy(() => import('views/crmManagement/dashboard'))
-const Statistics = lazy(() => import('views/crmManagement/statistics'))
 
-// Game
-const GameManagement = lazy(() => import('views/game/index'))
+// GAME MANAGEMENT
+const GameManagement = lazy(() => import('views/game'))
 const AddGame = lazy(() => import('views/game/addGame'))
-// const ViewUser = lazy(() => import('views/user/userManagement/viewUser'))
-// const EditUser = lazy(() => import('views/user/userManagement/editUser'))
+const ViewGame = lazy(() => import('views/game/viewGame'))
+
+// PATIENT MANAGEMENT
+const PatientManagement = lazy(() => import('views/patient'))
+const AddPatient = lazy(() => import('views/patient/addPatient'))
+const ViewPatient = lazy(() => import('views/patient/viewPatient'))
 
 const RoutesDetails = [
   {
@@ -52,11 +55,15 @@ const RoutesDetails = [
       { path: route.changePassword, Component: ChangePassword, exact: true },
 
       { path: route.dashboard, Component: Dashboard, exact: true },
-      { path: route.statistics, Component: Statistics, exact: true },
 
+      { path: route.patient, Component: PatientManagement, exact: true },
+      { path: route.addPatient, Component: AddPatient, exact: true },
+      { path: route.editPatient(':id'), Component: AddPatient, exact: true },
+      { path: route.viewPatient(':id'), Component: ViewPatient, exact: true },
+      
       { path: route.game, Component: GameManagement, exact: true },
       { path: route.addGame, Component: AddGame, exact: true },
-      // { path: route.viewUser(':id'), Component: ViewUser, exact: true },
+      { path: route.viewGame(':id'), Component: ViewGame, exact: true },
       { path: route.editGame(':id'), Component: AddGame, exact: true },
     ]
   }

@@ -1,0 +1,9 @@
+.patient-form {
+    .wrapper {
+        .form-group {
+            input:disabled {
+                cursor: not-allowed;
+            }
+        }
+    }
+}

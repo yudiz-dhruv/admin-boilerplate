@@ -6,13 +6,15 @@ export const route = {
   editProfile: '/profile',
 
   dashboard: '/dashboard',
-  statistics: '/Statistics',
   // pageNotFound: '/404',
 
   game: '/game-management',
-  addGame: '/add-new-game',
-  // viewUser: (id) => `/view-user-profile/${id}`,
-  editGame: (id) => `/edit-game-details/${id}`,
-
-  patient: '/patient-management'
+  addGame: '/game-management/add',
+  viewGame: (id) => `/game-management/view/${id}`,
+  editGame: (id) => `/game-management/edit/${id}`,
+  
+  patient: '/patient-management',
+  addPatient: '/patient-management/add',
+  viewPatient: (id) => `/patient-management/view/${id}`,
+  editPatient: (id) => `/patient-management/edit/${id}`,
 }

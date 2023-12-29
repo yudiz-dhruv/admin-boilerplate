@@ -7,11 +7,11 @@ import { route } from 'shared/constants/AllRoutes'
 import DataTable from 'shared/components/DataTable'
 import CustomModal from 'shared/components/Modal'
 import { GameListColumn } from 'shared/constants/TableHeaders'
-import Drawer from 'shared/components/Drawer'
 import { getGameList } from 'query/game/game.query'
 import GameList from 'shared/components/GameList'
-import { deleteGame } from 'query/game/game.mutation'
+import { deleteGame, updateGame } from 'query/game/game.mutation'
 import { toaster } from 'helper/helper'
+import GamelistFilters from 'shared/components/GameListFilters'
 
 const GameManagement = () => {
   const location = useLocation()
@@ -48,6 +48,17 @@ const GameManagement = () => {
     select: (data) => data.data.data,
   })
 
+  // EDIT GAME
+  const { mutate: updateMutate } = useMutation(updateGame, {
+    onSettled: (response, err) => {
+      if (response) {
+        toaster('Game Status Updated Successfully.', 'success')
+        query.invalidateQueries('gameList')
+      } else {
+        toaster(err.data.message, 'error')
+      }
+    }
+  })
 
   // DELETE GAME
   const { isLoading: deleteLoading, mutate } = useMutation(deleteGame, {
@@ -99,9 +110,6 @@ const GameManagement = () => {
         setRequestParams({ ...requestParams, search: value, pageNumber: 1 })
         appendParams({ pageNumber: 1 })
         break
-      case 'filter':
-        setModal({ open: value, type: 'filter' })
-        break
       default:
         break
     }
@@ -120,11 +128,6 @@ const GameManagement = () => {
     setModal({ open: true, type: 'delete', id: id })
   }
 
-  function handleFilterChange (e) {
-    const selectedStates = e?.selectedState?.map(item => item.value)
-    setRequestParams({ ...requestParams, eStatus: e?.eStatus || '', eGender: e?.eGender || '', isEmailVerified: e?.isEmailVerified || '', isMobileVerified: e?.isMobileVerified || '', selectedState: selectedStates || '', dateFrom: e?.dateFrom || '', dateTo: e?.dateTo || '' })
-  }
-
   useEffect(() => {
     document.title = 'Game Management | Vivid Vision'
   }, [])
@@ -134,7 +137,7 @@ const GameManagement = () => {
       <TopBar
         buttons={[
           {
-            text: 'Add Game',
+            text: 'Add New Game',
             icon: 'icon-add',
             type: 'primary',
             clickEventName: 'createUserName',
@@ -142,16 +145,17 @@ const GameManagement = () => {
           }
         ]}
       />
-      <div>
+      <div className='game-list'>
         <DataTable
           columns={columns}
           header={{
             left: {
-              rows: true
+              rows: true,
+              search: true
             },
             right: {
-              search: true,
-              filter: false
+              filter: false,
+              component: true
             }
           }}
           sortEvent={handleSort}
@@ -160,6 +164,7 @@ const GameManagement = () => {
           pageChangeEvent={handlePageEvent}
           isLoading={isLoading || isFetching}
           pagination={{ currentPage: requestParams.pageNumber, pageSize: requestParams.nLimit }}
+          component={<GamelistFilters defaultValue={requestParams} setRequestParams={setRequestParams} />}
         >
           {data && data?.game?.map((game, index) => {
             return (
@@ -168,20 +173,10 @@ const GameManagement = () => {
                 index={index}
                 game={game}
                 onDelete={onDelete}
+                updateMutate={updateMutate}
               />
             )
           })}
-          <Drawer isOpen={modal.type === 'filter' && modal.open} onClose={() => setModal({ open: false, type: '' })} title='Game List Filter'>
-            {/* <UserFilters
-              filterChange={handleFilterChange}
-              closeDrawer={() => setModal({ open: false, type: '' })}
-              defaultValue={requestParams}
-              location={location}
-              startDate={startDate}
-              endDate={endDate}
-              setDateRange={setDateRange}
-            /> */}
-          </Drawer>
         </DataTable>
 
         <CustomModal
