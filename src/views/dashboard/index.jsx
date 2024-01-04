@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
-import { useQuery } from 'react-query'
-import { getUserData, getUserRevenue } from 'query/statistics/statistics.query'
 import Cards from 'shared/components/Card'
 import { Loader } from 'shared/components/Loader'
-import { faUsers, faDatabase, faUserMinus, faEnvelopeCircleCheck, faMobile, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons'
+import { faUsers, faDatabase, faUserMinus, faEnvelopeCircleCheck, faMobile, faIndianRupeeSign, faUserDoctor, faUser, faUserSlash, faGamepad } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Wrapper from 'shared/components/Wrap'
 
 function Dashboard () {
   const [userData, setUserData] = useState({})
@@ -44,7 +43,7 @@ function Dashboard () {
       ) : (
         <>
           <Row>
-            <Col xxl={4} lg={4} sm={12} md={12} className='pb-3 pb-lg-0 card-box dashboard-card-1' >
+            {/* <Col xxl={4} lg={4} sm={12} md={12} className='pb-3 pb-lg-0 card-box dashboard-card-1' >
               <Card className='dash-card'>
                 <Card.Body className='up-card-1'>
                   <div>
@@ -100,25 +99,44 @@ function Dashboard () {
                   <Cards cardtitle='Mobile Verified Users' cardtext={userData?.nTotalMobileVerifiedUsers || 0} cardIcon={faMobile} className={'dashboard-card-icon-5'} />
                 </Col>
               </Row>
+            </Col> */}
+            <Col xxl={6} xl={6} lg={12} className='active-user'>
+              <Wrapper>
+                <h3>Active Users</h3>
+                <Row>
+                  <Col sm={6} className='card-box' >
+                    <Cards cardtitle='Total Doctor' cardtext={123} cardIcon={faUserDoctor} className={'dashboard-card-icon-1'} />
+                  </Col>
+                  <Col sm={6} className='card-box' >
+                    <Cards cardtitle='Total Patient' cardtext={123} cardIcon={faUser} className={'dashboard-card-icon-3'} />
+                  </Col>
+                </Row>
+              </Wrapper>
             </Col>
-            <Col xxl={12} lg={12} sm={12} md={12} className='pb-3 pb-lg-0 card-box' >
-              <Row>
-                <Col xxl={3} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Revenue by Today' cardtext={userRevenueData[0]?.nToday[0]?.nTotal.toFixed(2) || '0.00'} cardIcon={faIndianRupeeSign} className={'dashboard-card-icon-6'} />
-                </Col>
 
-                <Col xxl={3} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Revenue by Yearly' cardtext={userRevenueData[0]?.nLastYear[0]?.nTotal.toFixed(2) || '0.00'} cardIcon={faIndianRupeeSign} className={'dashboard-card-icon-7'} />
-                </Col>
+            <Col xxl={6} xl={6} lg={12} className='active-user mt-xl-0 mt-3'>
+              <Wrapper>
+                <h3>Accounts</h3>
+                <Row>
+                  <Col sm={6} className='card-box' >
+                    <Cards cardtitle='New Added' cardtext={100} cardIcon={faUser} className={'dashboard-card-icon-3'} />
+                  </Col>
+                  <Col sm={6} className='card-box' >
+                    <Cards cardtitle='Going to expire' cardtext={8} cardIcon={faUserSlash} className={'dashboard-card-icon-6'} />
+                  </Col>
+                </Row>
+              </Wrapper>
+            </Col>
 
-                <Col xxl={3} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Revenue by Quaterly' cardtext={userRevenueData[0]?.nOverAll[0]?.nTotal.toFixed(2) || '0.00'} cardIcon={faIndianRupeeSign} className={'dashboard-card-icon-8'} />
-                </Col>
-
-                <Col xxl={3} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Revenue by Monthly' cardtext={userRevenueData[0]?.nLastMonth[0]?.nTotal.toFixed(2) || '0.00'} cardIcon={faIndianRupeeSign} className={'dashboard-card-icon-9'} />
-                </Col>
-              </Row>
+            <Col xxl={6} xl={6} lg={12} className='active-user mt-3'>
+              <Wrapper>
+                <h3>Games</h3>
+                <Row>
+                  <Col sm={6} className='card-box' >
+                    <Cards cardtitle='Total Games' cardtext={10} cardIcon={faGamepad} className={'dashboard-card-icon-7'} />
+                  </Col>
+                </Row>
+              </Wrapper>
             </Col>
           </Row>
         </>

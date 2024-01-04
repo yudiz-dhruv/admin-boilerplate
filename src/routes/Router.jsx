@@ -15,13 +15,23 @@ const Profile = lazy(() => import('views/profile'))
 const ChangePassword = lazy(() => import('views/profile/changePassword'))
 
 
-//CRM Management
-const Dashboard = lazy(() => import('views/crmManagement/dashboard'))
+// DASHBOARD
+const Dashboard = lazy(() => import('views/dashboard'))
+
+// ADMIN MANAGEMENT
+const AdminManagement = lazy(() => import('views/admin'))
+const AddAdmin = lazy(() => import('views/admin/addAdmin'))
+const ViewAdmin = lazy(() => import('views/admin/viewAdmin'))
+const EditAdmin = lazy(() => import('views/admin/editAdmin'))
 
 // GAME MANAGEMENT
 const GameManagement = lazy(() => import('views/game'))
 const AddGame = lazy(() => import('views/game/addGame'))
 const ViewGame = lazy(() => import('views/game/viewGame'))
+
+// ADMIN GAME MANAGEMENT
+const AdminGameManagement = lazy(() => import('views/adminGame'))
+const AdminGameSettings = lazy(() => import('views/adminGame/internalGameSettings'))
 
 // PATIENT MANAGEMENT
 const PatientManagement = lazy(() => import('views/patient'))
@@ -55,6 +65,11 @@ const RoutesDetails = [
       { path: route.changePassword, Component: ChangePassword, exact: true },
 
       { path: route.dashboard, Component: Dashboard, exact: true },
+      
+      { path: route.admin, Component: AdminManagement, exact: true },
+      { path: route.addAdmin, Component: AddAdmin, exact: true },
+      { path: route.viewAdmin(':id'), Component: ViewAdmin, exact: true },
+      { path: route.editAdmin(':id'), Component: EditAdmin, exact: true },
 
       { path: route.patient, Component: PatientManagement, exact: true },
       { path: route.addPatient, Component: AddPatient, exact: true },
@@ -65,6 +80,9 @@ const RoutesDetails = [
       { path: route.addGame, Component: AddGame, exact: true },
       { path: route.viewGame(':id'), Component: ViewGame, exact: true },
       { path: route.editGame(':id'), Component: AddGame, exact: true },
+      
+      { path: route.adminGame, Component: AdminGameManagement, exact: true },
+      { path: route.adminGameSettings, Component: AdminGameSettings, exact: true },
     ]
   }
 ]

@@ -48,7 +48,7 @@ function ForgotPassword () {
           <Form.Control
             type='text'
             required
-            placeholder='Enter your email address'
+            placeholder='Enter your registered email address'
             name='sEmail'
             className={errors.sEmail && 'error'}
             {...fields('sEmail', {

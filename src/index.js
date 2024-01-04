@@ -9,6 +9,7 @@ import 'slick-carousel/slick/slick-theme.css'
 import 'assets/scss/main.scss'
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datetime/css/react-datetime.css';
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.scss'
 
 import en from './lang/en.json'
 const root = ReactDOM.createRoot(document.getElementById('root'))

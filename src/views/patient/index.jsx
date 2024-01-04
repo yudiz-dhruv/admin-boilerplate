@@ -130,7 +130,7 @@ const PatientManagement = () => {
     }
 
     useEffect(() => {
-        document.title = 'Patient Management | Vivid Vision'
+        document.title = 'Patient Management | Yantra Healthcare'
     }, [])
 
     return (

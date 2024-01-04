@@ -1,8 +1,9 @@
 {
   "required": "This field is required.",
   "requiredGameName": "Game name is required.",
+  "requiredName": "Name is required.",
   "requiredGameURL": "Game URL is required.",
-  "requiredMail": "Email is required",
+  "requiredMail": "Email Address is required",
   "requiredPassword": "Password is required",
   "requiredCurrentPassword": "Current Password is required",
   "requiredNewPassword": "New Password is required",

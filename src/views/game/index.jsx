@@ -129,7 +129,7 @@ const GameManagement = () => {
   }
 
   useEffect(() => {
-    document.title = 'Game Management | Vivid Vision'
+    document.title = 'Game Management | Yantra Healthcare'
   }, [])
 
   return (
@@ -189,6 +189,7 @@ const GameManagement = () => {
           confirmValue={modal?.id}
         >
           <article>
+            <p className='text-danger m-0'>This might affect your current users who have purchased this game.</p>
             <h5>
               <div>
                 Are you sure you want to Delete this Game?

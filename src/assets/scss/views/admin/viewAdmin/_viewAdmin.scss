@@ -1,0 +1,187 @@
+.view-admin {
+    .details-row {
+        gap: 20px 0;
+
+        .details-card {
+            color: var(--text-color);
+            background: var(--boxes-color);
+            height: 100%;
+            border-radius: 8px;
+            box-shadow: 0px 10px 20px rgba(178, 191, 210, 0.25);
+
+            .details-card-title {
+                font-size: 16px;
+                color: var(--text-color);
+                font-family: 'helvetica-bold';
+                font-weight: 700;
+                padding: 20px;
+                text-transform: uppercase;
+                border-bottom: 1px solid var(--text-color);
+
+                &::selection {
+                    background-color: var(--primary-color);
+                    color: var(--secondary-800);
+                }
+            }
+
+            .details-card-data {
+                padding: 30px;
+
+                .line {
+                    display: block;
+                    content: '';
+                    width: 100%;
+                    height: 1px;
+                    background-color: var(--secondary-300);
+                    margin-top: 10px;
+                    margin-bottom: 20px;
+                }
+
+                .admin-img {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                    flex-wrap: nowrap;
+                    gap: 8px;
+                    margin-bottom: 5px;
+
+                    .user-name {
+                        margin-top: 5px;
+                        font-size: 1.6rem;
+                        text-align: center;
+                        text-transform: capitalize;
+                        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                        font-weight: 600;
+                        color: var(--primary-color);
+
+                        &::selection {
+                            background-color: var(--primary-color);
+                            color: var(--secondary-800);
+                        }
+                    }
+
+                    .img-content {
+                        width: 110px;
+                        height: 110px;
+                        border: 4px solid var(--theme-color);
+                        outline: 4px solid var(--secondary-400);
+                        border-radius: 100%;
+                        overflow: hidden;
+                        text-align: center;
+
+                        img {
+                            object-fit: cover;
+                        }
+                    }
+                }
+
+                .details-data-row {
+                    gap: 20px 0;
+
+                    span.reason {
+                        border: 1px solid var(--input-background-color);
+                        background-color: var(--input-background-color);
+                        padding: 8px 20px;
+                        border-radius: 5px;
+                        font-size: 14px;
+                        font-style: italic;
+                        cursor: default;
+                    }
+
+                    .data-title,
+                    .data-value {
+                        display: block;
+                        padding: 3px 0;
+                        word-break: break-all;
+                        margin: 0 2px;
+                    }
+
+                    .capitalize {
+                        text-transform: capitalize;
+                    }
+
+                    .data-title {
+                        font-size: 11px;
+                        letter-spacing: 1px;
+                        font-family: 'helvetica-regular';
+                        font-weight: 400;
+                        color: var(--secondary-600);
+                        text-transform: uppercase;
+
+                        &::selection {
+                            background-color: var(--primary-color);
+                            color: var(--secondary-800);
+                        }
+                    }
+
+                    .data-value {
+                        font-size: 13.5px;
+                        font-family: 'helvetica-bold';
+                        font-weight: 600;
+                        color: var(--secondary-600);
+
+                        &::selection {
+                            background-color: var(--primary-color);
+                            color: var(--secondary-800);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+body.dark {
+    .view-admin {
+        .details-row {
+            .details-card {
+                color: var(--text-color);
+                background: var(--boxes-color);
+                box-shadow: 0px 10px 20px rgba(58, 62, 69, 0.389);
+
+                .details-card-title {
+                    color: var(--text-color);
+
+                    &::selection {
+                        background-color: var(--secondary-200);
+                        color: var(--secondary-800);
+                    }
+                }
+
+                .details-card-data {
+                    .line {
+                        background-color: var(--secondary-500);
+                    }
+
+                    .admin-img {
+                        .img-content {
+                            border: 4px solid var(--boxes-color);
+                            outline: 4px solid var(--secondary-600);
+                        }
+                    }
+
+                    .details-data-row {
+                        .data-title {
+                            color: var(--secondary-500);
+
+                            &::selection {
+                                background-color: var(--secondary-200);
+                                color: var(--secondary-800);
+                            }
+                        }
+
+                        .data-value {
+                            color: var(--secondary-300);
+
+                            &::selection {
+                                background-color: var(--secondary-200);
+                                color: var(--secondary-800);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

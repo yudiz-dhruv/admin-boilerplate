@@ -1,15 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { route } from 'shared/constants/AllRoutes'
+import CustomModal from '../Modal'
 
 const GameList = ({ key, index, game, updateMutate, onDelete }) => {
     const navigate = useNavigate()
-    
-    const handleConfirmStatus = (status, id) => {
-        updateMutate({ id, eStatus: status ? 'y' : 'n' })
+    const [modal, setModal] = useState({ open: false })
+
+    const MODAL_TYPE = {
+        true: {
+            TITLE: 'Confirm Activation?',
+            WARNING: 'This might affect your current users who have deactivated this game.',
+            MESSAGE: 'Are you sure you want to Activate this Game?'
+        }, 
+        false: {
+            TITLE: 'Confirm Deactivation?',
+            WARNING: 'This might affect your current users who have activated this game.',
+            MESSAGE: 'Are you sure you want to Deactivate this Game?'
+        }
+    }
+
+    const handleStatus = (status, id) => {
+        setModal({ open: true, status, id })
+    }
+
+    const handleConfirmStatus = () => {
+        updateMutate({ id: modal?.id, eStatus: modal?.status ? 'y' : 'n' })
     }
     return (
         <>
@@ -18,18 +37,18 @@ const GameList = ({ key, index, game, updateMutate, onDelete }) => {
                 <td className='avatar'>
                     {game?.sAvatar && (
                         typeof (game?.sAvatar) !== 'string'
-                            ? <div className=""> <img src={URL.createObjectURL(game?.sAvatar)} alt='altImage' /> </div>
-                            : <div className=""><img src={game?.sAvatar} alt='altImage' /> </div>)}
+                            ? <div className="game-logo" onClick={() => navigate(route.viewGame(game._id))}> <img src={URL.createObjectURL(game?.sAvatar)} alt='altImage' /> </div>
+                            : <div className="game-logo" onClick={() => navigate(route.viewGame(game._id))}><img src={game?.sAvatar} alt='altImage' /> </div>)}
                 </td>
                 <td className='single-line'>{game?.sName || ''}</td>
-                <td>{game?.sUrl || ''}</td>
+                <td className='text-truncate single-line' style={{ maxWidth: '80px' }}>{game?.sUrl || ''}</td>
                 <td>
                     {game.eStatus !== 'd' ? <Form.Check
                         type='switch'
                         name={game?._id}
                         className='d-inline-block me-1'
                         checked={game.eStatus === 'y'}
-                        onChange={(e) => handleConfirmStatus(e.target.checked, game._id)}
+                        onChange={(e) => handleStatus(e.target.checked, game._id)}
                     /> : <span className='delete-user'>Delete</span>}
                 </td>
 
@@ -80,6 +99,24 @@ const GameList = ({ key, index, game, updateMutate, onDelete }) => {
                     </Dropdown>
                 </td>
             </tr>
+
+            <CustomModal
+                open={modal?.open}
+                handleClose={() => setModal({ open: false, status: modal?.status })}
+                handleConfirm={handleConfirmStatus}
+                disableHeader
+                bodyTitle={MODAL_TYPE[modal?.status]?.TITLE}
+                confirmValue={modal?.id}
+            >
+                <article>
+                    <p className='text-danger m-0'>{MODAL_TYPE[modal?.status]?.WARNING}</p>
+                    <h5>
+                        <div>
+                            {MODAL_TYPE[modal?.status]?.MESSAGE}
+                        </div>
+                    </h5>
+                </article>
+            </CustomModal>
         </>
     )
 }

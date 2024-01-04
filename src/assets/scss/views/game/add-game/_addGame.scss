@@ -9,6 +9,124 @@
         }
     }
 
+    .line {
+        content: '';
+        width: 100%;
+        display: block;
+        height: 1px;
+        background-color: var(--secondary-300);
+        margin: 10px 0;
+        margin-top: 20px !important;
+    }
+
+    .admin-profile-img {
+        display: flex;
+        justify-content: center;
+
+        .fileinput {
+            display: flex;
+            flex-wrap: nowrap;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 10px;
+            
+            .inputtypefile {
+                border: 3px solid var(--theme-color);
+                outline: 4px solid var(--secondary-300);
+                width: 130px;
+                height: 130px;
+                min-width: 130px;
+                margin: 0;
+                position: relative;
+                background-color: var(--input-background-color);
+                border-radius: 100%;
+                overflow: hidden;
+                padding: 0;
+
+                .inputMSG {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .document-preview-group {
+                        margin: 0;
+                        position: relative;
+                        width: 100%;
+                        z-index: 12;
+
+                        .img-over {
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            padding: 10px 30px;
+                            background-color: rgba(59, 59, 59, 0.419);
+                            display: none;
+                            text-align: center;
+                            justify-content: center;
+                            align-items: center;
+                            color: #ffffff;
+                            font-size: 12px;
+                            font-weight: 800;
+                            cursor: pointer;
+                        }
+
+                        &:hover {
+                            .img-over {
+                                display: flex;
+                            }
+                        }
+
+                        .document-preview {
+                            width: 100%;
+                            overflow: hidden;
+                            display: flex;
+                            flex-wrap: nowrap;
+                            justify-content: center;
+                            align-items: center;
+
+                            img {
+                                height: 130px;
+                            }
+                        }
+                    }
+
+                    span {
+                        all: unset;
+                        font-size: 11px;
+                        color: var(--text-color);
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        font-family: 'helvetica-regular';
+                        font-weight: 400;
+                        
+                        svg {
+                            font-size: 30px;
+                            color: var(--secondary-300);
+                        }
+                    }
+                }
+
+                input {
+                    opacity: 0;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    margin-bottom: 0;
+                    position: absolute;
+
+                    &:disabled {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+
     .fileinput {
         label {
             color: var(--text-color);
@@ -25,7 +143,7 @@
         }
 
         .inputtypefile {
-            margin: 10px 0;
+            margin: 3px 0;
             margin-top: 3px;
             padding: 5px;
             position: relative;
@@ -37,6 +155,10 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+
+                .bundle-name {
+                    word-break: break-all;
+                }
 
                 .document-preview-group {
                     margin: 0;
@@ -118,5 +240,28 @@
 
     .tooltip-arrow::before {
         border-top-color: var(--primary-color) !important;
+    }
+}
+
+body.dark {
+    .game-form {
+        .line {
+            background-color: var(--secondary-500);
+        }
+
+        .admin-profile-img {
+            .fileinput {
+                .inputtypefile {
+                    outline: 4px solid var(--secondary-600);
+                    .inputMSG {
+                        span {
+                            svg {
+                                color: var(--secondary-400);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

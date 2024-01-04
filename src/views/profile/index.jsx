@@ -38,7 +38,7 @@ function EditProfile () {
     }
   })
 
-  const { isLoading: getLoading, isFetching } = useQuery('getProfile', profile, {
+  const { isLoading: getLoading, isFetching, data } = useQuery('getProfile', profile, {
     select: (data) => data?.data?.data,
     onSuccess: (data) => {
       setProfileData(data)
@@ -96,7 +96,7 @@ function EditProfile () {
                 : (<button className='Profile-main-cancel' onClick={() => setUpdateFlag(!updateFlag)}><FontAwesomeIcon icon={faXmark} /></button>)
               }
               <div className='edit-profile'>
-                <div className='profile_icon'><FontAwesomeIcon icon={faUser} /></div>
+                <div className='profile_icon'>{data?.eUserType === 'admin' ? <img src={data?.sAvatar} alt={data?.sUserName} className='img-content' /> : <FontAwesomeIcon icon={faUser} />}</div>
                 <p>Profile Details</p>
                 <Form onSubmit={handleSubmit(onsubmit)} autoComplete='off'>
                   <EditProfileComponent
@@ -117,11 +117,11 @@ function EditProfile () {
                   {updateFlag !== false &&
                     <>
                       <div className='d-flex justify-content-end'>
-                        <Button variant='primary' type='submit' className='me-2' disabled={!updateFlag || isLoading}>
+                        <Button variant='primary' type='submit' className='me-2 square' disabled={!updateFlag || isLoading}>
                           <FormattedMessage id='update' />
                           {isLoading && <Spinner animation='border' size='sm' />}
                         </Button>
-                        <Button variant='secondary' disabled={isLoading} onClick={() => navigate(route.dashboard)}>
+                        <Button variant='secondary' disabled={isLoading} className='square' onClick={() => navigate(route.dashboard)}>
                           Cancel
                         </Button>
                       </div>

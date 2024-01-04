@@ -1,0 +1,110 @@
+.game-settings {
+    .line {
+        display: block;
+        content: '';
+        width: 100%;
+        height: 1px;
+        background-color: var(--secondary-300);
+        margin-bottom: 1.5rem;
+    }
+
+    .settings {
+        .data-title {
+            color: var(--primary-color);
+            font-family: 'Helvetica-Bold';
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .slider-input {
+            .slider-label {
+                font-family: 'Helvetica-Bold';
+                font-weight: 600;
+                display: flex;
+                justify-content: space-between;
+                color: var(--secondary-500);
+                margin: 0;
+                flex-wrap: nowrap;
+                letter-spacing: 0.5px;
+
+                span {
+                    display: flex;
+                    justify-content: end;
+                    flex-wrap: nowrap;
+
+                    &.value {
+                        font-family: 'Helvetica-Bold';
+                        font-weight: 600;
+                        font-size: 15.65px;
+                        color: var(--text-hover);
+                    }
+                }
+
+            }
+        }
+    }
+
+    .games {
+        .line {
+            display: block;
+            content: '';
+            width: 100%;
+            height: 1px;
+            background-color: var(--secondary-300);
+            margin-bottom: 1rem;
+        }
+
+        .game-title {
+            color: var(--primary-color);
+            font-family: 'Helvetica-Bold';
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .antisuppresion-details-button-group {
+            text-align: left;
+            vertical-align: bottom;
+            display: inline-block;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+
+            button {
+                margin: 0 5px;
+                background-color: transparent;
+                color: var(--text-color);
+                font-size: 15px;
+                border: none;
+                padding: 8px 5px;
+                padding-bottom: 3px;
+                position: relative;
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                font-weight: 400;
+                letter-spacing: 1px;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    width: 0%;
+                    height: 3px;
+                    background: var(--primary-color);
+                    transition: 0.3s ease-in-out;
+                }
+
+                &.userActive::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    width: 100%;
+                    height: 3px;
+                    background: var(--primary-color);
+                }
+            }
+        }
+    }
+}

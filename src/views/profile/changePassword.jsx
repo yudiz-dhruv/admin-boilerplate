@@ -222,9 +222,9 @@ export default function ChangePassword () {
                   </Form.Control.Feedback>
                 )}
               </Form.Group>
-              <Col lg={12} className='d-flex align-items-center justify-content-end mt-3'>
+              <Col lg={12} className='d-flex align-items-center justify-content-end mt-4'>
                 <div className='top-d-button'>
-                  <Button variant='primary' type='submit' className='me-2' disabled={isLoading}>
+                  <Button variant='primary' type='submit' className='me-2 square' disabled={isLoading}>
                     <FormattedMessage id='submit' />{' '}
                     {isLoading && <Spinner animation='border' size='sm' />}
                   </Button>
@@ -232,6 +232,7 @@ export default function ChangePassword () {
                     variant='secondary'
                     disabled={isLoading}
                     onClick={() => navigate(route.dashboard)}
+                    className='square'
                   >
                     Cancel
                   </Button>

@@ -1,0 +1,229 @@
+import React, { useEffect } from 'react'
+import { Button, Col, Form, Row } from 'react-bootstrap'
+import { useLocation, useNavigate } from 'react-router-dom'
+import CommonInput from 'shared/components/CommonInput'
+import Wrapper from 'shared/components/Wrap'
+import { route } from 'shared/constants/AllRoutes'
+import { useForm, Controller } from 'react-hook-form'
+import Select from 'react-select'
+import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { useQuery } from 'react-query'
+import { getPatientById, getPatientDropdownList } from 'query/patient/patient.query'
+import { toaster } from 'helper/helper'
+
+const AdminGame = () => {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const { register, handleSubmit, formState: { errors }, control, reset, watch } = useForm({ mode: 'all' })
+
+  // DROPDOWN PATIENT LIST
+  const { data: ePatientDropdown } = useQuery('dropdownPatient', getPatientDropdownList, {
+    select: (data) => data?.data?.data,
+    onSuccess: (data) => {
+      reset({
+        ...data,
+      })
+    }
+  })
+
+  // SPEICIFC PATIENT
+  const { data: patientDetails } = useQuery('patientDataById', () => getPatientById(watch('ePatientName')?._id), {
+    enabled: !!watch('ePatientName')?._id,
+    cacheTime: 0,
+    select: (data) => data?.data?.data,
+    onSuccess: (data) => {
+      reset({
+        sMobile: data?.sMobile,
+        sAge: data?.sAge,
+        eDominantEye: eDominantEyeOptions?.find(item => item?.value === data?.eDominantEye),
+        eAmblyopia: eIsPresent?.find(item => item?.value === data?.eAmblyopia),
+        eStrabismus: eIsPresent?.find(item => item?.value === data?.eStrabismus)
+      })
+    }
+  })
+
+  console.log('patientDetails: ', patientDetails);
+  async function onSubmit () {
+    patientDetails ? navigate(route?.adminGameSettings, { state: patientDetails }) : toaster('Please fill the data', 'error')
+  }
+
+  useEffect(() => {
+    document.title = 'Game Management | Yantra Healthcare'
+  }, [])
+
+  return (
+    <>
+      <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
+        <div className='personal-details'>
+          <div className='admin-game-form'>
+            <Row className='justify-content-center'>
+              <Col xxl={4} xl={6} lg={7} md={9}>
+                <Wrapper>
+                  <Row>
+                    <Col md={12}>
+                      <Form.Group className='form-group'>
+                        <Form.Label> Patient Name </Form.Label>
+                        <Row className='patient-name'>
+                          <Col xs={9}>
+                            <Controller
+                              name='ePatientName'
+                              control={control}
+                              render={({ field: { onChange, value, ref } }) => (
+                                <Select
+                                  placeholder="Enter patient name..."
+                                  ref={ref}
+                                  options={ePatientDropdown}
+                                  className={`react-select border-0 ${errors.ePatientName && 'error'}`}
+                                  classNamePrefix='select'
+                                  isSearchable={true}
+                                  value={value}
+                                  onChange={onChange}
+                                  getOptionLabel={(option) => option.sUserName}
+                                  getOptionValue={(option) => option._id}
+                                />
+                              )}
+                            />
+                          </Col>
+                          <Col xs={3}>
+                            <Button variant='primary' type='button' className='me-2 add-patient' onClick={() => navigate(route?.addPatient)}>
+                              <FontAwesomeIcon icon={faPlus} /> Add
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={12}>
+                      <CommonInput
+                        type='text'
+                        register={register}
+                        errors={errors}
+                        className={`form-control ${errors?.sMobile && 'error'}`}
+                        name='sMobile'
+                        label='Mobile'
+                        disabled
+                        placeholder='Enter mobile number'
+                        onChange={(e) => {
+                          e.target.value =
+                            e.target.value?.trim() &&
+                            e.target.value.replace(/^[a-zA-z]+$/g, '')
+                        }}
+                      />
+                    </Col>
+
+                    <Col md={12}>
+                      <CommonInput
+                        type='text'
+                        register={register}
+                        errors={errors}
+                        className={`form-control ${errors?.sAge && 'error'}`}
+                        name='sAge'
+                        label='Age'
+                        disabled
+                        placeholder='Enter the patient age'
+                        onChange={(e) => {
+                          e.target.value =
+                            e.target.value?.trim() &&
+                            e.target.value.replace(/^[a-zA-z]+$/g, '')
+                        }}
+                      />
+                    </Col>
+
+                    <Col md={12}>
+                      <Form.Group className='form-group'>
+                        <Form.Label> Dominant Eye </Form.Label>
+                        <Controller
+                          name='eDominantEye'
+                          control={control}
+                          render={({ field: { onChange, value, ref } }) => (
+                            <Select
+                              placeholder='Select Dominant Eye...'
+                              ref={ref}
+                              options={eDominantEyeOptions}
+                              className={`react-select border-0 ${errors.eDominantEye && 'error'}`}
+                              classNamePrefix='select'
+                              isSearchable={false}
+                              value={value}
+                              isDisabled
+                              onChange={onChange}
+                              getOptionLabel={(option) => option.label}
+                              getOptionValue={(option) => option.value}
+                            />
+                          )}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={12}>
+                      <Form.Group className='form-group'>
+                        <Form.Label> Has Amblyopia? </Form.Label>
+                        <Controller
+                          name='eAmblyopia'
+                          control={control}
+                          render={({ field: { onChange, value, ref } }) => (
+                            <Select
+                              placeholder="Select patient's Amblyopia status..."
+                              ref={ref}
+                              options={eIsPresent}
+                              className={`react-select border-0 ${errors.eAmblyopia && 'error'}`}
+                              classNamePrefix='select'
+                              isSearchable={false}
+                              value={value}
+                              isDisabled
+                              onChange={onChange}
+                              getOptionLabel={(option) => option.label}
+                              getOptionValue={(option) => option.value}
+                            />
+                          )}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={12}>
+                      <Form.Group className='form-group'>
+                        <Form.Label> Has Strabisums? </Form.Label>
+                        <Controller
+                          name='eStrabismus'
+                          control={control}
+                          render={({ field: { onChange, value, ref } }) => (
+                            <Select
+                              placeholder="Select patient's Strabisums status..."
+                              ref={ref}
+                              options={eIsPresent}
+                              className={`react-select border-0 ${errors.eStrabismus && 'error'}`}
+                              classNamePrefix='select'
+                              isSearchable={false}
+                              value={value}
+                              isDisabled
+                              onChange={onChange}
+                              getOptionLabel={(option) => option.label}
+                              getOptionValue={(option) => option.value}
+                            />
+                          )}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                          {console.log('patientDetails: ', patientDetails)}
+                    <Row className='mt-2'>
+                      <Col sm={12}>
+                        <Button variant='primary' type='submit' className='me-2 next-button square' disabled={!patientDetails}>
+                          Next
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Row>
+                </Wrapper>
+              </Col>
+            </Row>
+          </div>
+        </div>
+      </Form >
+    </>
+  )
+}
+
+export default AdminGame

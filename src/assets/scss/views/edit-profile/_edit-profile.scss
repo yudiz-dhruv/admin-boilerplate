@@ -13,6 +13,7 @@
 }
 
 .edit-profile {
+  padding: 5px;
   .select__indicators{
     display: none !important;
   }
@@ -45,8 +46,8 @@
     display: grid;
     margin: 0px auto 12px;
     place-items: center;
-    padding: 20px 20px;
     border-radius: 50%;
+    overflow: hidden;
 
     svg{
       color: var(--text-color);

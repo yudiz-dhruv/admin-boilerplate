@@ -30,6 +30,7 @@
 @import './components/not-found';
 @import './components/statistics-card';
 @import './components/tooltips';
+@import './components/react-slider';
 
 // Layouts
 @import './views/auth/auth';
@@ -41,13 +42,16 @@
 @import './views/cmsManagement/statistic';
 @import './views/edit-profile/edit-profile';
 @import './views/login';
-@import './views/admin/edit-admin';
+@import './views/admin/admin';
+@import './views/admin/viewAdmin/viewAdmin';
 @import './views/game/game';
 @import './views/game/add-game/addGame';
 @import './views/game/viewGame/viewGame';
 @import './views/patient/patient';
 @import './views/patient/addPatient/addPatient';
 @import './views/patient/viewPatient/viewPatient';
+@import './views/adminGame/adminGame';
+@import './views/adminGame/internalSettings/internalSettings';
 
 // New Color Varibles
 @import './helper/new_variables';

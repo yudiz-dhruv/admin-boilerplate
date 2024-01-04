@@ -7,6 +7,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 /* eslint-disable react/react-in-jsx-scope */
 export const validationErrors = {
   required: <FormattedMessage id='required' />,
+  nameRequired: <FormattedMessage id='requiredName' />,
   gameNameRequired: <FormattedMessage id='requiredGameName' />,
   gameURLRequired: <FormattedMessage id='requiredGameURL' />,
   emailRequired: <FormattedMessage id='requiredMail' />,

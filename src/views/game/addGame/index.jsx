@@ -5,10 +5,9 @@ import { Controller, useForm } from 'react-hook-form'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
 import Wrapper from 'shared/components/Wrap'
-import { URL_REGEX } from 'shared/constants'
 import { route } from 'shared/constants/AllRoutes'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import { fileToDataUri, toaster } from 'helper/helper'
+import { fileToDataUri, getImageFileFromUrl, toaster } from 'helper/helper'
 import { addGame, updateGame } from 'query/game/game.mutation'
 import { getGameById } from 'query/game/game.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,7 +17,7 @@ const AddGame = () => {
     const location = useLocation()
     const navigate = useNavigate()
     const { id } = useParams()
-    
+
     const { register, handleSubmit, formState: { errors }, control, reset, watch } = useForm({ mode: 'all' })
     const fileInputRef = useRef(null)
 
@@ -51,7 +50,7 @@ const AddGame = () => {
             if (response) {
                 toaster('Game Updated Successfully.', 'success')
                 navigate(route.game)
-    
+
                 reset()
             } else {
                 toaster(err.data.message, 'error')
@@ -63,7 +62,7 @@ const AddGame = () => {
         let addData = {
             sName: data?.sName || '',
             sDescription: data?.sDescription || '',
-            sUrl: data?.sUrl || '',
+            sUrl: '',
             sAvatar: '',
         };
 
@@ -75,9 +74,15 @@ const AddGame = () => {
         const sAvatarFile = data?.sAvatar;
 
         if (sAvatarFile) {
-            const dataUri = await fileToDataUri(sAvatarFile);
-            addData.sAvatar = dataUri;
-            editData.sAvatar = dataUri
+            const dataAvatar = await fileToDataUri(sAvatarFile);
+            addData.sAvatar = editData.sAvatar = dataAvatar;
+        }
+
+        const sBundleFile = data?.sUrl;
+
+        if (sBundleFile) {
+            const dataUri = await getImageFileFromUrl(sBundleFile);
+            addData.sUrl = editData.sUrl = dataUri;
         }
 
         location?.state === 'edit' ? updateMutate(editData) : mutate(addData)
@@ -99,7 +104,7 @@ const AddGame = () => {
     }
 
     useEffect(() => {
-        document.title = location?.state === 'edit' ? 'Edit Game | Vivid Vision' : 'Add Game | Vivid Vision'
+        document.title = location?.state === 'edit' ? 'Edit Game | Yantra Healthcare' : 'Add Game | Yantra Healthcare'
     }, [location])
 
     return (
@@ -137,32 +142,64 @@ const AddGame = () => {
                                                     />
                                                 </Col>
                                                 <Col lg={12} md={6} sm={12} className='mt-lg-2 mt-md-0 mt-2'>
-                                                    <CommonInput
-                                                        type='text'
-                                                        register={register}
-                                                        errors={errors}
-                                                        className={`form-control ${errors?.sUrl && 'error'}`}
-                                                        name='sUrl'
-                                                        label='URL'
-                                                        placeholder='Enter game URL'
-                                                        required
-                                                        disabled={location?.state === 'edit'}
-                                                        onChange={(e) => {
-                                                            e.target.value =
-                                                                e.target.value?.trim() &&
-                                                                e.target.value.replace(/^[0-9]+$/g, '')
-                                                        }}
-                                                        validation={{
-                                                            pattern: {
-                                                                value: URL_REGEX,
-                                                                message: 'Provide a valid URL.'
-                                                            },
-                                                            required: {
-                                                                value: true,
-                                                                message: validationErrors.gameURLRequired
-                                                            },
-                                                        }}
-                                                    />
+                                                    <div className='fileinput'>
+                                                        <label className='d-flex justify-content-between'>
+                                                            <span>Game Assets File<span className='inputStar'>*</span></span>
+                                                        </label>
+                                                        <div className='inputtypefile'>
+                                                            <div className='inputMSG'>
+                                                                {watch('sUrl') ?
+                                                                    <span className='bundle-name'>File: {watch('sUrl')?.name}</span> :
+                                                                    <span>Upload Game Assets file</span>
+                                                                }
+                                                            </div>
+                                                            <Controller
+                                                                name={`sUrl`}
+                                                                control={control}
+                                                                rules={{
+                                                                    required: "Please add game assets bundle file",
+                                                                    validate: {
+                                                                        fileType: (value) => {
+                                                                            if (value && typeof (watch(`sUrl`)) !== 'string') {
+                                                                                const allowedFormats = ['bundle', 'BUNDLE'];
+                                                                                const fileExtension = value.name.split('.').pop().toLowerCase();
+
+                                                                                if (!allowedFormats.includes(fileExtension)) {
+                                                                                    return "Unsupported file format";
+                                                                                }
+
+                                                                                // const maxSize = 1 * 1000 * 1000; // 1MB in bytes
+                                                                                // if (value.size >= maxSize) {
+                                                                                //     return "File size must be less than 1MB";
+                                                                                // }
+                                                                            }
+                                                                            return true;
+                                                                        },
+                                                                    }
+                                                                }}
+                                                                render={({ field: { onChange, value, ref } }) => {
+                                                                    return <>
+                                                                        <Form.Control
+                                                                            ref={(e) => {
+                                                                                ref(e);
+                                                                                fileInputRef.current = e;
+                                                                            }}
+                                                                            type='file'
+                                                                            name={`sUrl`}
+                                                                            accept='.bundle,.BUNDLE'
+                                                                            errors={errors}
+                                                                            className={errors?.sUrl && 'error'}
+                                                                            onChange={(e) => {
+                                                                                onChange(e.target.files[0])
+                                                                            }}
+                                                                        />
+                                                                    </>
+                                                                }}
+                                                            />
+                                                        </div>
+
+                                                        <span className='card-error'>{errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
+                                                    </div>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -195,7 +232,7 @@ const AddGame = () => {
                                         <Col lg={6} md={6} sm={12} className='mt-md-2'>
                                             <div className='fileinput'>
                                                 <label className='d-flex justify-content-between'>
-                                                    <span>Add Game Logo<span className='inputStar'>*</span></span>
+                                                    <span>Game Logo<span className='inputStar'>*</span></span>
                                                     <OverlayTrigger
                                                         delay={{ show: 250, hide: 400 }}
                                                         overlay={renderTooltip}
@@ -267,10 +304,10 @@ const AddGame = () => {
 
                                         <Row className='mt-3'>
                                             <Col sm={12}>
-                                                <Button variant='primary' type='submit' className='me-2'>
+                                                <Button variant='primary' type='submit' className='me-2 square'>
                                                     {location?.state === 'edit' ? 'Update Game' : 'Add Game'}
                                                 </Button>
-                                                <Button variant='secondary' onClick={() => navigate(route.game)}>
+                                                <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
                                                     Cancel
                                                 </Button>
                                             </Col>

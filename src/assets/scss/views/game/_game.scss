@@ -1,13 +1,17 @@
 .game-list {
     .avatar {
-        img {
-            // object-fit: contain;
-            width: 70px;
-            height: 70px;
-            min-width: 70px;
-            border-radius: 50%;
-            border: 3px solid var(--boxes-color);
-            outline: 3px solid var(--secondary-400);
+        .game-logo {
+            cursor: pointer;
+
+            img {
+                // object-fit: contain;
+                width: 70px;
+                height: 70px;
+                min-width: 70px;
+                border-radius: 50%;
+                border: 3px solid var(--boxes-color);
+                outline: 3px solid var(--secondary-400);
+            }
         }
     }
 

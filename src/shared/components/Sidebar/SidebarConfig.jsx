@@ -9,15 +9,27 @@ export const sidebarConfig = [
     role: ['superAdmin', 'admin'],
   },
   {
+    path: route.admin,
+    icon: faUser,
+    title: 'Admin Management',
+    role: ['superAdmin']
+  },
+  {
     path: route.patient,
     icon: faUser,
     title: 'Patient Management',
-    role: ['superAdmin']
+    role: ['admin']
   },
   {
     path: route.game,
     icon: faGamepad,
     title: 'Game Management',
     role: ['superAdmin']
+  },
+  {
+    path: route.adminGame,
+    icon: faGamepad,
+    title: 'Game Management',
+    role: ['admin']
   },
 ]

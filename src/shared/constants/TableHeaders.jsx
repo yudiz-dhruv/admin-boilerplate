@@ -17,8 +17,35 @@ export const PatientListColumn = [
     { name: 'Actions', isSort: false }
 ]
 
+export const AdminListColumn = [
+    { name: 'No', isSort: true },
+    { name: 'Name', internalName: 'sName', type: 1, isSort: false },
+    { name: 'Email ID', internalName: 'sEmail', type: 1, isSort: false },
+    { name: 'Package Expire', internalName: 'sEndDate', type: 1, isSort: false },
+    { name: 'Status', internalName: 'eStatus', type: 1, isSort: false },
+    { name: 'Actions', isSort: false }
+]
+
+export const PatientHistory = [
+    { name: 'No', isSort: true },
+    { name: 'Date', internalName: 'dDate', type: 1, isSort: false },
+    { name: 'Time', internalName: 'dDateTime', type: 1, isSort: false },
+    { name: 'Games Played', internalName: 'nGamesPlayed', type: 1, isSort: false },
+    { name: 'Comments', internalName: 'sComments', type: 1, isSort: false },
+]
+
 export const eDominantEyeOptions = [
     { label: 'Left', value: 'left' },
     { label: 'Right', value: 'right' },
     { label: 'None', value: 'none' },
+]
+
+export const eIsPresent = [
+    { label: 'Yes', value: 'yes' },
+    { label: 'No', value: 'no' }
+]
+
+export const eIsStrabismus = [
+    { label: 'Yes', value: 'y' },
+    { label: 'No', value: 'n' }
 ]

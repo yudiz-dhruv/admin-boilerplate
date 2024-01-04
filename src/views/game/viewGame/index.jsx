@@ -16,37 +16,35 @@ const ViewGame = () => {
 
     return (
         <>
-            <Row className='details-row'>
-                <Col xxl={12} xl={12} md={12} sm={12}>
+            <Row className='details-row justify-content-center'>
+                <Col xxl={8} xl={12} md={12} sm={12}>
                     <div className='details-card'>
-                        <div className='details-card-title'>Game Details</div>
                         <div className='details-card-data'>
                             <div className='game-avatar'>
-                                {isLoading ? <Spinner animation='border' /> : <img src={data?.sAvatar} alt={`${data?.sName} avatar`} />}
-                                <span>Avatar</span>
+                                <div className='img-content'>
+                                    {isLoading ? <Spinner className='text-center mt-4' /> : <img src={data?.sAvatar} alt={data?.sUserName} />}
+                                </div>
+                                <span className='game-name'>{data?.sName || '-'}</span>
                             </div>
+                            <div className='line'></div>
                             <Row className='details-data-row p-0 m-0 mt-4'>
-                                <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Game Name</span>
-                                    <span className='data-value'>{data?.sName || '-'}</span>
-                                </Col>
-                                <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Url</span>
                                     <span className='data-value'>{data?.sUrl || '-'}</span>
                                 </Col>
-                                <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Description</span>
                                     <span className='data-value'>{data?.sDescription || '-'}</span>
                                 </Col>
-                                <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Status</span>
                                     <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
                                 </Col>
-                                <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Created Date</span>
                                     <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
                                 </Col>
-                                <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Last Activity on</span>
                                     <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD-MM-YYYY') || '-'}</span>
                                 </Col>

@@ -1,0 +1,33 @@
+.admin-list {
+  .data-table {
+    .table-responsive-xl {
+      .admin-name {
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          color: var(--text-hover);
+        }
+      }
+
+      .capitalize {
+        text-transform: capitalize;
+      }
+
+      .single-line {
+        text-wrap: nowrap;
+      }
+
+      .single-icon {
+        i {
+          transition: all 0.3s ease-in-out;
+          font-size: 20px;
+
+          &:hover {
+            color: #2a9e2a;
+          }
+        }
+      }
+    }
+  }
+}

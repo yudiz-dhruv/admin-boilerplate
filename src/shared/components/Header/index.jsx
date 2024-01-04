@@ -17,7 +17,6 @@ function Header({ isOpen }) {
   const query = useQueryClient()
   const [clickedLogOut, setClickedLogOut] = useState(false)
   const [show, setShow] = useState(false)
-  const [profileName, setProfileName] = useState('')
   const handleClose = () => setShow(false)
 
   const temp = localStorage.getItem('mode') === 'true'
@@ -39,14 +38,8 @@ function Header({ isOpen }) {
     }
   })
 
-  const { isLoading: profileLoader } = useQuery('profile', () => profile(), {
+  const { isLoading: profileLoader, data } = useQuery('profile', () => profile(), {
     select: (data) => data?.data?.data,
-    onSuccess: (res) => {
-      setProfileName(res.sUserName)
-    },
-    onError: () => {
-      setProfileName('')
-    }
   })
 
   const handleLogout = () => setShow(!show)
@@ -76,16 +69,16 @@ function Header({ isOpen }) {
       <div className='header-left'>
         <Link className='logo' to={route.dashboard}>
           {/* <img src={logo} className="logoIcon" alt='run to learn' /> */}
-          <img src={textLogo} className="textLogo" alt='Vivid Vision Logo' />
-          {/* <div className='logo-text'>Vivid Vision</div> */}
+          {/* <img src={textLogo} className="textLogo" alt='Yantra Healthcare Logo' /> */}
+          <div className='logo-text'>Yantra Healthcare</div>
         </Link>
       </div>
       <div className='header-right'>
-        <div className='user-name'>{profileLoader ? <Spinner animation='border' size='sm' /> : profileName}</div>
+        <div className='user-name'>{profileLoader ? <Spinner animation='border' size='sm' /> : data?.sUserName}</div>
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>
             <div className='img d-flex align-items-center justify-content-center'>
-              <FontAwesomeIcon icon={faUser} />
+              {data?.eUserType === 'admin' ? <img src={data?.sAvatar} alt="" /> : <FontAwesomeIcon icon={faUser} />}
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu className='up-arrow'>

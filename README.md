@@ -1,5 +1,5 @@
-## Vivid Vision Game:
-- Vivid Vision Game Admin panel in ReactJs.
+## Yantra Healthcare:
+- Yantra Healthcare Admin panel in ReactJs.
 
 node version: 
 v18.17.1

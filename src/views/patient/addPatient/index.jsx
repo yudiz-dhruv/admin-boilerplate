@@ -8,7 +8,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import CommonInput from 'shared/components/CommonInput'
 import Select from 'react-select'
-import { eDominantEyeOptions } from 'shared/constants/TableHeaders'
+import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { addPatient, updatePatient } from 'query/patient/patient.mutation'
 import { getPatientById } from 'query/patient/patient.query'
 
@@ -18,11 +18,6 @@ const AddPatient = () => {
     const { id } = useParams()
 
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm({ mode: 'all' })
-
-    const eIsPresent = [
-        { label: 'Yes', value: 'yes' },
-        { label: 'No', value: 'no' }
-    ]
 
     // SPEICIFC PATIENT
     useQuery('patientDataById', () => getPatientById(id), {
@@ -74,11 +69,11 @@ const AddPatient = () => {
             eStrabismus: data?.eStrabismus?.value || ''
         }
 
-        location?.state === 'edit' ? updateMutate({ eDominantEye: data?.eDominantEye?.value || '', id }) : mutate(addData)
+        location?.state === 'edit' ? updateMutate({ ...addData, id }) : mutate(addData)
     }
 
     useEffect(() => {
-        document.title = location?.state === 'edit' ? 'Edit Patient | Vivid Vision' : 'Add Patient | Vivid Vision'
+        document.title = location?.state === 'edit' ? 'Edit Patient | Yantra Healthcare' : 'Add Patient | Yantra Healthcare'
     }, [location])
 
     return (
@@ -100,7 +95,6 @@ const AddPatient = () => {
                                                 label='Patient Name'
                                                 placeholder='Enter patient name'
                                                 required
-                                                disabled={location?.state === 'edit'}
                                                 onChange={(e) => {
                                                     e.target.value =
                                                         e.target.value?.trim() &&
@@ -247,7 +241,6 @@ const AddPatient = () => {
                                                             placeholder="Select patient's Amblyopia status..."
                                                             ref={ref}
                                                             options={eIsPresent}
-                                                            isDisabled={location?.state === 'edit'}
                                                             className={`react-select border-0 ${errors.eAmblyopia && 'error'}`}
                                                             classNamePrefix='select'
                                                             isSearchable={false}
@@ -288,7 +281,6 @@ const AddPatient = () => {
                                                             placeholder="Select patient's Strabisums status..."
                                                             ref={ref}
                                                             options={eIsPresent}
-                                                            isDisabled={location?.state === 'edit'}
                                                             className={`react-select border-0 ${errors.eStrabismus && 'error'}`}
                                                             classNamePrefix='select'
                                                             isSearchable={false}
@@ -309,10 +301,10 @@ const AddPatient = () => {
 
                                         <Row className='mt-3'>
                                             <Col sm={12}>
-                                                <Button variant='primary' type='submit' className='me-2'>
+                                                <Button variant='primary' type='submit' className='me-2 square'>
                                                     {location?.state === 'edit' ? 'Update Patient' : 'Add Patient'}
                                                 </Button>
-                                                <Button variant='secondary' onClick={() => navigate(route.patient)}>
+                                                <Button variant='secondary' onClick={() => navigate(route.patient)} className='square'>
                                                     Cancel
                                                 </Button>
                                             </Col>
