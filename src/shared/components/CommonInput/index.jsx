@@ -29,6 +29,10 @@ function CommonInput ({
   isLoading,
   customerror,
   updateFlag,
+  min,
+  max,
+  minLength,
+  maxLength,
   onPaste
 }) {
   const splitName = name.split('.')
@@ -78,6 +82,10 @@ function CommonInput ({
                 style={style}
                 value={value}
                 placeholder={placeholder}
+                min={min}
+                minLength={minLength}
+                max={max}
+                maxLength={maxLength}
                 onPaste={
                   onPaste &&
                   ((e) => {

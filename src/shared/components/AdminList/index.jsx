@@ -1,7 +1,7 @@
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
-import React from 'react'
+import React, { useState } from 'react'
 import { Dropdown, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { route } from 'shared/constants/AllRoutes';
@@ -9,8 +9,19 @@ import { route } from 'shared/constants/AllRoutes';
 const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
     const navigate = useNavigate()
 
+    const [isButtonDisabled, setButtonDisabled] = useState(false)
+
     const handleConfirmStatus = (status, id) => {
+        if (isButtonDisabled) {
+            return;
+        }
+
+        setButtonDisabled(true)
         updateMutate({ id, eStatus: status ? 'y' : 'n' })
+
+        setTimeout(() => {
+            setButtonDisabled(false)
+        }, 1000)
     }
     return (
         <>
@@ -18,7 +29,7 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
                 <td>{index + 1}</td>
                 <td><span className='single-line admin-name capitalize' onClick={() => navigate(route.viewAdmin(admin?._id))}>{admin?.sUserName || '-'}</span></td>
                 <td className='single-line'>{admin?.sEmail || '-'}</td>
-                <td className='single-line'>{moment(admin?.dEndAt)?.format('DD-MM-YYYY') || '-'}</td>
+                <td className='single-line'>{moment(admin?.dEndAt)?.format('DD MMM, YYYY') || '-'}</td>
                 <td>
                     {admin.eStatus !== 'd' ? <Form.Check
                         type='switch'
@@ -26,6 +37,7 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
                         className='d-inline-block me-1'
                         checked={admin.eStatus === 'y'}
                         onChange={(e) => handleConfirmStatus(e.target.checked, admin._id)}
+                        disabled={isButtonDisabled}
                     /> : <span className='delete-user'>Delete</span>}
                 </td>
                 <td>

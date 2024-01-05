@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
-import { toaster } from 'helper/helper'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
+import { getDirtyFormValues, toaster } from 'helper/helper'
 import { useMutation, useQuery } from 'react-query'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { route } from 'shared/constants/AllRoutes'
@@ -17,7 +18,9 @@ const AddPatient = () => {
     const navigate = useNavigate()
     const { id } = useParams()
 
-    const { register, handleSubmit, formState: { errors }, control, reset } = useForm({ mode: 'all' })
+    const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
+
+    const [payload, setPayload] = useState()
 
     // SPEICIFC PATIENT
     useQuery('patientDataById', () => getPatientById(id), {
@@ -59,6 +62,19 @@ const AddPatient = () => {
         }
     })
 
+    useEffect(() => {
+        const isDirtyData = {
+            sUserName: watch('sUserName'),
+            eDominantEye: watch('eDominantEye')?.value,
+            eAmblyopia: watch('eAmblyopia')?.value,
+            eStrabismus: watch('eStrabismus')?.value,
+        }
+
+        const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
+        setPayload(payloadData)
+    }, [dirtyFields, watch('sUserName'), watch('eDominantEye'), watch('eAmblyopia'), watch('eStrabismus')])
+
+
     async function onSubmit (data) {
         let addData = {
             sUserName: data?.sUserName || '',
@@ -69,7 +85,7 @@ const AddPatient = () => {
             eStrabismus: data?.eStrabismus?.value || ''
         }
 
-        location?.state === 'edit' ? updateMutate({ ...addData, id }) : mutate(addData)
+        location?.state === 'edit' ? updateMutate({ ...payload, id }) : mutate(addData)
     }
 
     useEffect(() => {
@@ -301,9 +317,14 @@ const AddPatient = () => {
 
                                         <Row className='mt-3'>
                                             <Col sm={12}>
-                                                <Button variant='primary' type='submit' className='me-2 square'>
-                                                    {location?.state === 'edit' ? 'Update Patient' : 'Add Patient'}
-                                                </Button>
+                                                {location?.state === 'edit' ?
+                                                    <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty}>
+                                                        Update Patient
+                                                    </Button> :
+                                                    <Button variant='primary' type='submit' className='me-2 square'>
+                                                        Add Patient
+                                                    </Button>
+                                                }
                                                 <Button variant='secondary' onClick={() => navigate(route.patient)} className='square'>
                                                     Cancel
                                                 </Button>

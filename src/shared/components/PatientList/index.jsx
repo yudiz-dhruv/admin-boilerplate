@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown, Form } from 'react-bootstrap'
@@ -8,8 +8,19 @@ import { route } from 'shared/constants/AllRoutes'
 const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
     const navigate = useNavigate()
 
+    const [isButtonDisabled, setButtonDisabled] = useState(false)
+
     const handleConfirmStatus = (status, id) => {
+        if (isButtonDisabled) {
+            return;
+        }
+
+        setButtonDisabled(true)
         updateMutate({ id, eStatus: status ? 'y' : 'n' })
+
+        setTimeout(() => {
+            setButtonDisabled(false)
+        }, 1000)
     }
     return (
         <>
@@ -26,6 +37,7 @@ const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
                         className='d-inline-block me-1'
                         checked={patient.eStatus === 'y'}
                         onChange={(e) => handleConfirmStatus(e.target.checked, patient._id)}
+                        disabled={isButtonDisabled}
                     /> : <span className='delete-user'>Delete</span>}
                 </td>
 

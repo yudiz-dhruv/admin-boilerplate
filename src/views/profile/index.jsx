@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Form, Button, Spinner, Row, Col } from 'react-bootstrap'
@@ -5,7 +6,7 @@ import { FormattedMessage } from 'react-intl'
 import EditProfileComponent from 'shared/components/Profile'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { profile, UpdateProfile } from 'query/profile/profile.query'
-import { toaster } from 'helper/helper'
+import { getDirtyFormValues, toaster } from 'helper/helper'
 import { useNavigate } from 'react-router-dom'
 import { Loader } from 'shared/components/Loader'
 import Wrapper from 'shared/components/Wrap'
@@ -18,24 +19,21 @@ function EditProfile () {
   const query = useQueryClient()
   const [updateFlag, setUpdateFlag] = useState(false)
   const [profileData, setProfileData] = useState({})
+  const [payload, setPayload] = useState()
 
   const {
     register,
     control,
-    formState: { errors },
+    formState: { errors, isDirty, dirtyFields },
     clearErrors,
     trigger,
     getValues,
     reset,
     handleSubmit,
     setValue,
+    watch
   } = useForm({
-    mode: 'all',
-    defaultValues: {
-      sProfilePicture: '',
-      sPanPicture: '',
-      aSocialProfiles: [{ eSocialNetworkType: '', sDisplayName: '', sLink: '' }]
-    }
+    mode: 'all'
   })
 
   const { isLoading: getLoading, isFetching, data } = useQuery('getProfile', profile, {
@@ -66,12 +64,19 @@ function EditProfile () {
     setProfileData({ ...profileData, [name]: value })
   }
 
+  useEffect(() => {
+    const isDirtyData = {
+      sUserName: watch('sUserName'),
+      sEmail: watch('sEmail'),
+      sMobile: watch('sMobile'),
+    }
+
+    const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
+    setPayload(payloadData)
+  }, [dirtyFields, watch('sUserName'), watch('sEmail'), watch('sMobile')])
+
   const onsubmit = (data) => {
-    mutate({
-      sUserName: data?.sUserName || '',
-      sMobile: data?.sMobile || '',
-      sEmail: data?.sEmail || ''
-    })
+    mutate({ ...payload })
   }
 
   function usernameUpdate () {
@@ -117,7 +122,7 @@ function EditProfile () {
                   {updateFlag !== false &&
                     <>
                       <div className='d-flex justify-content-end'>
-                        <Button variant='primary' type='submit' className='me-2 square' disabled={!updateFlag || isLoading}>
+                        <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || !updateFlag || isLoading}>
                           <FormattedMessage id='update' />
                           {isLoading && <Spinner animation='border' size='sm' />}
                         </Button>

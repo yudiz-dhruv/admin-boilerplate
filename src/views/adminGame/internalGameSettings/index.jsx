@@ -6,6 +6,8 @@ import { useLocation } from 'react-router-dom'
 import Wrapper from 'shared/components/Wrap'
 import { useForm, Controller } from 'react-hook-form'
 import RangeSlider from 'react-bootstrap-range-slider'
+import Select from 'react-select'
+import { eBallSpeed, eHoopSize, eHoopieLevels } from 'shared/constants/TableHeaders'
 
 const InternalGameSettings = () => {
   const location = useLocation()
@@ -33,7 +35,7 @@ const InternalGameSettings = () => {
 
   const tab_buttons = [
     { key: 'hoopie', label: 'Hoopie' },
-    { key: 'ring-runner', label: 'Ring Runner' },
+    { key: 'ringRunner', label: 'Ring Runner' },
   ]
 
   const [contrast, setContrast] = useState(0)
@@ -52,7 +54,7 @@ const InternalGameSettings = () => {
             <Wrapper>
               <div className='game-settings'>
                 <Row>
-                  <Col xxl={6}>
+                  <Col xl={6} lg={12}>
                     <div className='settings'>
                       <div className=''>
                         <Wrapper>
@@ -60,10 +62,12 @@ const InternalGameSettings = () => {
                           <div className='line'></div>
 
                           <div className='mt-2 tabs'>
-                            {tabs?.map(tab =>
-                              <Button key={tab.key} type='button' className={`me-2 ${dominantEyeButton[tab?.key] ? 'btn-primary' : 'btn-secondary'}`} variant={`${dominantEyeButton[tab?.key] ? 'primary' : 'secondary'}`} onClick={() => setDominantEyeButton({ [tab?.key]: true })}>
-                                {tab?.label}
-                              </Button>
+                            {tabs?.map((tab, i) =>
+                              <>
+                                <Button key={tab.key} type='button' className={`${dominantEyeButton[tab?.key] ? 'checked' : ''}`} onClick={() => setDominantEyeButton({ [tab?.key]: true })}>
+                                <span className='tab'>{tab?.label}</span>
+                                </Button>
+                              </>
                             )}
                           </div>
                         </Wrapper>
@@ -86,6 +90,7 @@ const InternalGameSettings = () => {
                                 min={0}
                                 max={100}
                                 tooltipLabel={currentValue => `${currentValue}%`}
+                                tooltipPlacement='top'
                               />
                             </Form.Group>
                           </div>
@@ -102,6 +107,7 @@ const InternalGameSettings = () => {
                                 min={0}
                                 max={100}
                                 tooltipLabel={currentValue => `${currentValue}%`}
+                                tooltipPlacement='top'
                               />
                             </Form.Group>
                           </div>
@@ -118,13 +124,14 @@ const InternalGameSettings = () => {
                                 min={0}
                                 max={100}
                                 tooltipLabel={currentValue => `${currentValue}%`}
+                                tooltipPlacement='top'
                               />
                             </Form.Group>
                           </div>
                         </Wrapper>
                       </div>
 
-                      <div className='mt-3'>
+                      {/* <div className='mt-3'>
                         <Wrapper>
                           <h3 className='data-title'><FontAwesomeIcon icon={faVrCardboard} color='var(--secondary-500)' /> Number of Gabber Patch</h3>
                           <div className='line'></div>
@@ -145,10 +152,10 @@ const InternalGameSettings = () => {
                             </Form.Group>
                           </div>
                         </Wrapper>
-                      </div>
+                      </div> */}
                     </div>
                   </Col>
-                  <Col xxl={6}>
+                  <Col xl={6} lg={12} className='mt-xl-0 mt-3'>
                     <div className='games'>
                       <div className=''>
                         <Wrapper>
@@ -158,20 +165,162 @@ const InternalGameSettings = () => {
                           <div className='antisuppresion-details-button-group'>
                             {tab_buttons?.map((tab, index) => {
                               return (
-                                <button key={index} className={buttonToggle[tab.key] && 'userActive'} onClick={() => setButtonToggle({ [tab.key]: true })}>
+                                <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
                                   {tab?.label}
-                                </button>
+                                </Button>
                               )
                             })}
 
-                            <div className=''>
-                              <Wrapper>
+                            {buttonToggle?.hoopie &&
+                              <>
+                                <div className='mt-3'>
+                                  <Wrapper>
+                                    <Row>
+                                      <Col sm={12}>
+                                        <Form.Group className='form-group'>
+                                          <Form.Label> Level Selection </Form.Label>
+                                          <Controller
+                                            name='sLevelSelection'
+                                            control={control}
+                                            render={({ field: { onChange, value, ref } }) => (
+                                              <Select
+                                                placeholder='Select Game Level'
+                                                ref={ref}
+                                                options={eHoopieLevels}
+                                                className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
+                                                classNamePrefix='select'
+                                                isSearchable={false}
+                                                value={value}
+                                                onChange={onChange}
+                                                isMulti={true}
+                                                getOptionLabel={(option) => option.label}
+                                                getOptionValue={(option) => option.value}
+                                              />
+                                            )}
+                                          />
+                                          {errors.sLevelSelection && (
+                                            <Form.Control.Feedback type='invalid'>
+                                              {errors.sLevelSelection.message}
+                                            </Form.Control.Feedback>
+                                          )}
+                                        </Form.Group>
+                                      </Col>
 
-                              </Wrapper>
-                            </div>
+                                      <Col sm={12}>
+                                        <Form.Group className='form-group'>
+                                          <Form.Label> Hoop Size </Form.Label>
+                                          <Controller
+                                            name='sHoopSize'
+                                            control={control}
+                                            render={({ field: { onChange, value, ref } }) => (
+                                              <Select
+                                                placeholder='Select Hoop Size'
+                                                ref={ref}
+                                                options={eHoopSize}
+                                                className={`react-select border-0 ${errors.sHoopSize && 'error'}`}
+                                                classNamePrefix='select'
+                                                isSearchable={false}
+                                                value={value}
+                                                onChange={onChange}
+                                                isMulti={true}
+                                                getOptionLabel={(option) => option.label}
+                                                getOptionValue={(option) => option.value}
+                                              />
+                                            )}
+                                          />
+                                          {errors.sHoopSize && (
+                                            <Form.Control.Feedback type='invalid'>
+                                              {errors.sHoopSize.message}
+                                            </Form.Control.Feedback>
+                                          )}
+                                        </Form.Group>
+                                      </Col>
+
+                                      <Col sm={12}>
+                                        <Form.Group className='form-group'>
+                                          <Form.Label> Ball Speed </Form.Label>
+                                          <Controller
+                                            name='sBallSpeed'
+                                            control={control}
+                                            render={({ field: { onChange, value, ref } }) => (
+                                              <Select
+                                                placeholder='Select Ball Speed'
+                                                ref={ref}
+                                                options={eBallSpeed}
+                                                className={`react-select border-0 ${errors.sBallSpeed && 'error'}`}
+                                                classNamePrefix='select'
+                                                isSearchable={false}
+                                                value={value}
+                                                onChange={onChange}
+                                                isMulti={true}
+                                                getOptionLabel={(option) => option.label}
+                                                getOptionValue={(option) => option.value}
+                                              />
+                                            )}
+                                          />
+                                          {errors.sBallSpeed && (
+                                            <Form.Control.Feedback type='invalid'>
+                                              {errors.sBallSpeed.message}
+                                            </Form.Control.Feedback>
+                                          )}
+                                        </Form.Group>
+                                      </Col>
+                                    </Row>
+                                  </Wrapper>
+                                </div>
+                              </>}
+
+                            {buttonToggle?.ringRunner &&
+                              <>
+                                <div className='mt-3'>
+                                  <Wrapper>
+                                    <Row>
+                                      <Col sm={12}>
+                                        <Form.Group className='form-group'>
+                                          <Form.Label> Level Selection </Form.Label>
+                                          <Controller
+                                            name='sLevelSelection'
+                                            control={control}
+                                            render={({ field: { onChange, value, ref } }) => (
+                                              <Select
+                                                placeholder='Select Game Level'
+                                                ref={ref}
+                                                options={eHoopieLevels}
+                                                className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
+                                                classNamePrefix='select'
+                                                isSearchable={false}
+                                                value={value}
+                                                onChange={onChange}
+                                                isMulti={true}
+                                                getOptionLabel={(option) => option.label}
+                                                getOptionValue={(option) => option.value}
+                                              />
+                                            )}
+                                          />
+                                          {errors.sLevelSelection && (
+                                            <Form.Control.Feedback type='invalid'>
+                                              {errors.sLevelSelection.message}
+                                            </Form.Control.Feedback>
+                                          )}
+                                        </Form.Group>
+                                      </Col>
+                                    </Row>
+                                  </Wrapper>
+                                </div>
+                              </>}
                           </div>
                         </Wrapper>
                       </div>
+
+                      {buttonToggle?.hoopie || buttonToggle?.ringRunner ?
+                        <Row className='mt-3'>
+                          <Col sm={12}>
+                            <Button variant='primary' type='submit' className='me-2 square'>
+                              End Game
+                            </Button>
+                          </Col>
+                        </Row>
+                        : ''}
                     </div>
                   </Col>
                 </Row>

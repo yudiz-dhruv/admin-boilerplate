@@ -46,7 +46,7 @@ function Search({ size, searchEvent, className, disabled }) {
       </label>
       <Form.Control
         type='search'
-        placeholder={useIntl().formatMessage({ id: 'search' }) + '...'}
+        placeholder={useIntl().formatMessage({ id: 'search' })}
         size={size || 'sm'}
         onChange={handleChange}
         defaultValue={params.search || ''}

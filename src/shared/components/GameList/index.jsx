@@ -9,6 +9,7 @@ import CustomModal from '../Modal'
 const GameList = ({ key, index, game, updateMutate, onDelete }) => {
     const navigate = useNavigate()
     const [modal, setModal] = useState({ open: false })
+    const [isButtonDisabled, setButtonDisabled] = useState(false)
 
     const MODAL_TYPE = {
         true: {
@@ -22,14 +23,24 @@ const GameList = ({ key, index, game, updateMutate, onDelete }) => {
             MESSAGE: 'Are you sure you want to Deactivate this Game?'
         }
     }
-
+    
     const handleStatus = (status, id) => {
         setModal({ open: true, status, id })
     }
+    
+    const handleConfirmStatus = (status, id) => {
+        if (isButtonDisabled) {
+            return;
+        }
 
-    const handleConfirmStatus = () => {
+        setButtonDisabled(true);
         updateMutate({ id: modal?.id, eStatus: modal?.status ? 'y' : 'n' })
+
+        setTimeout(() => {
+            setButtonDisabled(false)
+        }, 1000)
     }
+
     return (
         <>
             <tr key={key}>
@@ -49,6 +60,7 @@ const GameList = ({ key, index, game, updateMutate, onDelete }) => {
                         className='d-inline-block me-1'
                         checked={game.eStatus === 'y'}
                         onChange={(e) => handleStatus(e.target.checked, game._id)}
+                        disabled={isButtonDisabled}
                     /> : <span className='delete-user'>Delete</span>}
                 </td>
 

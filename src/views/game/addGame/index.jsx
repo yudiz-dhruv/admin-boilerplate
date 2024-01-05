@@ -112,7 +112,7 @@ const AddGame = () => {
             <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
                 <div className='personal-details'>
                     <div className='game-form'>
-                        <Row>
+                        <Row className='justify-content-center'>
                             <Col xxl={8}>
                                 <Wrapper>
                                     <Row>

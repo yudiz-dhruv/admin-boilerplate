@@ -85,6 +85,8 @@
   .select__single-value {
     font-size: $fs-14 !important;
     color: var(--heading-color);
+    position: relative;
+    top: 1px;
   }
   .select__single-value--is-disabled {
     color: var(--secondary-500);

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { useLocation, useNavigate } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
@@ -11,13 +12,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from 'react-query'
 import { getPatientById, getPatientDropdownList } from 'query/patient/patient.query'
-import { toaster } from 'helper/helper'
+import { getDirtyFormValues, toaster } from 'helper/helper'
 
 const AdminGame = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { register, handleSubmit, formState: { errors }, control, reset, watch } = useForm({ mode: 'all' })
+  const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
+
+  const [isDisabled, setButtonDisabled] = useState(false)
 
   // DROPDOWN PATIENT LIST
   const { data: ePatientDropdown } = useQuery('dropdownPatient', getPatientDropdownList, {
@@ -45,7 +48,17 @@ const AdminGame = () => {
     }
   })
 
-  console.log('patientDetails: ', patientDetails);
+  useEffect(() => {
+    const isDirtyData = {
+      ePatientName: watch('ePatientName')?._id,
+    }
+
+    const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
+    if (Object.keys(payloadData).length !== 0) {
+      setButtonDisabled(true)
+    } 
+  }, [dirtyFields, watch('ePatientName')])
+
   async function onSubmit () {
     patientDetails ? navigate(route?.adminGameSettings, { state: patientDetails }) : toaster('Please fill the data', 'error')
   }
@@ -207,10 +220,9 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                          {console.log('patientDetails: ', patientDetails)}
                     <Row className='mt-2'>
                       <Col sm={12}>
-                        <Button variant='primary' type='submit' className='me-2 next-button square' disabled={!patientDetails}>
+                        <Button variant='primary' type='submit' className='me-2 next-button square' disabled={isDisabled === false}>
                           Next
                         </Button>
                       </Col>
