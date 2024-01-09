@@ -128,7 +128,6 @@ const AddAdmin = () => {
                                   errors={errors}
                                   className={errors?.sAvatar && 'error'}
                                   onChange={(e) => {
-                                    console.log('e.target.files :>> ', e.target.files);
                                     onChange(e.target.files[0])
                                   }}
                                 />

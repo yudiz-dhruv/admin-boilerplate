@@ -34,7 +34,6 @@ function EditProfileComponent ({ register, errors, profileData, handleChange, co
         />
       </Col>
 
-      {console.log('errors?.sEmail: ', errors?.sEmail)}
       <Col md={6}>
         <CommonInput
           type='text'
