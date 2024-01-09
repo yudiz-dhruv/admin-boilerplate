@@ -1,7 +1,14 @@
 .patient {
-    .patient-name {
+
+    span.patient-name {
         cursor: pointer;
         transition: all 0.3s ease-in-out;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 150px !important;
+        max-width: 150px !important;
+        text-align: center !important;
+
         &:hover {
             color: var(--text-hover);
         }
@@ -82,6 +89,7 @@ body.dark {
                 color: var(--text-hover);
             }
         }
+
         .single-icon {
             i {
                 &:hover {

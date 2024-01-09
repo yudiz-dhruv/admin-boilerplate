@@ -48,7 +48,7 @@ const AddAdmin = () => {
       sAvatar: '',
     }
     const sAvatarFile = data?.sAvatar;
-    
+
     if (sAvatarFile) {
       const dataUri = await fileToDataUri(sAvatarFile);
       addData.sAvatar = dataUri
@@ -95,7 +95,7 @@ const AddAdmin = () => {
                             name={`sAvatar`}
                             control={control}
                             rules={{
-                              required: "Please add game logo",
+                              required: "Please add admin profile",
                               validate: {
                                 fileType: (value) => {
                                   if (value && typeof (watch(`sAvatar`)) !== 'string') {
@@ -162,6 +162,14 @@ const AddAdmin = () => {
                             value: true,
                             message: validationErrors.nameRequired
                           },
+                          minLength: {
+                            value: 2,
+                            message: 'Please enter atleast 2 characters.'
+                          },
+                          maxLength: {
+                            value: 50,
+                            message: 'Name must be less than 50 char long.'
+                          }
                         }}
                       />
                     </Col>
@@ -178,7 +186,7 @@ const AddAdmin = () => {
                         validation={{
                           pattern: {
                             value: EMAIL,
-                            message: validationErrors.email
+                            message: 'Provide a valid email address.'
                           },
                           required: {
                             value: true,
@@ -208,6 +216,14 @@ const AddAdmin = () => {
                             value: true,
                             message: 'Company name is required.'
                           },
+                          minLength: {
+                            value: 5,
+                            message: 'Company name must be atleast 5 char long.'
+                          },
+                          maxLength: {
+                            value: 20,
+                            message: 'Company name must be less than 20 char long.'
+                          }
                         }}
                       />
                     </Col>

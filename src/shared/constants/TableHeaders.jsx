@@ -35,6 +35,7 @@ export const PatientHistory = [
 ]
 
 export const eDominantEyeOptions = [
+    { label: 'All', value: '' },
     { label: 'Left', value: 'left' },
     { label: 'Right', value: 'right' },
     { label: 'None', value: 'none' },

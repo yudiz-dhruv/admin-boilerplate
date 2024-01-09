@@ -34,7 +34,7 @@
     .logo-text {
       font-size: 28px;
       font-weight: 600;
-      padding-top: 15px; 
+      padding-top: 15px;
       letter-spacing: 2px;
       color: var(--white-color);
       font-family: 'Caveat', cursive;
@@ -80,6 +80,40 @@
       color: var(--white-color);
       letter-spacing: 0.2px;
       transform: translateY(1px);
+
+      .superadmin-label {
+        font-size: 11px;
+        color: #7828C8;
+        background-color: #ead8fc;
+        border-radius: 10px;
+        padding: 2px 4px;
+        text-transform: lowercase;
+        font-weight: 600;
+        position: relative;
+        top: -2px;
+
+        svg {
+          position: relative;
+          top: -1px;
+        }
+      }
+
+      .admin-label {
+        font-size: 11px;
+        color: #12A150;
+        background-color: #dbfeeb;
+        border-radius: 10px;
+        padding: 2px 4px;
+        text-transform: lowercase;
+        font-weight: 600;
+        position: relative;
+        top: -2px;
+
+        svg {
+          position: relative;
+          top: -1px;
+        }
+      }
     }
   }
 

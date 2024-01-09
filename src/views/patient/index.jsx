@@ -31,8 +31,8 @@ const PatientManagement = () => {
             sort: data.sort || '',
             orderBy: 'ASC',
             totalElements: +data?.totalElements || 0,
-            eDominantEye: data?.eDominantEye || 'left',
-            eStatus: data?.eStatus || 'y'
+            eDominantEye: data?.eDominantEye || '',
+            eStatus: data?.eStatus || ''
         }
     }
 

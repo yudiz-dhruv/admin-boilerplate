@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import CommonInput from 'shared/components/CommonInput'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import { EMAIL } from 'shared/constants'
 import { route } from 'shared/constants/AllRoutes'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
@@ -149,6 +148,14 @@ const EditAdmin = () => {
                                 value: true,
                                 message: validationErrors.nameRequired
                               },
+                              minLength: {
+                                value: 2,
+                                message: 'Please enter atleast 2 characters.'
+                              },
+                              maxLength: {
+                                value: 50,
+                                message: 'Name must be less than 50 char long.'
+                              }
                             }}
                           />
                         </Col>
@@ -163,16 +170,6 @@ const EditAdmin = () => {
                             placeholder='Enter the email address'
                             required
                             disabled
-                            validation={{
-                              pattern: {
-                                value: EMAIL,
-                                message: validationErrors.email
-                              },
-                              required: {
-                                value: true,
-                                message: validationErrors?.emailRequired
-                              }
-                            }}
                           />
                         </Col>
 
@@ -196,6 +193,14 @@ const EditAdmin = () => {
                                 value: true,
                                 message: 'Company name is required.'
                               },
+                              minLength: {
+                                value: 5,
+                                message: 'Company name must be atleast 5 char long.'
+                              },
+                              maxLength: {
+                                value: 20,
+                                message: 'Company name must be less than 20 char long.'
+                              }
                             }}
                           />
                         </Col>

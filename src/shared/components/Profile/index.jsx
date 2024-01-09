@@ -53,6 +53,10 @@ function EditProfileComponent ({ register, errors, profileData, handleChange, co
             required: {
               value: true,
               message: validationErrors?.emailRequired
+            },
+            maxLength: {
+              value: 45,
+              message: 'Email address must be less than 45 char long.'
             }
           }}
         />
@@ -79,6 +83,14 @@ function EditProfileComponent ({ register, errors, profileData, handleChange, co
               value: /^\+?[6-9][0-9]{8,12}$/,
               message: 'Invalid Mobile Number'
             },
+            minLength: {
+              value: 10,
+              message: 'Please enter a valid mobile number.'
+            },
+            maxLength: {
+              value: 10,
+              message: 'Mobile number should be of 10 digits.'
+            }
           }}
           min={0}
           max={9999999999}

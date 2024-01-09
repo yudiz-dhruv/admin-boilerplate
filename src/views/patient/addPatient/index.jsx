@@ -121,6 +121,14 @@ const AddPatient = () => {
                                                         value: true,
                                                         message: 'Patient name is required.'
                                                     },
+                                                    minLength: {
+                                                        value: 2,
+                                                        message: 'Please enter atleast 2 characters.'
+                                                    },
+                                                    maxLength: {
+                                                        value: 50,
+                                                        message: 'Name must be less than 50 char long.'
+                                                    }
                                                 }}
                                             />
                                         </Col>
