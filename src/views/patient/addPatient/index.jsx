@@ -20,6 +20,7 @@ const AddPatient = () => {
 
     const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
 
+    const [isButtonDisabled, setButtonDisabled] = useState(false)
     const [payload, setPayload] = useState()
 
     // SPEICIFC PATIENT
@@ -76,6 +77,12 @@ const AddPatient = () => {
 
 
     async function onSubmit (data) {
+        if (isButtonDisabled) {
+            return;
+        }
+
+        setButtonDisabled(true)
+
         let addData = {
             sUserName: data?.sUserName || '',
             sMobile: data?.sMobile || '',
@@ -86,6 +93,10 @@ const AddPatient = () => {
         }
 
         location?.state === 'edit' ? updateMutate({ ...payload, id }) : mutate(addData)
+
+        setTimeout(() => {
+            setButtonDisabled(false)
+        }, 5000)
     }
 
     useEffect(() => {
@@ -326,10 +337,10 @@ const AddPatient = () => {
                                         <Row className='mt-3'>
                                             <Col sm={12}>
                                                 {location?.state === 'edit' ?
-                                                    <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty}>
+                                                    <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
                                                         Update Patient
                                                     </Button> :
-                                                    <Button variant='primary' type='submit' className='me-2 square'>
+                                                    <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
                                                         Add Patient
                                                     </Button>
                                                 }

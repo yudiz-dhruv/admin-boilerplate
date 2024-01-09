@@ -112,7 +112,7 @@ function DataTable ({
                   name='selectAll'
                   className='form-check m-0'
                   onChange={selectAllEvent}
-                  checked={selectAllValue.length ? selectAllValue.every((item) => item.value) : false}
+                  checked={selectAllValue?.length ? selectAllValue?.every((item) => item.value) : false}
                   label='&nbsp;'
                 />
               </th>

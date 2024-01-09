@@ -26,6 +26,7 @@ const EditAdmin = () => {
   const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch, getValues } = useForm({ mode: 'all' })
 
   const [payload, setPayload] = useState()
+  const [isButtonDisabled, setButtonDisabled] = useState(false)
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
@@ -51,8 +52,8 @@ const EditAdmin = () => {
       reset({
         ...data,
         aGamesName: gameData,
-        dStartAt: new Date(data?.oGameValidity?.dStartAt),
-        dEndAt: new Date(data?.oGameValidity?.dEndAt),
+        dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
+        dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
       })
     }
   }, [data, eGameDropdown, reset])
@@ -87,7 +88,16 @@ const EditAdmin = () => {
   }, [dirtyFields, watch('sUserName'), watch('sCompanyName'), watch('aGamesName'), watch('nPrice'), watch('dStartAt'), watch('dEndAt'), watch('sAvatar')])
 
   async function onSubmit (data) {
+    if (isButtonDisabled) {
+      return;
+    }
+
+    setButtonDisabled(true)
     updateMutate({ ...payload, id })
+
+    setTimeout(() => {
+      setButtonDisabled(false)
+    }, 5000)
   }
 
   useEffect(() => {
@@ -353,7 +363,7 @@ const EditAdmin = () => {
 
                         <Row className='mt-4'>
                           <Col sm={12}>
-                            <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty}>
+                            <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
                               Update Admin
                             </Button>
                             <Button variant='secondary' className='square' onClick={() => navigate(route.admin)}>

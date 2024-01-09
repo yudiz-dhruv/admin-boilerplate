@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { fileToDataUri, toaster } from 'helper/helper'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +22,8 @@ const AddAdmin = () => {
   const { register, handleSubmit, formState: { errors }, control, reset, watch, getValues } = useForm({ mode: 'all' })
   const fileInputRef = useRef(null)
 
+  const [isButtonDisabled, setButtonDisabled] = useState(false)
+
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
     select: (data) => data?.data?.data,
@@ -37,6 +39,12 @@ const AddAdmin = () => {
   })
 
   async function onSubmit (data) {
+    if (isButtonDisabled) {
+      return;
+    }
+
+    setButtonDisabled(true)
+
     let addData = {
       sUserName: data?.sUserName || '',
       sEmail: data?.sEmail || '',
@@ -55,6 +63,10 @@ const AddAdmin = () => {
     }
 
     mutate(addData)
+
+    setTimeout(() => {
+      setButtonDisabled(false)
+    }, 5000)
   }
 
   const handleFileInputClick = () => {
@@ -375,7 +387,7 @@ const AddAdmin = () => {
 
                     <Row className='mt-4'>
                       <Col sm={12}>
-                        <Button variant='primary' type='submit' className='me-2 square'>
+                        <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
                           Add Admin
                         </Button>
                         <Button variant='secondary' className='square' onClick={() => navigate(route.admin)}>

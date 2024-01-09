@@ -32,7 +32,7 @@ const PatientManagement = () => {
             orderBy: 'ASC',
             totalElements: +data?.totalElements || 0,
             eDominantEye: data?.eDominantEye || '',
-            eStatus: data?.eStatus || ''
+            eStatus: data?.eStatus || 'y'
         }
     }
 

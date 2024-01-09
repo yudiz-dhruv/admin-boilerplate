@@ -79,7 +79,7 @@ function Header ({ isOpen }) {
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>
             <div className='img d-flex align-items-center justify-content-center'>
-              {data?.eUserType === 'admin' ? <img src={data?.sAvatar} alt="" /> : <FontAwesomeIcon icon={faUser} />}
+              {data?.eUserType === 'admin' ? data?.sAvatar === '' ? <FontAwesomeIcon icon={faUser} /> : <img src={data?.sAvatar} alt="" /> : <FontAwesomeIcon icon={faUser} />}
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu className='up-arrow'>

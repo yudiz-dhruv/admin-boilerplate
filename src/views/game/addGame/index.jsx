@@ -21,6 +21,7 @@ const AddGame = () => {
     const { register, handleSubmit, formState: { errors }, control, reset, watch } = useForm({ mode: 'all' })
     const fileInputRef = useRef(null)
 
+    const [isButtonDisabled, setButtonDisabled] = useState(false)
     const [show, setShow] = useState(false)
     const target = useRef(null)
 
@@ -59,6 +60,12 @@ const AddGame = () => {
     })
 
     async function onSubmit (data) {
+        if (isButtonDisabled) {
+            return;
+        }
+
+        setButtonDisabled(true)
+
         let addData = {
             sName: data?.sName || '',
             sDescription: data?.sDescription || '',
@@ -86,6 +93,10 @@ const AddGame = () => {
         }
 
         location?.state === 'edit' ? updateMutate(editData) : mutate(addData)
+
+        setTimeout(() => {
+            setButtonDisabled(false)
+        }, 5000)
     }
 
     const handleFileInputClick = () => {
@@ -304,7 +315,7 @@ const AddGame = () => {
 
                                         <Row className='mt-3'>
                                             <Col sm={12}>
-                                                <Button variant='primary' type='submit' className='me-2 square'>
+                                                <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
                                                     {location?.state === 'edit' ? 'Update Game' : 'Add Game'}
                                                 </Button>
                                                 <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
