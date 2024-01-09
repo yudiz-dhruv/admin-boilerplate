@@ -22,12 +22,12 @@
             gap: 10px;
             width: fit-content;
             position: relative;
-            background-color: #fff;
             padding: 0.5rem;
             border-radius: 99px;
-            background-color: #307194bf !important;
+            background-color: #216b93d5 !important;
             border-radius: 50px;
             box-shadow: 6px 8px 10px #08080852;
+
             * {
                 z-index: 2;
             }
@@ -127,6 +127,48 @@
                     &:hover {
                         box-shadow: none !important;
                     }
+                }
+            }
+        }
+    }
+}
+
+body.dark {
+    .game-settings {
+        .settings {
+            .tabs {
+                background-color: #256384c7 !important;
+                box-shadow: 6px 6px 10px #00000095;
+
+                * {
+                    z-index: 2;
+                }
+
+                button {
+                    &:hover {
+                        color: var(--secondary-400) !important;
+                    }
+
+                    &.checked {
+                        background-color: var(--secondary-800) !important;
+
+                        span {
+                            color: var(--primary-color) !important;
+                        }
+                    }
+                }
+            }
+
+            .slider-input {
+                .slider-label {
+                    color: var(--secondary-300);
+
+                    span {
+                        &.value {
+                            color: var(--text-hover);
+                        }
+                    }
+
                 }
             }
         }

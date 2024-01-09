@@ -58,10 +58,46 @@ export const eHoopieLevels = [
     { label: '5', value: 5 },
 ]
 
+export const eRingRunnerLevels = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+]
+
+export const eStimulusSizes = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+]
+
+export const eTurboGameType = [
+    { label: 'Normal', value: 'normal' },
+    { label: 'Headlock', value: 'headlock' }
+]
+
+export const eHeadlockType = [
+    { label: 'Normal', value: 'normal' },
+    { label: 'Vertical', value: 'vertical' },
+    { label: 'Horizontal', value: 'horizontal' }
+]
+
 export const eHoopSize = [
     { label: '1.2', value: 1.2 },
 ]
 
 export const eBallSpeed = [
     { label: '10', value: 10 },
+]
+
+export const eBubbleDistance = [
+    { label: '0.1', value: 0.1 },
+    { label: '0.2', value: 0.2 },
+    { label: '0.3', value: 0.3 },
+]
+
+export const eOrientation = [
+    { label: 'Portrait', value: 'portrait', angle: '90°' },
+    { label: 'Landscape', value: 'landscape', angle: '180°' },
+    { label: 'Diagonal', value: 'diagonal', angle: '45°' },
+    { label: 'Opposite Diagonal', value: 'opposite diagonal', angle: '135°' },
 ]
