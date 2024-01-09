@@ -29,8 +29,8 @@ export const validationErrors = {
   privacypolicy: <FormattedMessage id='privacypolicyrequred' />,
   minLength: (length) => `${useIntl().formatMessage({ id: 'enterGreater' })} ${length}.`,
   rangeLength: (min, max) =>
-    `${useIntl().formatMessage({ id: 'rangeLength' })} ${min} ${useIntl().formatMessage({ id: 'and' })} ${max} ${useIntl().formatMessage({
-      id: 'charLong'
+    `${useIntl().formatMessage({ id: 'Range Length should be from ' })} ${min} ${useIntl().formatMessage({ id: ' to ' })} ${max} ${useIntl().formatMessage({
+      id: ' char Long.'
     })}`,
   maxLength: (length) => `${useIntl().formatMessage({ id: 'enterLess' })} ${length}.`,
   passwordNotMatch: <FormattedMessage id='passwordNotMatch' />,

@@ -49,8 +49,8 @@ const PatientManagement = () => {
         select: (data) => data.data.data,
     })
 
-     // EDIT PATIENT
-     const { mutate: updateMutate } = useMutation(updatePatient, {
+    // EDIT PATIENT
+    const { mutate: updateMutate } = useMutation(updatePatient, {
         onSettled: (response, err) => {
             if (response) {
                 toaster('Patient Status Updated Successfully.', 'success')

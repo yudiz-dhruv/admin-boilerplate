@@ -111,7 +111,11 @@
   label {
     display: block;
     border-radius: 2px;
-    color: var(--white-color);
+    color: var(--primary-color) !important;
+    font-family: 'Helvetica-Bold';
+    text-transform: uppercase !important;
+    font-weight: 600;
+    font-size: 12px !important;
     cursor: pointer;
     width: 20px;
     height: 20px;
@@ -120,7 +124,7 @@
       width: 20px;
       height: 20px;
       content: '';
-      background: var(--input-color);
+      background: none;
       border-radius: 2px;
       position: absolute;
       left: 50%;
@@ -140,7 +144,7 @@
     cursor: pointer;
     visibility: hidden;
 
-    &:checked~label {
+    &:checked {
       &:after {
         background: url('../../images/check.svg') no-repeat center, var(--primary-color);
       }

@@ -130,8 +130,8 @@ function ResetPassword () {
                         value: PASSWORD,
                         message: validationErrors.passwordRegEx
                       },
-                      maxLength: { value: 15, message: validationErrors.rangeLength(8, 15) },
-                      minLength: { value: 8, message: validationErrors.rangeLength(8, 15) },
+                      maxLength: { value: 12, message: validationErrors.rangeLength(8, 12) },
+                      minLength: { value: 8, message: validationErrors.rangeLength(8, 12) },
                       onChange: (e) => {
                         e.target.value = e?.target?.value?.trim()
                       }
