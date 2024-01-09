@@ -48,7 +48,7 @@ const AddAdmin = () => {
       sAvatar: '',
     }
     const sAvatarFile = data?.sAvatar;
-    
+
     if (sAvatarFile) {
       const dataUri = await fileToDataUri(sAvatarFile);
       addData.sAvatar = dataUri
@@ -95,7 +95,7 @@ const AddAdmin = () => {
                             name={`sAvatar`}
                             control={control}
                             rules={{
-                              required: "Please add game logo",
+                              required: "Please add admin profile",
                               validate: {
                                 fileType: (value) => {
                                   if (value && typeof (watch(`sAvatar`)) !== 'string') {
@@ -128,6 +128,7 @@ const AddAdmin = () => {
                                   errors={errors}
                                   className={errors?.sAvatar && 'error'}
                                   onChange={(e) => {
+                                    console.log('e.target.files :>> ', e.target.files);
                                     onChange(e.target.files[0])
                                   }}
                                 />
@@ -136,7 +137,7 @@ const AddAdmin = () => {
                           />
                         </div>
 
-                        <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                        <span className='card-error mt-1'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
                       </div>
                     </Col>
                   </Row>

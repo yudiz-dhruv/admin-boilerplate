@@ -26,6 +26,7 @@ export default function ChangePassword () {
   } = useForm({
     mode: 'all'
   })
+
   const sNewPassword = useRef({})
   sNewPassword.current = watch('sNewPassword')
 
@@ -41,8 +42,8 @@ export default function ChangePassword () {
       navigate('/login')
     },
     onError: (err) => {
-      toaster(err?.data?.message)
       navigate('/change-password')
+      toaster(err?.response?.data?.message, 'error')
     }
   })
 
@@ -99,26 +100,11 @@ export default function ChangePassword () {
                       }
                     })}
                   />
-                  <Button
-                    onClick={handleCurrentPasswordToggle}
-                    variant='link'
-                    className='icon-right'
-                  >
-                    <i
-                      className={
-                        showCurrentPassword
-                          ? 'icon-visibility'
-                          : 'icon-visibility-off'
-                      }
-                    ></i>
-                  </Button>
+                  <Button onClick={handleCurrentPasswordToggle} variant='link' className='icon-right'><i className={showCurrentPassword ? 'icon-visibility' : 'icon-visibility-off'}></i></Button>
                 </InputGroup>
-                {errors.sCurrentPassword && (
-                  <Form.Control.Feedback type='invalid'>
-                    {errors.sCurrentPassword.message}
-                  </Form.Control.Feedback>
-                )}
+                {errors.sCurrentPassword && (<Form.Control.Feedback type='invalid'>{errors.sCurrentPassword.message}</Form.Control.Feedback>)}
               </Form.Group>
+
               <Form.Group className='form-group'>
                 <Form.Label>
                   <FormattedMessage id='newPassword' />
@@ -150,32 +136,18 @@ export default function ChangePassword () {
                       minLength: {
                         value: 8,
                         message: validationErrors.rangeLength(8, 12)
-                      }
+                      },
+                      validate: (value) => value === watch('sCurrentPassword') ? 'Password must not be same as previous one.' : clearErrors('sNewPassword'),
                     })}
                     onChange={(e) => {
                       e.target.value = e.target.value?.trim()
                     }}
                   />
-                  <Button
-                    onClick={handleNewPasswordToggle}
-                    variant='link'
-                    className='icon-right'
-                  >
-                    <i
-                      className={
-                        showNewPassword
-                          ? 'icon-visibility'
-                          : 'icon-visibility-off'
-                      }
-                    ></i>
-                  </Button>
+                  <Button onClick={handleNewPasswordToggle} variant='link' className='icon-right'><i className={showNewPassword ? 'icon-visibility' : 'icon-visibility-off'}></i></Button>
                 </InputGroup>
-                {errors.sNewPassword && (
-                  <Form.Control.Feedback type='invalid'>
-                    {errors.sNewPassword.message}
-                  </Form.Control.Feedback>
-                )}
+                {errors.sNewPassword && (<Form.Control.Feedback type='invalid'>{errors.sNewPassword.message}</Form.Control.Feedback>)}
               </Form.Group>
+
               <Form.Group className='form-group'>
                 <Form.Label>
                   <FormattedMessage id='confirmNewPassword' />
@@ -202,25 +174,9 @@ export default function ChangePassword () {
                       }
                     })}
                   />
-                  <Button
-                    onClick={handleConfirmPasswordToggle}
-                    variant='link'
-                    className='icon-right'
-                  >
-                    <i
-                      className={
-                        showConfirmPassword
-                          ? 'icon-visibility'
-                          : 'icon-visibility-off'
-                      }
-                    ></i>
-                  </Button>
+                  <Button onClick={handleConfirmPasswordToggle} variant='link' className='icon-right'><i className={showConfirmPassword ? 'icon-visibility' : 'icon-visibility-off'}></i></Button>
                 </InputGroup>
-                {errors.sConfirmPassword && (
-                  <Form.Control.Feedback type='invalid'>
-                    {errors.sConfirmPassword.message}
-                  </Form.Control.Feedback>
-                )}
+                {errors.sConfirmPassword && (<Form.Control.Feedback type='invalid'>{errors.sConfirmPassword.message}</Form.Control.Feedback>)}
               </Form.Group>
               <Col lg={12} className='d-flex align-items-center justify-content-end mt-4'>
                 <div className='top-d-button'>

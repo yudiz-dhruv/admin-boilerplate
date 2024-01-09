@@ -128,7 +128,7 @@ function ResetPassword () {
                       required: 'New password is required.',
                       pattern: {
                         value: PASSWORD,
-                        message: validationErrors.passwordRegEx
+                        message: 'Provide a valid Password.'
                       },
                       maxLength: { value: 12, message: validationErrors.rangeLength(8, 12) },
                       minLength: { value: 8, message: validationErrors.rangeLength(8, 12) },
