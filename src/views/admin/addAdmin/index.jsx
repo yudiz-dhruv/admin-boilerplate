@@ -137,7 +137,7 @@ const AddAdmin = () => {
                           />
                         </div>
 
-                        <span className='card-error mt-1'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                        <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
                       </div>
                     </Col>
                   </Row>
@@ -163,6 +163,14 @@ const AddAdmin = () => {
                             value: true,
                             message: validationErrors.nameRequired
                           },
+                          minLength: {
+                            value: 2,
+                            message: 'Please enter atleast 2 characters.'
+                          },
+                          maxLength: {
+                            value: 50,
+                            message: 'Name must be less than 50 char long.'
+                          }
                         }}
                       />
                     </Col>
@@ -179,7 +187,7 @@ const AddAdmin = () => {
                         validation={{
                           pattern: {
                             value: EMAIL,
-                            message: validationErrors.email
+                            message: 'Provide a valid email address.'
                           },
                           required: {
                             value: true,
@@ -209,6 +217,14 @@ const AddAdmin = () => {
                             value: true,
                             message: 'Company name is required.'
                           },
+                          minLength: {
+                            value: 5,
+                            message: 'Company name must be atleast 5 char long.'
+                          },
+                          maxLength: {
+                            value: 20,
+                            message: 'Company name must be less than 20 char long.'
+                          }
                         }}
                       />
                     </Col>
