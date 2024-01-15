@@ -1,32 +1,73 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
-import { toaster } from 'helper/helper'
-import { useMutation } from 'react-query'
-import { useNavigate } from 'react-router-dom'
-import { route } from 'shared/constants/AllRoutes'
-import { useForm, Controller } from 'react-hook-form'
+import { getDirtyFormValues, toaster } from 'helper/helper'
+import { updatePatient } from 'query/patient/patient.mutation'
+import { getPatientById } from 'query/patient/patient.query'
 import { Button, Col, Form, Row } from 'react-bootstrap'
-import Wrapper from 'shared/components/Wrap'
+import { useMutation, useQuery } from 'react-query'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
-import Select from 'react-select'
+import Wrapper from 'shared/components/Wrap'
+import { route } from 'shared/constants/AllRoutes'
 import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
-import { addPatient } from 'query/patient/patient.mutation'
+import { useForm, Controller } from 'react-hook-form'
+import Select from 'react-select'
 
-const AddPatient = () => {
+const EditPatient = () => {
+    const location = useLocation()
     const navigate = useNavigate()
+    const { id } = useParams()
 
-    const { register, handleSubmit, formState: { errors }, control, reset } = useForm({ mode: 'all' })
+    const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
+    const [payload, setPayload] = useState()
 
-    // ADD PATIENT
-    const { mutate } = useMutation(addPatient, {
-        onSuccess: (res) => {
-            toaster('New Patient Record Added Successfully.', 'success')
-            navigate(route.patient)
-            reset()
+    // SPEICIFC PATIENT
+    const { data } = useQuery('patientDataById', () => getPatientById(id), {
+        enabled: !!id,
+        select: (data) => data?.data?.data,
+    })
+
+    useEffect(() => {
+        reset({
+            ...data,
+            sUserName: data?.sUserName || '',
+            sMobile: data?.sMobile || '',
+            sAge: data?.sAge || '',
+            eDominantEye: eDominantEyeOptions?.find(item => item?.value === data?.eDominantEye),
+            eAmblyopia: eIsPresent?.find(item => item?.value === data?.eAmblyopia),
+            eStrabismus: eIsPresent?.find(item => item?.value === data?.eStrabismus),
+        })
+    }, [data])
+
+    // EDIT PATIENT
+    const { mutate: updateMutate } = useMutation(updatePatient, {
+        onSettled: (response, err) => {
+            if (response) {
+                toaster('Patient Record Updated Successfully.', 'success')
+                navigate(route.patient)
+
+                reset()
+            } else {
+                toaster(err.data.message, 'error')
+            }
         }
     })
+
+    useEffect(() => {
+        const isDirtyData = {
+            sUserName: watch('sUserName'),
+            sMobile: watch('sMobile'),
+            sAge: watch('sAge'),
+            eDominantEye: watch('eDominantEye')?.value,
+            eAmblyopia: watch('eAmblyopia')?.value,
+            eStrabismus: watch('eStrabismus')?.value
+        }
+
+        const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
+        setPayload(payloadData)
+    }, [dirtyFields, watch('sUserName'), watch('sMobile'), watch('sAge'), watch('eDominantEye'), watch('eAmblyopia'), watch('eStrabismus')])
 
     async function onSubmit (data) {
         if (isButtonDisabled) {
@@ -35,16 +76,7 @@ const AddPatient = () => {
 
         setButtonDisabled(true)
 
-        let addData = {
-            sUserName: data?.sUserName || '',
-            sMobile: data?.sMobile || '',
-            sAge: +data?.sAge || '',
-            eDominantEye: data?.eDominantEye?.value || '',
-            eAmblyopia: data?.eAmblyopia?.value || '',
-            eStrabismus: data?.eStrabismus?.value || ''
-        }
-
-        mutate(addData)
+        updateMutate({ ...payload, id })
 
         setTimeout(() => {
             setButtonDisabled(false)
@@ -52,9 +84,8 @@ const AddPatient = () => {
     }
 
     useEffect(() => {
-        document.title = 'Add Patient | Yantra Healthcare'
+        document.title = 'Edit Patient | Yantra Healthcare'
     }, [])
-
     return (
         <>
             <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
@@ -109,6 +140,7 @@ const AddPatient = () => {
                                                 className={`form-control ${errors?.sMobile && 'error'}`}
                                                 name='sMobile'
                                                 label='Mobile'
+                                                disabled={location?.state === 'edit'}
                                                 placeholder='Enter mobile number'
                                                 required
                                                 validation={{
@@ -146,9 +178,10 @@ const AddPatient = () => {
                                                 className={`form-control ${errors?.sAge && 'error'}`}
                                                 name='sAge'
                                                 label='Age'
+                                                disabled={location?.state === 'edit'}
                                                 placeholder='Enter the patient age'
                                                 required
-                                                maxLength={3}
+                                                max={100}
                                                 validation={{
                                                     pattern: {
                                                         value: /^[0-9]+$/,
@@ -293,8 +326,8 @@ const AddPatient = () => {
 
                                         <Row className='mt-3'>
                                             <Col sm={12}>
-                                                <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
-                                                    Add Patient
+                                                <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
+                                                    Update Patient
                                                 </Button>
                                                 <Button variant='secondary' onClick={() => navigate(route.patient)} className='square'>
                                                     Cancel
@@ -312,4 +345,4 @@ const AddPatient = () => {
     )
 }
 
-export default AddPatient
+export default EditPatient

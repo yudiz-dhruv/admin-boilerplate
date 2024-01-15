@@ -103,8 +103,8 @@ function CommonInput ({
                   onBlur && onBlur(e)
                   setRegister.onChange(e)
                 }}
-                />
-                {updateFlag && <FontAwesomeIcon icon={faPen} />}
+              />
+              {updateFlag && <FontAwesomeIcon icon={faPen} />}
               {isLoading && <CommonSpinner />}
             </div>
           )

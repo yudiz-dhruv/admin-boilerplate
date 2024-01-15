@@ -123,7 +123,7 @@ const EditAdmin = () => {
                                   <div className="document-preview-group">
                                     {watch('sAvatar') && (
                                       typeof (watch('sAvatar')) !== 'string'
-                                        ? <div className="document-preview"> { }<img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
+                                        ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
                                         : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
                                     }
                                   </div>
@@ -148,6 +148,7 @@ const EditAdmin = () => {
                             label='Name'
                             placeholder='Enter the name'
                             required
+                            maxLength={50}
                             onChange={(e) => {
                               e.target.value =
                                 e.target.value?.trim() &&
@@ -165,6 +166,10 @@ const EditAdmin = () => {
                               maxLength: {
                                 value: 50,
                                 message: 'Name must be less than 50 char long.'
+                              },
+                              pattern: {
+                                value: /^[a-zA-Z ]+$/,
+                                message: 'Special characters and numbers are not allowed'
                               }
                             }}
                           />
@@ -191,6 +196,7 @@ const EditAdmin = () => {
                             className={`form-control ${errors?.sCompanyName && 'error'}`}
                             name='sCompanyName'
                             label='Company Name'
+                            maxLength={20}
                             placeholder='Enter the company name'
                             required
                             onChange={(e) => {
@@ -210,6 +216,10 @@ const EditAdmin = () => {
                               maxLength: {
                                 value: 20,
                                 message: 'Company name must be less than 20 char long.'
+                              },
+                              pattern: {
+                                value: /^[a-zA-Z ]+$/,
+                                message: 'Special characters and numbers are not allowed'
                               }
                             }}
                           />
@@ -311,6 +321,7 @@ const EditAdmin = () => {
                                   className="datepicker-inputbox"
                                   showIcon
                                   toggleCalendarOnIconClick
+                                  minDate={new Date(watch('dStartAt'))}
                                 />
                               )}
                             />

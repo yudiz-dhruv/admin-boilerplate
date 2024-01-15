@@ -23,6 +23,7 @@ const AddGame = () => {
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
     const [assetFile, setAssetFile] = useState()
+    const [imgInput, setImgInput] = useState()
 
     // ADD GAME
     const { mutate } = useMutation(addGame, {
@@ -48,14 +49,14 @@ const AddGame = () => {
             eCategory: data?.eCategory?.value
         }
 
-        const sAvatarFile = data?.sAvatar;
+        const sAvatarFile = data?.sAvatar ? data?.sAvatar : imgInput?.previousFile;
 
         if (sAvatarFile) {
             const dataAvatar = await fileToDataUri(sAvatarFile);
             addData.sAvatar = dataAvatar;
         }
 
-        const sBundleFile = data?.sUrl ? data?.sUrl : assetFile?.previousFile;
+        const sBundleFile = data?.sUrl ? data?.sUrl : assetFile?.previousFile
 
         if (sBundleFile) {
             const dataUri = await fileToDataUri(sBundleFile);
@@ -94,13 +95,13 @@ const AddGame = () => {
                                                     <div className='fileinput'>
                                                         <div className='inputtypefile'>
                                                             <div className='inputMSG'>
-                                                                {!errors?.sAvatar && watch('sAvatar') ? <>
+                                                                {watch('sAvatar') || imgInput?.currentFile || imgInput?.previousFile ? <>
                                                                     <div className="document-preview-group">
                                                                         <div className='img-over' onClick={handleFileInputClick}>Change Game Logo</div>
-                                                                        {watch('sAvatar') && (
+                                                                        {(watch('sAvatar') || imgInput?.currentFile || imgInput?.previousFile) && (
                                                                             typeof (watch('sAvatar')) !== 'string'
-                                                                                ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
-                                                                                : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
+                                                                                ? <div className="document-preview"> {imgInput?.previousFile ? <img src={URL.createObjectURL(imgInput?.previousFile)} alt='altImage' /> : <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' />} </div>
+                                                                                : <div className="document-preview"> {imgInput?.previousFile ? <img src={imgInput?.previousFile} alt='altImage' /> : <img src={watch('sAvatar')} alt='altImage' />} </div>)
                                                                         }
                                                                     </div>
                                                                 </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
@@ -132,13 +133,22 @@ const AddGame = () => {
                                                                 render={({ field: { onChange, value, ref } }) => {
                                                                     return <>
                                                                         <Form.Control
-                                                                            ref={ref}
+                                                                            ref={(e) => {
+                                                                                ref(e);
+                                                                                fileInputRef.current = e;
+                                                                            }}
                                                                             type='file'
                                                                             name={`sAvatar`}
+                                                                            defaultValue={imgInput?.previousFile}
                                                                             accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
                                                                             errors={errors}
                                                                             className={errors?.sAvatar && 'error'}
                                                                             onChange={(e) => {
+                                                                                setImgInput((prev) => ({
+                                                                                    ...prev,
+                                                                                    previousFile: prev?.currentFile,
+                                                                                    currentFile: e.target.files[0],
+                                                                                }))
                                                                                 onChange(e.target.files[0])
                                                                             }}
                                                                         />
@@ -147,7 +157,7 @@ const AddGame = () => {
                                                             />
                                                         </div>
 
-                                                        <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                                                        <span className='card-error'>{imgInput?.previousFile ? '' : errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
                                                     </div>
                                                 </Col>
                                                 <Col sm={12} className=''>
@@ -165,11 +175,20 @@ const AddGame = () => {
                                                                 e.target.value?.trim() &&
                                                                 e.target.value.replace(/^[0-9]+$/g, '')
                                                         }}
+                                                        maxLength={20}
                                                         validation={{
                                                             required: {
                                                                 value: true,
                                                                 message: validationErrors.gameNameRequired
                                                             },
+                                                            maxLength: {
+                                                                value: 20,
+                                                                message: 'Game name must be less than 20 char long.'
+                                                            },
+                                                            pattern: {
+                                                                value: /^[a-zA-Z ]+$/,
+                                                                message: 'Special characters & numbers are not allowed'
+                                                            }
                                                         }}
                                                     />
                                                 </Col>

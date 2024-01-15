@@ -126,6 +126,7 @@ const EditGame = () => {
                                                         label='Game Name'
                                                         placeholder='Enter game name'
                                                         required
+                                                        maxLength={20}
                                                         onChange={(e) => {
                                                             e.target.value =
                                                                 e.target.value?.trim() &&
@@ -136,6 +137,14 @@ const EditGame = () => {
                                                                 value: true,
                                                                 message: validationErrors.gameNameRequired
                                                             },
+                                                            maxLength: {
+                                                                value: 20,
+                                                                message: 'Game name must be less than 20 char long.'
+                                                            },
+                                                            pattern: {
+                                                                value: /^[a-zA-Z ]+$/,
+                                                                message: 'Special characters & numbers are not allowed'
+                                                            }
                                                         }}
                                                     />
                                                 </Col>

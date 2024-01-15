@@ -37,6 +37,7 @@ const AdminGameSettings = lazy(() => import('views/adminGame/internalGameSetting
 // PATIENT MANAGEMENT
 const PatientManagement = lazy(() => import('views/patient'))
 const AddPatient = lazy(() => import('views/patient/addPatient'))
+const EditPatient = lazy(() => import('views/patient/editPatient'))
 const ViewPatient = lazy(() => import('views/patient/viewPatient'))
 
 const RoutesDetails = [
@@ -74,7 +75,7 @@ const RoutesDetails = [
 
       { path: route.patient, Component: PatientManagement, exact: true },
       { path: route.addPatient, Component: AddPatient, exact: true },
-      { path: route.editPatient(':id'), Component: AddPatient, exact: true },
+      { path: route.editPatient(':id'), Component: EditPatient, exact: true },
       { path: route.viewPatient(':id'), Component: ViewPatient, exact: true },
 
       { path: route.game, Component: GameManagement, exact: true },

@@ -23,6 +23,7 @@ const AddAdmin = () => {
   const fileInputRef = useRef(null)
 
   const [isButtonDisabled, setButtonDisabled] = useState(false)
+  const [fileInput, setFileInput] = useState()
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
@@ -55,7 +56,7 @@ const AddAdmin = () => {
       sCompanyName: data?.sCompanyName || '',
       sAvatar: '',
     }
-    const sAvatarFile = data?.sAvatar;
+    const sAvatarFile = data?.sAvatar ? data?.sAvatar : fileInput?.previousFile
 
     if (sAvatarFile) {
       const dataUri = await fileToDataUri(sAvatarFile);
@@ -92,13 +93,13 @@ const AddAdmin = () => {
                       <div className='fileinput'>
                         <div className='inputtypefile'>
                           <div className='inputMSG'>
-                            {watch('sAvatar') ? <>
+                            {watch('sAvatar') || fileInput?.currentFile || fileInput?.previousFile ? <>
                               <div className="document-preview-group">
                                 <div className='img-over' onClick={handleFileInputClick}>Change Profile</div>
-                                {watch('sAvatar') && (
+                                {(watch('sAvatar') || fileInput?.currentFile || fileInput?.previousFile) && (
                                   typeof (watch('sAvatar')) !== 'string'
-                                    ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
-                                    : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
+                                    ? <div className="document-preview"> {fileInput?.previousFile ? <img src={URL.createObjectURL(fileInput?.previousFile)} alt='altImage' /> : <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' />} </div>
+                                    : <div className="document-preview"> {fileInput?.previousFile ? <img src={fileInput?.previousFile} alt='altImage' /> : <img src={watch('sAvatar')} alt='altImage' />} </div>)
                                 }
                               </div>
                             </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
@@ -134,12 +135,18 @@ const AddAdmin = () => {
                                     ref(e);
                                     fileInputRef.current = e;
                                   }}
+                                  defaultValue={fileInput?.previousFile}
                                   type='file'
                                   name={`sAvatar`}
                                   accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
                                   errors={errors}
                                   className={errors?.sAvatar && 'error'}
                                   onChange={(e) => {
+                                    setFileInput((prev) => ({
+                                      ...prev,
+                                      previousFile: prev?.currentFile,
+                                      currentFile: e.target.files[0],
+                                    }))
                                     onChange(e.target.files[0])
                                   }}
                                 />
@@ -148,7 +155,7 @@ const AddAdmin = () => {
                           />
                         </div>
 
-                        <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                        <span className='card-error'>{fileInput?.previousFile ? '' : errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
                       </div>
                     </Col>
                   </Row>
@@ -169,6 +176,7 @@ const AddAdmin = () => {
                             e.target.value?.trim() &&
                             e.target.value.replace(/^[0-9]+$/g, '')
                         }}
+                        maxLength={50}
                         validation={{
                           required: {
                             value: true,
@@ -181,6 +189,10 @@ const AddAdmin = () => {
                           maxLength: {
                             value: 50,
                             message: 'Name must be less than 50 char long.'
+                          },
+                          pattern: {
+                            value: /^[a-zA-Z ]+$/,
+                            message: 'Special characters and numbers are not allowed'
                           }
                         }}
                       />
@@ -203,6 +215,10 @@ const AddAdmin = () => {
                           required: {
                             value: true,
                             message: validationErrors?.emailRequired
+                          },
+                          maxLength: {
+                            value: 45,
+                            message: 'Email address must be less than 45 char long.'
                           }
                         }}
                       />
@@ -223,6 +239,7 @@ const AddAdmin = () => {
                             e.target.value?.trim() &&
                             e.target.value.replace(/^[0-9]+$/g, '')
                         }}
+                        maxLength={20}
                         validation={{
                           required: {
                             value: true,
@@ -235,6 +252,10 @@ const AddAdmin = () => {
                           maxLength: {
                             value: 20,
                             message: 'Company name must be less than 20 char long.'
+                          },
+                          pattern: {
+                            value: /^[a-zA-Z ]+$/,
+                            message: 'Special characters and numbers are not allowed'
                           }
                         }}
                       />
@@ -335,6 +356,7 @@ const AddAdmin = () => {
                               className="datepicker-inputbox"
                               showIcon
                               toggleCalendarOnIconClick
+                              minDate={new Date()}
                             />
                           )}
                         />
