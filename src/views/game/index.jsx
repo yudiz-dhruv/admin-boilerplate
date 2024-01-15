@@ -29,6 +29,7 @@ const GameManagement = () => {
       search: data?.search || '',
       nLimit: data?.nLimit || 10,
       eStatus: data.eStatus || 'y',
+      eCategory: data?.eCategory || '',
       sort: data.sort || '',
       orderBy: +data.orderBy === 1 ? 'ASC' : 'DESC',
       totalElements: +data?.totalElements || 0

@@ -74,7 +74,7 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                     </Form.Group>
                 </div>
 
-                <div className='slider-input mt-3 pb-2'>
+                <div className='slider-input mt-3'>
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>{LABELS?.BLUR_LEVEL}</span>

@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import Select from 'react-select'
-import { eDominantEyeOptions } from 'shared/constants/TableHeaders'
+import { eDominantEyeFilters } from 'shared/constants/TableHeaders'
 
 const PatientListFilters = ({ defaultValue, setRequestParams }) => {
     const { control, reset } = useForm({})
@@ -18,7 +18,7 @@ const PatientListFilters = ({ defaultValue, setRequestParams }) => {
 
     useEffect(() => {
         reset({
-            eDominantEye: eDominantEyeOptions?.find(item => item?.value === defaultValue?.eDominantEye),
+            eDominantEye: eDominantEyeFilters?.find(item => item?.value === defaultValue?.eDominantEye),
             eStatus: eStatusOption?.find(item => item?.value === defaultValue?.eStatus)
         })
     }, [defaultValue])
@@ -37,7 +37,7 @@ const PatientListFilters = ({ defaultValue, setRequestParams }) => {
                             <Select
                                 ref={ref}
                                 value={value}
-                                options={eDominantEyeOptions}
+                                options={eDominantEyeFilters}
                                 className='react-select'
                                 classNamePrefix='select'
                                 closeMenuOnSelect={true}

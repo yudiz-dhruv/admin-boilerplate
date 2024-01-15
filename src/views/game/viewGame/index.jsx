@@ -24,7 +24,7 @@ const ViewGame = () => {
                                 <div className='img-content'>
                                     {isLoading ? <Spinner className='text-center mt-4' /> : <img src={data?.sAvatar} alt={data?.sUserName} />}
                                 </div>
-                                <span className='game-name'>{data?.sName || '-'}</span>
+                                <span className='game-name'>{data?.sName || 'Loading...'}</span>
                             </div>
                             <div className='line'></div>
                             <Row className='details-data-row p-0 m-0 mt-4'>
@@ -35,6 +35,10 @@ const ViewGame = () => {
                                 <Col lg={4} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Description</span>
                                     <span className='data-value'>{data?.sDescription || '-'}</span>
+                                </Col>
+                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
+                                    <span className='data-title'>Category</span>
+                                    <span className='data-value capitalize'>{data?.eCategory || '-'}</span>
                                 </Col>
                                 <Col lg={4} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Status</span>

@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons'
@@ -8,11 +9,25 @@ import Select from 'react-select'
 import { eHeadlockType, eRingRunnerLevels, eTurboGameType } from 'shared/constants/TableHeaders'
 import { FaPlay } from "react-icons/fa"
 import CommonInput from '../CommonInput'
+import Skeleton from 'react-loading-skeleton'
 
-const OculomotorSettings = ({ buttonToggle, setButtonToggle, control, errors, watch, register }) => {
+const OculomotorSettings = ({ buttonToggle, setButtonToggle, control, errors, watch, register, games, isLoading }) => {
+
     const tab_buttons = [
         { key: 'turbo', label: 'Turbo' },
     ]
+
+    const [tabButtons, setTabButtons] = useState(tab_buttons)
+
+    useEffect(() => {
+        if (!games) {
+            return;
+        }
+
+        const gameTabs = games?.filter(game => game?.eCategory === 'oculomotor')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
+        const modifiedTabs = [...tab_buttons, ...(gameTabs || [])]
+        setTabButtons(modifiedTabs)
+    }, [games])
 
     const LABELS = {
         TITLE: 'Oculomotor',
@@ -28,15 +43,27 @@ const OculomotorSettings = ({ buttonToggle, setButtonToggle, control, errors, wa
                 <h3 className='game-title'><FontAwesomeIcon icon={faCircleDot} color='var(--secondary-500)' /> {LABELS?.TITLE}</h3>
                 <div className='line'></div>
 
-                <div className='antisuppresion-details-button-group'>
-                    {tab_buttons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
-                            <FaPlay color='var(--text-hover)' /> {tab?.label}
-                        </Button>
-                    ))}
+                <div className='antisuppresion-details-button-group mt-4'>
+                    {isLoading ? <>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                    </>
+                        : tabButtons?.map((tab, index) => (
+                            <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
+                                <FaPlay color='var(--text-hover)' /> {tab?.label}
+                            </Button>
+                        ))
+                    }
 
                     {buttonToggle?.turbo && (
-                        <div className='mt-3'>
+                        <div className='mt-3 form-content'>
                             <Wrapper>
                                 <Row>
                                     <Col xxl={6} xl={12} lg={6} sm={12}>

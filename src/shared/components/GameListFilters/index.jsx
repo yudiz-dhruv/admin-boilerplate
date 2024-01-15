@@ -4,6 +4,7 @@ import { Form } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
+import { eGameCategoryFilter } from 'shared/constants/TableHeaders'
 
 const GamelistFilters = ({ defaultValue, setRequestParams }) => {
     const { control, reset } = useForm({})
@@ -17,12 +18,39 @@ const GamelistFilters = ({ defaultValue, setRequestParams }) => {
 
     useEffect(() => {
         reset({
-            eStatus: eStatusOption?.find(item => item?.value === defaultValue?.eStatus)
+            eStatus: eStatusOption?.find(item => item?.value === defaultValue?.eStatus),
+            eCategory: eGameCategoryFilter?.find(item => item?.value === defaultValue?.eCategory),
         })
     }, [defaultValue])
 
     return (
         <>
+            <Form className='patient-filter' autoComplete='off'>
+                <Form.Group className='form-group'>
+                    <Form.Label>
+                        Category
+                    </Form.Label>
+                    <Controller
+                        name='eCategory'
+                        control={control}
+                        render={({ field: { onChange, value = [], ref } }) => (
+                            <Select
+                                ref={ref}
+                                value={value}
+                                options={eGameCategoryFilter}
+                                className='react-select'
+                                classNamePrefix='select'
+                                closeMenuOnSelect={true}
+                                onChange={(e) => {
+                                    setRequestParams({ ...defaultValue, eCategory: e?.value })
+                                    onChange(e)
+                                }}
+                            />
+                        )}
+                    />
+                </Form.Group>
+            </Form>
+
             <Form className='patient-filter' autoComplete='off'>
                 <Form.Group className='form-group'>
                     <Form.Label>

@@ -53,6 +53,20 @@ export const fileToDataUri = (file) => {
   });
 }
 
+export const urlToFile = async (url) => {
+  const fileUrl = url
+
+  try {
+    const response = await fetch(fileUrl)
+    const blob = await response.blob();
+
+    const downloadedFile = new File([blob], 'example.bundle', { type: blob?.type });
+    return downloadedFile
+  } catch (error) {
+    console.error('Error downloading file:', error);
+  }
+} 
+
 export async function getImageFileFromUrl (url) {
   try {
       const response = await fetch(url);

@@ -27,6 +27,7 @@ const EditAdmin = lazy(() => import('views/admin/editAdmin'))
 // GAME MANAGEMENT
 const GameManagement = lazy(() => import('views/game'))
 const AddGame = lazy(() => import('views/game/addGame'))
+const EditGame = lazy(() => import('views/game/editGame'))
 const ViewGame = lazy(() => import('views/game/viewGame'))
 
 // ADMIN GAME MANAGEMENT
@@ -65,7 +66,7 @@ const RoutesDetails = [
       { path: route.changePassword, Component: ChangePassword, exact: true },
 
       { path: route.dashboard, Component: Dashboard, exact: true },
-      
+
       { path: route.admin, Component: AdminManagement, exact: true },
       { path: route.addAdmin, Component: AddAdmin, exact: true },
       { path: route.viewAdmin(':id'), Component: ViewAdmin, exact: true },
@@ -75,12 +76,12 @@ const RoutesDetails = [
       { path: route.addPatient, Component: AddPatient, exact: true },
       { path: route.editPatient(':id'), Component: AddPatient, exact: true },
       { path: route.viewPatient(':id'), Component: ViewPatient, exact: true },
-      
+
       { path: route.game, Component: GameManagement, exact: true },
       { path: route.addGame, Component: AddGame, exact: true },
       { path: route.viewGame(':id'), Component: ViewGame, exact: true },
-      { path: route.editGame(':id'), Component: AddGame, exact: true },
-      
+      { path: route.editGame(':id'), Component: EditGame, exact: true },
+
       { path: route.adminGame, Component: AdminGameManagement, exact: true },
       { path: route.adminGameSettings, Component: AdminGameSettings, exact: true },
     ]

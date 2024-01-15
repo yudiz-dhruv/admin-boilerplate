@@ -34,8 +34,14 @@ export const PatientHistory = [
     { name: 'Comments', internalName: 'sComments', type: 1, isSort: false },
 ]
 
-export const eDominantEyeOptions = [
+export const eDominantEyeFilters = [
     { label: 'All', value: '' },
+    { label: 'Left', value: 'left' },
+    { label: 'Right', value: 'right' },
+    { label: 'None', value: 'none' },
+]
+
+export const eDominantEyeOptions = [
     { label: 'Left', value: 'left' },
     { label: 'Right', value: 'right' },
     { label: 'None', value: 'none' },
@@ -101,4 +107,17 @@ export const eOrientation = [
     { label: 'Landscape', value: 'landscape', angle: '180°' },
     { label: 'Diagonal', value: 'diagonal', angle: '45°' },
     { label: 'Opposite Diagonal', value: 'opposite diagonal', angle: '135°' },
+]
+
+export const eGameCategoryFilter = [
+    { label: 'All', value: '' },
+    { label: 'Anti Suppression', value: 'antiSupression' },
+    { label: 'Oculomotor', value: 'oculomotor' },
+    { label: 'Seteropsis', value: 'stereopsis' },
+]
+
+export const eGameCategoryOption = [
+    { label: 'Anti Suppression', value: 'antiSupression' },
+    { label: 'Oculomotor', value: 'oculomotor' },
+    { label: 'Seteropsis', value: 'stereopsis' },
 ]

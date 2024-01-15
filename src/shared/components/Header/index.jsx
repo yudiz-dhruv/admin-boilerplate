@@ -75,7 +75,7 @@ function Header ({ isOpen }) {
         </Link>
       </div>
       <div className='header-right'>
-        <div className='user-name'>{profileLoader ? <Spinner animation='border' size='sm' /> : <span>{data?.sUserName} {data?.eUserType === 'superAdmin' ? <span className='superadmin-label'><RxDotFilled /> Super Admin</span> : <span className='admin-label'><RxDotFilled /> Admin</span>}</span>}</div>
+        <div className='user-name'>{profileLoader ? <Spinner animation='border' size='sm' /> : <span><span>{data?.sUserName}</span> {data?.eUserType === 'superAdmin' ? <span className='superadmin-label'><RxDotFilled /> Super Admin</span> : <span className='admin-label'><RxDotFilled /> Admin</span>}</span>}</div>
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>
             <div className='img d-flex align-items-center justify-content-center'>

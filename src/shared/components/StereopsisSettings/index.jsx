@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCube } from '@fortawesome/free-solid-svg-icons'
@@ -7,17 +8,30 @@ import { FaPlay } from "react-icons/fa"
 import { eBallSpeed, eBubbleDistance, eRingRunnerLevels } from 'shared/constants/TableHeaders'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
+import Skeleton from 'react-loading-skeleton'
 
-const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors }) => {
+const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, games, isLoading }) => {
     const tab_buttons = [
         { key: 'bubble', label: 'Bubble' },
     ]
+
+    const [tabButtons, setTabButtons] = useState(tab_buttons)
+
+    useEffect(() => {
+        if (!games) {
+            return;
+        }
+
+        const gameTabs = games?.filter(game => game?.eCategory === 'stereopsis')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
+        const modifiedTabs = [...tab_buttons, ...(gameTabs || [])]
+        setTabButtons(modifiedTabs)
+    }, [games])
 
     const LABELS = {
         TITLE: 'Stereopsis',
         BUBBLE_SIZE: 'Bubble Size',
         BUBBLE_DISTANCE: 'Bubble Distance',
-        GABBER_PATCH: 'No. of Gabber Patch',
+        GABOR_PATCH: 'No. of Gabor Patch',
         ARM_LENGTH: 'Arm Length'
     }
     return (
@@ -26,15 +40,26 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors }) 
                 <h3 className='game-title'><FontAwesomeIcon icon={faCube} color='var(--secondary-500)' /> {LABELS?.TITLE}</h3>
                 <div className='line'></div>
 
-                <div className='antisuppresion-details-button-group'>
-                    {tab_buttons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
-                            <FaPlay color='var(--text-hover)' /> {tab?.label}
-                        </Button>
-                    ))}
+                <div className='antisuppresion-details-button-group mt-4'>
+                    {isLoading ? <>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                    </>
+                        : tabButtons?.map((tab, index) => (
+                            <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
+                                <FaPlay color='var(--text-hover)' /> {tab?.label}
+                            </Button>
+                        ))}
 
                     {buttonToggle?.bubble && (
-                        <div className='mt-3'>
+                        <div className='mt-3 form-content'>
                             <Wrapper>
                                 <Row>
                                     <Col xxl={6} xl={12} lg={6} sm={12}>
@@ -87,7 +112,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors }) 
 
                                     <Col xxl={6} xl={12} lg={6} sm={12}>
                                         <Form.Group className='form-group'>
-                                            <Form.Label>{LABELS?.GABBER_PATCH}</Form.Label>
+                                            <Form.Label>{LABELS?.GABOR_PATCH}</Form.Label>
                                             <Controller
                                                 name='nTargetDuration'
                                                 control={control}

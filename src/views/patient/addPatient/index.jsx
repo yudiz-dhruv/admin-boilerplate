@@ -18,7 +18,7 @@ const AddPatient = () => {
     const navigate = useNavigate()
     const { id } = useParams()
 
-    const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
+    const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch, setError, clearErrors } = useForm({ mode: 'all' })
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
     const [payload, setPayload] = useState()

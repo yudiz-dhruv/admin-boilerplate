@@ -1,15 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import DominantEyeSettings from 'shared/components/DominantEyeSettings'
 import AntiSupSettings from 'shared/components/AntiSupSettings'
 import AntiSupGameSettings from 'shared/components/AntiSupGameSettings'
 import OculomotorSettings from 'shared/components/OculomotorSettings'
 import StereopsisSettings from 'shared/components/StereopsisSettings'
+import { useQuery } from 'react-query'
+import { useLocation } from 'react-router-dom'
+import { parseParams } from 'shared/utils'
+import { getGameList } from 'query/game/game.query'
+import CommonInput from 'shared/components/CommonInput'
+import Select from 'react-select'
 
 const InternalGameSettings = () => {
-  const { register, formState: { errors }, control, watch } = useForm({ mode: 'all' })
+  const location = useLocation()
+  const params = useRef(parseParams(location.search))
+
+  function getRequestParams (e) {
+    const data = e ? parseParams(e) : params.current
+    return {
+      pageNumber: +data?.pageNumber?.[0] || 1,
+      nStart: (+data?.pageNumber?.[0] - 1) || 0,
+      search: data?.search || '',
+      nLimit: data?.nLimit || 10,
+      eStatus: data.eStatus || 'y',
+      eCategory: data?.eCategory || '',
+      sort: data.sort || '',
+      orderBy: +data.orderBy === 1 ? 'ASC' : 'DESC',
+      totalElements: +data?.totalElements || 0
+    }
+  }
+
+  const [requestParams] = useState(getRequestParams())
+
+  const { register, formState: { errors }, control, watch, handleSubmit } = useForm({ mode: 'all' })
+
+  const [modal, setModal] = useState(false)
 
   const [dominantEyeButton, setDominantEyeButton] = useState({
     left: true,
@@ -30,13 +58,30 @@ const InternalGameSettings = () => {
     blur: 0
   })
 
+  // List
+  const { isLoading, data } = useQuery(['gameList', requestParams], () => getGameList(requestParams), {
+    select: (data) => data.data.data?.game,
+  })
+
+  async function onSubmit (data) {
+    setModal(true)
+  }
+
+  function onSave () {
+
+  }
+
+  function handleClear () {
+    setModal(false)
+  }
+
   useEffect(() => {
     document.title = 'Game Settings | Yantra Healthcare'
   }, [])
 
   return (
     <>
-      <Form className='step-one' autoComplete='off'>
+      <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col xs={12}>
             <Wrapper>
@@ -69,6 +114,8 @@ const InternalGameSettings = () => {
                           register={register}
                           buttonToggle={buttonToggle}
                           setButtonToggle={setButtonToggle}
+                          games={data}
+                          isLoading={isLoading}
                         />
                       </div>
 
@@ -80,6 +127,8 @@ const InternalGameSettings = () => {
                           register={register}
                           buttonToggle={buttonToggle}
                           setButtonToggle={setButtonToggle}
+                          games={data}
+                          isLoading={isLoading}
                         />
                       </div>
 
@@ -89,6 +138,8 @@ const InternalGameSettings = () => {
                           control={control}
                           buttonToggle={buttonToggle}
                           setButtonToggle={setButtonToggle}
+                          games={data}
+                          isLoading={isLoading}
                         />
                       </div>
 
@@ -109,6 +160,144 @@ const InternalGameSettings = () => {
           </Col>
         </Row>
       </Form>
+
+      {modal &&
+        <Form className='step-one' autoComplete='off'>
+          <Modal show={modal} onHide={() => setModal(false)} id='add-ticket' size='md'>
+            <Modal.Header closeButton>
+              <Modal.Title className='add-ticket-header'>Enter Patient Progress</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Row>
+                <Col sm={6}>
+                  <CommonInput
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    className={`form-control ${errors?.sLabel && 'error'}`}
+                    name='sLabel'
+                    label='Label'
+                    placeholder='Enter the label'
+                    required
+                    onChange={(e) => {
+                      e.target.value =
+                        e.target.value?.trim() &&
+                        e.target.value.replace(/^[0-9]+$/g, '')
+                    }}
+                    validation={{
+                      required: {
+                        value: true,
+                        message: 'Label is required.'
+                      },
+                    }}
+                  />
+                </Col>
+                <Col sm={6}>
+                  <CommonInput
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    className={`form-control ${errors?.nAmount && 'error'}`}
+                    name='nAmount'
+                    label='Amount'
+                    placeholder='Enter the amount'
+                    required
+                    validation={{
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: 'Only numbers are allowed'
+                      },
+                      required: {
+                        value: true,
+                        message: 'Amount is required'
+                      },
+                    }}
+                    onChange={(e) => {
+                      e.target.value =
+                        e.target.value?.trim() &&
+                        e.target.value.replace(/^[a-zA-z]+$/g, '')
+                    }}
+                  />
+                </Col>
+                <Col sm={6}>
+                  <Form.Group className='form-group'>
+                    <Form.Label>
+                      <span>
+                        List Type (Offer/ Store)
+                        <span className='inputStar'>*</span>
+                      </span>
+                    </Form.Label>
+                    <Controller
+                      name='eType'
+                      control={control}
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'List type is required'
+                        }
+                      }}
+                      render={({ field: { onChange, value = [], ref } }) => (
+                        <Select
+                          ref={ref}
+                          value={value}
+                          // options={listTypeOption}
+                          className={`react-select border-0 ${errors.eType && 'error'}`}
+                          classNamePrefix='select'
+                          closeMenuOnSelect={true}
+                          onChange={(e) => {
+                            onChange(e)
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.eType && (
+                      <Form.Control.Feedback type='invalid'>
+                        {errors.eType.message}
+                      </Form.Control.Feedback>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col sm={6}>
+                  <Form.Group className='form-group my-1'>
+                    <Form.Label>PromoCode</Form.Label>
+                    <Controller
+                      name='iPromoCodeId'
+                      control={control}
+                      render={({ field: { onChange, value = [], ref } }) => (
+                        <Select
+                          ref={ref}
+                          value={value}
+                          // options={listTypeOption}
+                          className={`react-select border-0 ${errors.iPromoCodeId && 'error'}`}
+                          classNamePrefix='select'
+                          closeMenuOnSelect={true}
+                          onChange={(e) => {
+                            onChange(e)
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.iPromoCodeId && (
+                      <Form.Control.Feedback type='invalid'>
+                        {errors.iPromoCodeId.message}
+                      </Form.Control.Feedback>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" type='submit' className='square' onClick={handleSubmit(onSave)}>
+                Save
+              </Button>
+              <Button variant="secondary" className='square' onClick={() => handleClear()}>
+                Cancel
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </Form >
+      }
     </>
   )
 }

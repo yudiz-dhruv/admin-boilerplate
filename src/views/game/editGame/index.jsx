@@ -1,37 +1,70 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap'
-import { useMutation } from 'react-query'
-import { Controller, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import CommonInput from 'shared/components/CommonInput'
-import Wrapper from 'shared/components/Wrap'
-import { route } from 'shared/constants/AllRoutes'
-import { validationErrors } from 'shared/constants/ValidationErrors'
-import { fileToDataUri, toaster } from 'helper/helper'
-import { addGame } from 'query/game/game.mutation'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCamera } from '@fortawesome/free-solid-svg-icons'
-import { eGameCategoryOption } from 'shared/constants/TableHeaders'
+import React, { useEffect, useState } from 'react'
+import { Button, Col, Form, Row } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import Wrapper from 'shared/components/Wrap';
+import { useForm, Controller } from 'react-hook-form'
+import { useMutation, useQuery } from 'react-query';
+import { getGameById } from 'query/game/game.query';
+import { eGameCategoryOption } from 'shared/constants/TableHeaders';
+import { updateGame } from 'query/game/game.mutation';
+import { fileToDataUri, getDirtyFormValues, toaster } from 'helper/helper';
+import { route } from 'shared/constants/AllRoutes';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import CommonInput from 'shared/components/CommonInput';
+import { validationErrors } from 'shared/constants/ValidationErrors';
 import Select from 'react-select'
 
-const AddGame = () => {
+const EditGame = () => {
     const navigate = useNavigate()
+    const { id } = useParams()
 
-    const { register, handleSubmit, formState: { errors }, control, reset, watch } = useForm({ mode: 'all' })
-    const fileInputRef = useRef(null)
+    const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
+    const [payload, setPayload] = useState()
     const [assetFile, setAssetFile] = useState()
 
-    // ADD GAME
-    const { mutate } = useMutation(addGame, {
-        onSuccess: (res) => {
-            toaster('New Game Added Successfully.', 'success')
-            navigate(route.game)
-            reset()
+    // SPEICIFC GAME
+    const { data } = useQuery('gameDataById', () => getGameById(id), {
+        enabled: !!id,
+        select: (data) => data?.data?.data,
+    })
+
+    useEffect(() => {
+        reset({
+            ...data,
+            eCategory: eGameCategoryOption?.find(item => item?.value === data?.eCategory),
+            sUrl: data?.sUrl?.split('/')?.slice(-1)?.[0]
+        })
+    }, [data])
+
+    // EDIT GAME
+    const { mutate: updateMutate } = useMutation(updateGame, {
+        onSettled: (response, err) => {
+            if (response) {
+                toaster('Game Updated Successfully.', 'success')
+                navigate(route.game)
+
+                reset()
+            } else {
+                toaster(err.data.message, 'error')
+            }
         }
     })
+
+    useEffect(() => {
+        const isDirtyData = {
+            sName: watch('sName'),
+            sUrl: watch('sUrl'),
+            sDescription: watch('sDescription'),
+            eCategory: watch('eCategory')?.value,
+        }
+
+        const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
+        setPayload(payloadData)
+    }, [dirtyFields, watch('sName'), watch('sDescription'), watch('sUrl'), watch('eCategory')])
 
     async function onSubmit (data) {
         if (isButtonDisabled) {
@@ -40,43 +73,17 @@ const AddGame = () => {
 
         setButtonDisabled(true)
 
-        let addData = {
-            sName: data?.sName || '',
-            sDescription: data?.sDescription || '',
-            sUrl: '',
-            sAvatar: '',
-            eCategory: data?.eCategory?.value
-        }
-
-        const sAvatarFile = data?.sAvatar;
-
-        if (sAvatarFile) {
-            const dataAvatar = await fileToDataUri(sAvatarFile);
-            addData.sAvatar = dataAvatar;
-        }
-
         const sBundleFile = data?.sUrl ? data?.sUrl : assetFile?.previousFile;
 
-        if (sBundleFile) {
-            const dataUri = await fileToDataUri(sBundleFile);
-            addData.sUrl = dataUri;
-        }
-
-        mutate(addData)
+        updateMutate({ ...payload, sUrl: sBundleFile && await fileToDataUri(sBundleFile), id })
 
         setTimeout(() => {
             setButtonDisabled(false)
         }, 5000)
     }
 
-    const handleFileInputClick = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click()
-        }
-    }
-
     useEffect(() => {
-        document.title = 'Add Game | Yantra Healthcare'
+        document.title = 'Edit Game | Yantra Healthcare'
     }, [])
 
     return (
@@ -96,7 +103,6 @@ const AddGame = () => {
                                                             <div className='inputMSG'>
                                                                 {!errors?.sAvatar && watch('sAvatar') ? <>
                                                                     <div className="document-preview-group">
-                                                                        <div className='img-over' onClick={handleFileInputClick}>Change Game Logo</div>
                                                                         {watch('sAvatar') && (
                                                                             typeof (watch('sAvatar')) !== 'string'
                                                                                 ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
@@ -105,46 +111,6 @@ const AddGame = () => {
                                                                     </div>
                                                                 </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
                                                             </div>
-                                                            <Controller
-                                                                name={`sAvatar`}
-                                                                control={control}
-                                                                rules={{
-                                                                    required: "Please upload game logo",
-                                                                    validate: {
-                                                                        fileType: (value) => {
-                                                                            if (value && typeof (watch(`sAvatar`)) !== 'string') {
-                                                                                const allowedFormats = ['jpeg', 'png', 'jpg', 'JPEG', 'PNG', 'JPG'];
-                                                                                const fileExtension = value.name.split('.').pop().toLowerCase();
-
-                                                                                if (!allowedFormats.includes(fileExtension)) {
-                                                                                    return "Unsupported file format";
-                                                                                }
-
-                                                                                const maxSize = 1 * 1000 * 1000; // 1MB in bytes
-                                                                                if (value.size >= maxSize) {
-                                                                                    return "Image size must be less than 1MB";
-                                                                                }
-                                                                            }
-                                                                            return true;
-                                                                        },
-                                                                    }
-                                                                }}
-                                                                render={({ field: { onChange, value, ref } }) => {
-                                                                    return <>
-                                                                        <Form.Control
-                                                                            ref={ref}
-                                                                            type='file'
-                                                                            name={`sAvatar`}
-                                                                            accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
-                                                                            errors={errors}
-                                                                            className={errors?.sAvatar && 'error'}
-                                                                            onChange={(e) => {
-                                                                                onChange(e.target.files[0])
-                                                                            }}
-                                                                        />
-                                                                    </>
-                                                                }}
-                                                            />
                                                         </div>
 
                                                         <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
@@ -187,7 +153,7 @@ const AddGame = () => {
                                                                 <div className='inputtypefile'>
                                                                     <div className='inputMSG'>
                                                                         {watch('sUrl') || assetFile?.previousFile ?
-                                                                            <span className='bundle-name'>File: {assetFile?.previousFile ? assetFile?.previousFile?.name : watch('sUrl')?.name}</span> : <span>Upload Game Assets file</span>
+                                                                            <span className='bundle-name'>File: {assetFile?.previousFile ? assetFile?.previousFile?.name : typeof watch('sUrl') === 'string' ? watch('sUrl') : watch('sUrl')?.name}</span> : <span>Upload Game Assets file</span>
                                                                         }
                                                                     </div>
                                                                     <Controller
@@ -199,7 +165,7 @@ const AddGame = () => {
                                                                                 fileType: (value) => {
                                                                                     if (value && typeof (watch(`sUrl`)) !== 'string') {
                                                                                         const allowedFormats = ['bundle', 'BUNDLE'];
-                                                                                        const fileExtension = value.name.split('.').pop().toLowerCase();
+                                                                                        const fileExtension = value.name?.split('.').pop().toLowerCase();
 
                                                                                         if (!allowedFormats.includes(fileExtension)) {
                                                                                             return "Unsupported file format";
@@ -220,7 +186,8 @@ const AddGame = () => {
                                                                                     ref={ref}
                                                                                     type='file'
                                                                                     name={`sUrl`}
-                                                                                    defaultValue={assetFile?.previousFile?.name}
+                                                                                    title={typeof watch('sUrl') === 'string' ? watch('sUrl') : watch('sUrl')?.name}
+                                                                                    defaultValue={assetFile?.previousFile ? assetFile?.previousFile?.name : (assetFile?.currentFile?.name || watch('sUrl')?.name)}
                                                                                     accept='.bundle,.BUNDLE'
                                                                                     errors={errors}
                                                                                     className={errors?.sUrl && 'error'}
@@ -228,9 +195,9 @@ const AddGame = () => {
                                                                                         setAssetFile((prev) => ({
                                                                                             ...prev,
                                                                                             previousFile: prev?.currentFile,
-                                                                                            currentFile: e.target.files[0],
+                                                                                            currentFile: e.target.files?.[0],
                                                                                         }))
-                                                                                        onChange(e.target.files[0])
+                                                                                        onChange(e.target.files?.[0])
                                                                                     }}
                                                                                 />
                                                                             </>
@@ -312,8 +279,8 @@ const AddGame = () => {
 
                                         <Row className='mt-3'>
                                             <Col sm={12}>
-                                                <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
-                                                    Add Game
+                                                <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
+                                                    Update Game
                                                 </Button>
                                                 <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
                                                     Cancel
@@ -331,4 +298,4 @@ const AddGame = () => {
     )
 }
 
-export default AddGame
+export default EditGame

@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 import Wrapper from '../Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGamepad } from '@fortawesome/free-solid-svg-icons'
@@ -8,12 +9,25 @@ import Select from 'react-select'
 import { eBallSpeed, eHoopSize, eHoopieLevels, eOrientation, eRingRunnerLevels, eStimulusSizes } from 'shared/constants/TableHeaders'
 import CommonInput from '../CommonInput'
 import { FaPlay } from "react-icons/fa"
+import Skeleton from 'react-loading-skeleton'
 
-const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, register }) => {
+const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading }) => {
     const tab_buttons = [
         { key: 'hoopie', label: 'Hoopie' },
         { key: 'ringRunner', label: 'Ring Runner' },
     ]
+
+    const [tabButtons, setTabButtons] = useState(tab_buttons)
+
+    useEffect(() => {
+        if (!games) {
+            return;
+        }
+
+        const gameTabs = games?.filter(game => game?.eCategory === 'antiSupression')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
+        const modifiedTabs = [...tab_buttons, ...(gameTabs || [])]
+        setTabButtons(modifiedTabs)
+    }, [games])
 
     const LABELS = {
         TITLE: 'Anti-Suppression',
@@ -23,7 +37,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
         STIMULUS_SIZE: 'Stimulus Size',
         SPACESHIP_SPEED: 'Spaceship Speed',
         ACTIVE_DURATION: 'Active Duration',
-        GABBER_PATCH: 'No. of Gabber Patch',
+        GABOR_PATCH: 'No. of Gabor Patch',
         ORIENTATION: 'Orientation'
     }
 
@@ -34,14 +48,25 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                 <div className='line'></div>
 
                 <div className='antisuppresion-details-button-group mt-4'>
-                    {tab_buttons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
-                            <FaPlay color='var(--text-hover)' /> {tab?.label}
-                        </Button>
-                    ))}
+                    {isLoading ? <>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                        <div className='skeleton-button'>
+                            <Skeleton count={1} width='110px' height={37} />
+                        </div>
+                    </>
+                        : tabButtons?.map((tab, index) => (
+                            <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
+                                <FaPlay color='var(--text-hover)' /> {tab?.label}
+                            </Button>
+                        ))}
 
                     {buttonToggle?.hoopie && (
-                        <div className='mt-3'>
+                        <div className='mt-3 form-content'>
                             <Wrapper>
                                 <Row>
                                     <Col xxl={6} xl={12} lg={6} sm={12}>
@@ -121,7 +146,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                     )}
 
                     {buttonToggle?.ringRunner && (
-                        <div className='mt-3'>
+                        <div className='mt-3 form-content'>
                             <Wrapper>
                                 <Row>
                                     <Col xxl={6} xl={12} lg={6} sm={12}>
@@ -235,9 +260,9 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                             register={register}
                                             errors={errors}
                                             className={`form-control ${errors?.sAge && 'error'}`}
-                                            name='nGabberPatch'
-                                            label={LABELS?.GABBER_PATCH}
-                                            placeholder='Enter no. of gabber patch in last level'
+                                            name='nGaborPatch'
+                                            label={LABELS?.GABOR_PATCH}
+                                            placeholder='Enter no. of gabor patch in last level'
                                             validation={{
                                                 pattern: {
                                                     value: /^[0-9]+$/,
