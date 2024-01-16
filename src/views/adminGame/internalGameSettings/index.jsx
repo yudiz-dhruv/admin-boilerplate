@@ -10,9 +10,10 @@ import StereopsisSettings from 'shared/components/StereopsisSettings'
 import { useQuery } from 'react-query'
 import { useLocation } from 'react-router-dom'
 import { parseParams } from 'shared/utils'
-import { getGameList } from 'query/game/game.query'
+import { getGameDropdownList, getGameList } from 'query/game/game.query'
 import CommonInput from 'shared/components/CommonInput'
 import Select from 'react-select'
+import Datetime from 'react-datetime'
 
 const InternalGameSettings = () => {
   const location = useLocation()
@@ -63,12 +64,13 @@ const InternalGameSettings = () => {
     select: (data) => data.data.data?.game,
   })
 
+  // DROPDOWN GAME LIST
+  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
+    select: (data) => data?.data?.data,
+  })
+
   async function onSubmit (data) {
-    setModal(true)
-  }
-
-  function onSave () {
-
+    console.log('data: ', await data);
   }
 
   function handleClear () {
@@ -81,7 +83,7 @@ const InternalGameSettings = () => {
 
   return (
     <>
-      <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+      <Form className='step-one' autoComplete='off'>
         <Row>
           <Col xs={12}>
             <Wrapper>
@@ -146,7 +148,7 @@ const InternalGameSettings = () => {
                       {Object.values(buttonToggle).some(Boolean) ?
                         <Row className='mt-3 text-end'>
                           <Col sm={12}>
-                            <Button variant='primary' type='submit' className='square'>
+                            <Button variant='primary' type='button' className='square' onClick={() => setModal(true)}>
                               End Game
                             </Button>
                           </Col>
@@ -162,141 +164,131 @@ const InternalGameSettings = () => {
       </Form>
 
       {modal &&
-        <Form className='step-one' autoComplete='off'>
-          <Modal show={modal} onHide={() => setModal(false)} id='add-ticket' size='md'>
+        <Modal show={modal} onHide={() => setModal(false)} id='add-ticket' size='lg'>
+          <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
             <Modal.Header closeButton>
               <Modal.Title className='add-ticket-header'>Enter Patient Progress</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Row>
                 <Col sm={6}>
-                  <CommonInput
-                    type='text'
-                    register={register}
-                    errors={errors}
-                    className={`form-control ${errors?.sLabel && 'error'}`}
-                    name='sLabel'
-                    label='Label'
-                    placeholder='Enter the label'
-                    required
-                    onChange={(e) => {
-                      e.target.value =
-                        e.target.value?.trim() &&
-                        e.target.value.replace(/^[0-9]+$/g, '')
-                    }}
-                    validation={{
-                      required: {
-                        value: true,
-                        message: 'Label is required.'
-                      },
-                    }}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <CommonInput
-                    type='text'
-                    register={register}
-                    errors={errors}
-                    className={`form-control ${errors?.nAmount && 'error'}`}
-                    name='nAmount'
-                    label='Amount'
-                    placeholder='Enter the amount'
-                    required
-                    validation={{
-                      pattern: {
-                        value: /^[0-9]+$/,
-                        message: 'Only numbers are allowed'
-                      },
-                      required: {
-                        value: true,
-                        message: 'Amount is required'
-                      },
-                    }}
-                    onChange={(e) => {
-                      e.target.value =
-                        e.target.value?.trim() &&
-                        e.target.value.replace(/^[a-zA-z]+$/g, '')
-                    }}
-                  />
+                  <Form.Group className='form-group reSchedule-datepicker mb-2'>
+                    <Form.Label>
+                      <span>
+                        Date & Time
+                        <span className='inputStar'>*</span>
+                      </span>
+                    </Form.Label>
+                    <Controller
+                      name="dTime"
+                      control={control}
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Time is required'
+                        }
+                      }}
+                      render={({ field }) => (
+                        <Datetime
+                          {...field}
+                          selected={field.value}
+                          timeInputLabel="Time:"
+                          dateFormat="MM/DD/yyyy"
+                          showTimeInput
+                          inputProps={{
+                            placeholder: 'Select the time',
+                          }}
+                          isValidDate={(currentDate, selectedDate) => {
+                            return !currentDate.isBefore(new Date(), 'day');
+                          }}
+                          onChange={(date) => field.onChange(date)}
+                          isClearable={true}
+                        />
+                      )}
+                    />
+                    {errors?.dTime && (
+                      <Form.Control.Feedback type='invalid'>
+                        {errors?.dTime.message}
+                      </Form.Control.Feedback>
+                    )}
+                  </Form.Group>
                 </Col>
                 <Col sm={6}>
                   <Form.Group className='form-group'>
                     <Form.Label>
                       <span>
-                        List Type (Offer/ Store)
+                        Game Played
                         <span className='inputStar'>*</span>
                       </span>
                     </Form.Label>
                     <Controller
-                      name='eType'
+                      name='aGamesName'
                       control={control}
                       rules={{
                         required: {
                           value: true,
-                          message: 'List type is required'
+                          message: 'Game name(s) are required.'
                         }
                       }}
-                      render={({ field: { onChange, value = [], ref } }) => (
+                      render={({ field: { onChange, value, ref } }) => (
                         <Select
+                          placeholder='Select Games...'
                           ref={ref}
-                          value={value}
-                          // options={listTypeOption}
-                          className={`react-select border-0 ${errors.eType && 'error'}`}
+                          options={eGameDropdown}
+                          className={`react-select border-0 ${errors.aGamesName && 'error'}`}
                           classNamePrefix='select'
-                          closeMenuOnSelect={true}
-                          onChange={(e) => {
-                            onChange(e)
-                          }}
+                          isSearchable={false}
+                          value={value}
+                          onChange={onChange}
+                          isMulti={true}
+                          getOptionLabel={(option) => option.sName}
+                          getOptionValue={(option) => option._id}
                         />
                       )}
                     />
-                    {errors.eType && (
+                    {errors.aGamesName && (
                       <Form.Control.Feedback type='invalid'>
-                        {errors.eType.message}
+                        {errors.aGamesName.message}
                       </Form.Control.Feedback>
                     )}
                   </Form.Group>
                 </Col>
                 <Col sm={6}>
-                  <Form.Group className='form-group my-1'>
-                    <Form.Label>PromoCode</Form.Label>
-                    <Controller
-                      name='iPromoCodeId'
-                      control={control}
-                      render={({ field: { onChange, value = [], ref } }) => (
-                        <Select
-                          ref={ref}
-                          value={value}
-                          // options={listTypeOption}
-                          className={`react-select border-0 ${errors.iPromoCodeId && 'error'}`}
-                          classNamePrefix='select'
-                          closeMenuOnSelect={true}
-                          onChange={(e) => {
-                            onChange(e)
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.iPromoCodeId && (
-                      <Form.Control.Feedback type='invalid'>
-                        {errors.iPromoCodeId.message}
-                      </Form.Control.Feedback>
-                    )}
-                  </Form.Group>
+                  <CommonInput
+                    type='textarea'
+                    register={register}
+                    errors={errors}
+                    className={`for m-control ${errors?.sDescription && 'error'}`}
+                    name='sDescription'
+                    label='Enter Comments'
+                    placeholder='Enter the comments...'
+                    required
+                    validation={{
+                      required: {
+                        value: true,
+                        message: 'Description is required'
+                      },
+                    }}
+                    onChange={(e) => {
+                      e.target.value =
+                        e.target.value?.trim() &&
+                        e.target.value.replace(/^[0-9]+$/g, '')
+                    }}
+                  />
                 </Col>
               </Row>
 
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="primary" type='submit' className='square' onClick={handleSubmit(onSave)}>
+              <Button variant="primary" type='submit' className='square' >
                 Save
               </Button>
               <Button variant="secondary" className='square' onClick={() => handleClear()}>
                 Cancel
               </Button>
             </Modal.Footer>
-          </Modal>
-        </Form >
+          </Form >
+        </Modal>
       }
     </>
   )

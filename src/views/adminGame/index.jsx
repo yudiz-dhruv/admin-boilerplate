@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
 import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
@@ -15,10 +15,9 @@ import { getPatientById, getPatientDropdownList } from 'query/patient/patient.qu
 import { getDirtyFormValues, toaster } from 'helper/helper'
 
 const AdminGame = () => {
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
+  const { register, handleSubmit, formState: { errors, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
 
   const [isDisabled, setButtonDisabled] = useState(false)
 
@@ -56,7 +55,7 @@ const AdminGame = () => {
     const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
     if (Object.keys(payloadData).length !== 0) {
       setButtonDisabled(true)
-    } 
+    }
   }, [dirtyFields, watch('ePatientName')])
 
   async function onSubmit () {

@@ -23,7 +23,6 @@ const AddAdmin = () => {
   const fileInputRef = useRef(null)
 
   const [isButtonDisabled, setButtonDisabled] = useState(false)
-  const [fileInput, setFileInput] = useState()
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
@@ -56,7 +55,7 @@ const AddAdmin = () => {
       sCompanyName: data?.sCompanyName || '',
       sAvatar: '',
     }
-    const sAvatarFile = data?.sAvatar ? data?.sAvatar : fileInput?.previousFile
+    const sAvatarFile = data?.sAvatar
 
     if (sAvatarFile) {
       const dataUri = await fileToDataUri(sAvatarFile);
@@ -93,13 +92,13 @@ const AddAdmin = () => {
                       <div className='fileinput'>
                         <div className='inputtypefile'>
                           <div className='inputMSG'>
-                            {watch('sAvatar') || fileInput?.currentFile || fileInput?.previousFile ? <>
+                            {watch('sAvatar') ? <>
                               <div className="document-preview-group">
                                 <div className='img-over' onClick={handleFileInputClick}>Change Profile</div>
-                                {(watch('sAvatar') || fileInput?.currentFile || fileInput?.previousFile) && (
+                                {(watch('sAvatar')) && (
                                   typeof (watch('sAvatar')) !== 'string'
-                                    ? <div className="document-preview"> {fileInput?.previousFile ? <img src={URL.createObjectURL(fileInput?.previousFile)} alt='altImage' /> : <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' />} </div>
-                                    : <div className="document-preview"> {fileInput?.previousFile ? <img src={fileInput?.previousFile} alt='altImage' /> : <img src={watch('sAvatar')} alt='altImage' />} </div>)
+                                    ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
+                                    : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
                                 }
                               </div>
                             </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
@@ -135,18 +134,12 @@ const AddAdmin = () => {
                                     ref(e);
                                     fileInputRef.current = e;
                                   }}
-                                  defaultValue={fileInput?.previousFile}
                                   type='file'
                                   name={`sAvatar`}
                                   accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
                                   errors={errors}
                                   className={errors?.sAvatar && 'error'}
                                   onChange={(e) => {
-                                    setFileInput((prev) => ({
-                                      ...prev,
-                                      previousFile: prev?.currentFile,
-                                      currentFile: e.target.files[0],
-                                    }))
                                     onChange(e.target.files[0])
                                   }}
                                 />
@@ -155,7 +148,7 @@ const AddAdmin = () => {
                           />
                         </div>
 
-                        <span className='card-error'>{fileInput?.previousFile ? '' : errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                        <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
                       </div>
                     </Col>
                   </Row>

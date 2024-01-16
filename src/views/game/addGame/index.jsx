@@ -22,8 +22,6 @@ const AddGame = () => {
     const fileInputRef = useRef(null)
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
-    const [assetFile, setAssetFile] = useState()
-    const [imgInput, setImgInput] = useState()
 
     // ADD GAME
     const { mutate } = useMutation(addGame, {
@@ -49,14 +47,14 @@ const AddGame = () => {
             eCategory: data?.eCategory?.value
         }
 
-        const sAvatarFile = data?.sAvatar ? data?.sAvatar : imgInput?.previousFile;
+        const sAvatarFile = data?.sAvatar
 
         if (sAvatarFile) {
             const dataAvatar = await fileToDataUri(sAvatarFile);
             addData.sAvatar = dataAvatar;
         }
 
-        const sBundleFile = data?.sUrl ? data?.sUrl : assetFile?.previousFile
+        const sBundleFile = data?.sUrl
 
         if (sBundleFile) {
             const dataUri = await fileToDataUri(sBundleFile);
@@ -95,13 +93,13 @@ const AddGame = () => {
                                                     <div className='fileinput'>
                                                         <div className='inputtypefile'>
                                                             <div className='inputMSG'>
-                                                                {watch('sAvatar') || imgInput?.currentFile || imgInput?.previousFile ? <>
+                                                                {watch('sAvatar') ? <>
                                                                     <div className="document-preview-group">
                                                                         <div className='img-over' onClick={handleFileInputClick}>Change Game Logo</div>
-                                                                        {(watch('sAvatar') || imgInput?.currentFile || imgInput?.previousFile) && (
+                                                                        {watch('sAvatar') && (
                                                                             typeof (watch('sAvatar')) !== 'string'
-                                                                                ? <div className="document-preview"> {imgInput?.previousFile ? <img src={URL.createObjectURL(imgInput?.previousFile)} alt='altImage' /> : <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' />} </div>
-                                                                                : <div className="document-preview"> {imgInput?.previousFile ? <img src={imgInput?.previousFile} alt='altImage' /> : <img src={watch('sAvatar')} alt='altImage' />} </div>)
+                                                                                ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
+                                                                                : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
                                                                         }
                                                                     </div>
                                                                 </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
@@ -139,16 +137,10 @@ const AddGame = () => {
                                                                             }}
                                                                             type='file'
                                                                             name={`sAvatar`}
-                                                                            defaultValue={imgInput?.previousFile}
                                                                             accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
                                                                             errors={errors}
                                                                             className={errors?.sAvatar && 'error'}
                                                                             onChange={(e) => {
-                                                                                setImgInput((prev) => ({
-                                                                                    ...prev,
-                                                                                    previousFile: prev?.currentFile,
-                                                                                    currentFile: e.target.files[0],
-                                                                                }))
                                                                                 onChange(e.target.files[0])
                                                                             }}
                                                                         />
@@ -157,7 +149,7 @@ const AddGame = () => {
                                                             />
                                                         </div>
 
-                                                        <span className='card-error'>{imgInput?.previousFile ? '' : errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                                                        <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
                                                     </div>
                                                 </Col>
                                                 <Col sm={12} className=''>
@@ -205,8 +197,8 @@ const AddGame = () => {
                                                                 </label>
                                                                 <div className='inputtypefile'>
                                                                     <div className='inputMSG'>
-                                                                        {watch('sUrl') || assetFile?.previousFile ?
-                                                                            <span className='bundle-name'>File: {assetFile?.previousFile ? assetFile?.previousFile?.name : watch('sUrl')?.name}</span> : <span>Upload Game Assets file</span>
+                                                                        {watch('sUrl') ?
+                                                                            <span className='bundle-name'>File: {watch('sUrl')?.name}</span> : <span>Upload Game Assets file</span>
                                                                         }
                                                                     </div>
                                                                     <Controller
@@ -239,16 +231,10 @@ const AddGame = () => {
                                                                                     ref={ref}
                                                                                     type='file'
                                                                                     name={`sUrl`}
-                                                                                    defaultValue={assetFile?.previousFile?.name}
                                                                                     accept='.bundle,.BUNDLE'
                                                                                     errors={errors}
                                                                                     className={errors?.sUrl && 'error'}
                                                                                     onChange={(e) => {
-                                                                                        setAssetFile((prev) => ({
-                                                                                            ...prev,
-                                                                                            previousFile: prev?.currentFile,
-                                                                                            currentFile: e.target.files[0],
-                                                                                        }))
                                                                                         onChange(e.target.files[0])
                                                                                     }}
                                                                                 />
@@ -257,7 +243,7 @@ const AddGame = () => {
                                                                     />
                                                                 </div>
 
-                                                                <span className='card-error'>{assetFile?.previousFile ? '' : errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
+                                                                <span className='card-error'>{errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
                                                             </div>
                                                         </Col>
                                                         <Col sm={6} className='category-selection'>

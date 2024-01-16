@@ -15,7 +15,7 @@ import { addPatient } from 'query/patient/patient.mutation'
 const AddPatient = () => {
     const navigate = useNavigate()
 
-    const { register, handleSubmit, formState: { errors }, control, reset } = useForm({ mode: 'all' })
+    const { register, handleSubmit, formState: { errors }, control, reset, setError } = useForm({ mode: 'all' })
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
 
@@ -35,16 +35,23 @@ const AddPatient = () => {
 
         setButtonDisabled(true)
 
-        let addData = {
-            sUserName: data?.sUserName || '',
-            sMobile: data?.sMobile || '',
-            sAge: +data?.sAge || '',
-            eDominantEye: data?.eDominantEye?.value || '',
-            eAmblyopia: data?.eAmblyopia?.value || '',
-            eStrabismus: data?.eStrabismus?.value || ''
-        }
+        if (data?.sMobile?.length < 10) {
+            setError('sMobile', {
+                type: 'manual',
+                message: 'Invalid Mobile Number'
+            })
+        } else {
+            let addData = {
+                sUserName: data?.sUserName || '',
+                sMobile: data?.sMobile || '',
+                sAge: +data?.sAge || '',
+                eDominantEye: data?.eDominantEye?.value || '',
+                eAmblyopia: data?.eAmblyopia?.value || '',
+                eStrabismus: data?.eStrabismus?.value || ''
+            }
 
-        mutate(addData)
+            mutate(addData)
+        }
 
         setTimeout(() => {
             setButtonDisabled(false)
