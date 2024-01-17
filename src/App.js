@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react'
+import { Spinner } from 'react-bootstrap'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
-import { Loader } from 'shared/components/Loader'
 const AllRoutes = React.lazy(() => import('routes'))
 
 export const queryClient = new QueryClient({
@@ -54,7 +54,9 @@ function App() {
   }, [temp])
   return (
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={
+            'Loading...'
+        }>
         <AllRoutes />
       </Suspense>
     </QueryClientProvider>

@@ -11,7 +11,7 @@ import { route } from 'shared/constants/AllRoutes'
 import { AdminListColumn } from 'shared/constants/TableHeaders'
 import { appendParams, parseParams } from 'shared/utils'
 import AdminList from 'shared/components/AdminList'
-import GamelistFilters from 'shared/components/GameListFilters'
+import AdminListFilters from 'shared/components/AdminListFilters'
 
 const AdminManagement = () => {
     const location = useLocation()
@@ -28,7 +28,7 @@ const AdminManagement = () => {
             nStart: (+data?.pageNumber?.[0] - 1) || 0,
             search: data?.search || '',
             nLimit: data?.nLimit || 10,
-            eStatus: data.eStatus || 'y',
+            eStatus: data.eStatus || '',
             sort: data.sort || '',
             orderBy: +data.orderBy === 1 ? 'ASC' : 'DESC',
             totalElements: +data?.totalElements || 0
@@ -42,10 +42,14 @@ const AdminManagement = () => {
     const [requestParams, setRequestParams] = useState(getRequestParams())
     const [columns, setColumns] = useState(getSortedColumns(AdminListColumn, parsedData))
     const [modal, setModal] = useState({ open: false, type: '' })
+    const [data, setData] = useState(null)
 
     // List
-    const { isLoading, isFetching, data } = useQuery(['adminList', requestParams], () => getAdminList(requestParams), {
+    const { isLoading, isFetching } = useQuery(['adminList', requestParams], () => getAdminList(requestParams), {
         select: (data) => data.data.data,
+        onSuccess: (response) => {
+            setData(response)
+        }
     })
 
     // EDIT ADMIN
@@ -145,7 +149,7 @@ const AdminManagement = () => {
                 ]}
             />
 
-            <div className='admin-list'>
+            <div className=''>
                 <DataTable
                     columns={columns}
                     header={{
@@ -164,9 +168,9 @@ const AdminManagement = () => {
                     pageChangeEvent={handlePageEvent}
                     isLoading={isLoading || isFetching}
                     pagination={{ currentPage: requestParams.pageNumber, pageSize: requestParams.nLimit }}
-                    component={<GamelistFilters defaultValue={requestParams} setRequestParams={setRequestParams} />}
+                    component={<AdminListFilters defaultValue={requestParams} setRequestParams={setRequestParams} />}
                 >
-                    {data && data?.admins?.map((admin, index) => {
+                    {data?.admins?.map((admin, index) => {
                         return (
                             <AdminList
                                 key={admin._id}

@@ -63,7 +63,7 @@ function ForgotPassword () {
             <FormattedMessage id='submit' /> {isLoading && <Spinner animation='border' size='sm' />}
           </Button>
         </div>
-            
+
         <Link to={'/login'} className='b-link'>
           <FormattedMessage id='backToLogin' />
         </Link>

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
 import Header from 'shared/components/Header'
 import SideBar from 'shared/components/Sidebar'
 import Breadcrumbs from 'shared/components/Breadcrumb'
-import { Loader } from 'shared/components/Loader'
 import useMediaQuery from 'shared/hooks/useMediaQuery'
+import { Spinner } from 'react-bootstrap'
 
-function MainLayout({ children }) {
+function MainLayout ({ children }) {
   const [isOpen, setIsOpen] = useState(true)
   const width = useMediaQuery('(max-width: 800px)')
   return (
@@ -17,7 +17,8 @@ function MainLayout({ children }) {
       <div className={`main-container ${width ? !isOpen && 'active' : isOpen && 'active'}`}>
         <div className='container-fluid'>
           <Breadcrumbs />
-          <Suspense fallback={<Loader />}>{children}</Suspense>
+          <Suspense fallback={
+            <Spinner animation='border' size='sm' variant='primary' />}>{children}</Suspense>
         </div>
       </div>
     </div>

@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types'
 import React, { Suspense } from 'react'
-import { Button, Form, Table } from 'react-bootstrap'
+import { Button, Form, Spinner, Table } from 'react-bootstrap'
 import Select from 'react-select'
 import { FormattedMessage } from 'react-intl'
 import Search from '../Search'
 import { parseParams } from 'shared/utils'
-import { Loader } from 'shared/components/Loader'
 
 const CustomPagination = React.lazy(() => import('shared/components/CustomPagination'))
 
@@ -133,7 +132,7 @@ function DataTable ({
         </thead>
         <tbody>
           {children}
-          {totalRecord === 0 && (
+          {(totalRecord === 0 && !isLoading) && (
             <tr>
               <td colSpan={columns.length + (checkbox ? 2 : 1)} className=''>
                 <FormattedMessage id='noRecordFound' />
@@ -142,7 +141,7 @@ function DataTable ({
           )}
         </tbody>
       </Table>
-      {isLoading && <Loader />}
+      {isLoading && <div className='d-flex justify-content-center align-item-center'><Spinner animation="border" variant='primary' /></div>}
       {pagination && (
         <Suspense fallback={<div />}>
           <CustomPagination

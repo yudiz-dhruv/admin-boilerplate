@@ -70,7 +70,6 @@ const InternalGameSettings = () => {
   })
 
   async function onSubmit (data) {
-    console.log('data: ', await data);
   }
 
   function handleClear () {

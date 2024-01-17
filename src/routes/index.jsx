@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react'
+import { Spinner } from 'react-bootstrap'
 import { Route, BrowserRouter, Routes, Navigate } from 'react-router-dom'
 
 import Router from 'routes/Router'
-import { Loader } from 'shared/components/Loader'
 import Toaster from 'shared/components/Toaster'
 
 function AllRoutes () {
@@ -17,9 +17,11 @@ function AllRoutes () {
           key={path}
           path={path}
           element={
-            <Suspense fallback={<Loader />}>
-              <Component {...props} />
-            </Suspense>
+            // <Suspense fallback={
+            //   <Spinner animation='border' size='lg' variant='primary' />
+            // }>
+            <Component {...props} />
+            // </Suspense>
           }
           exact={exact}
         />

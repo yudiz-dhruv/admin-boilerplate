@@ -262,7 +262,7 @@ const AddPatient = () => {
                                             <Form.Group className='form-group'>
                                                 <Form.Label>
                                                     <span>
-                                                        Has Strabisums?
+                                                        Has Strabismus?
                                                         <span className='inputStar'>*</span>
                                                     </span>
                                                 </Form.Label>
@@ -277,7 +277,7 @@ const AddPatient = () => {
                                                     }}
                                                     render={({ field: { onChange, value, ref } }) => (
                                                         <Select
-                                                            placeholder="Select patient's Strabisums status..."
+                                                            placeholder="Select patient's Strabismus status..."
                                                             ref={ref}
                                                             options={eIsPresent}
                                                             className={`react-select border-0 ${errors.eStrabismus && 'error'}`}

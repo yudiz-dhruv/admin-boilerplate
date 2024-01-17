@@ -8,7 +8,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { profile, UpdateProfile } from 'query/profile/profile.query'
 import { getDirtyFormValues, toaster } from 'helper/helper'
 import { useNavigate } from 'react-router-dom'
-import { Loader } from 'shared/components/Loader'
 import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -36,7 +35,7 @@ function EditProfile () {
     mode: 'all'
   })
 
-  const { isLoading: getLoading, isFetching, data } = useQuery('getProfile', profile, {
+  const { data } = useQuery('getProfile', profile, {
     select: (data) => data?.data?.data,
     onSuccess: (data) => {
       setProfileData(data)
@@ -90,55 +89,50 @@ function EditProfile () {
   }, [])
   return (
     <>
-      {getLoading || isFetching ? (
-        <Loader />
-      ) : (
-        <Row className='justify-content-center'>
-          <Col xxl={8} >
-            <Wrapper>
-              {!updateFlag ?
-                (<button className='Profile-main-edit' onClick={() => setUpdateFlag(!updateFlag)}><FontAwesomeIcon icon={faPenToSquare} /></button>)
-                : (<button className='Profile-main-cancel' onClick={() => setUpdateFlag(!updateFlag)}><FontAwesomeIcon icon={faXmark} /></button>)
-              }
-              <div className='edit-profile'>
-                <div className='profile_icon'>{data?.eUserType === 'admin' ? <img src={data?.sAvatar} alt={data?.sUserName} className='img-content' /> : <FontAwesomeIcon icon={faUser} />}</div>
-                <p>Profile Details</p>
-                <Form onSubmit={handleSubmit(onsubmit)} autoComplete='off'>
-                  <EditProfileComponent
-                    register={register}
-                    control={control}
-                    errors={errors}
-                    clearErrors={clearErrors}
-                    trigger={trigger}
-                    values={getValues()}
-                    profileData={profileData}
-                    handleChange={(e) => handleChange(e)}
-                    setValue={setValue}
-                    updateFlag={updateFlag}
-                    usernameUpdate={usernameUpdate}
-                    mobileNumberUpdate={mobileNumberUpdate}
-                    genderUpdate={genderUpdate}
-                  />
-                  {updateFlag !== false &&
-                    <>
-                      <div className='d-flex justify-content-end'>
-                        <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || !updateFlag || isLoading}>
-                          <FormattedMessage id='update' />
-                          {isLoading && <Spinner animation='border' size='sm' />}
-                        </Button>
-                        <Button variant='secondary' disabled={isLoading} className='square' onClick={() => navigate(route.dashboard)}>
-                          Cancel
-                        </Button>
-                      </div>
-                    </>
-                  }
-                </Form>
-              </div>
-            </Wrapper>
-          </Col>
-        </Row>
-      )
-      }
+      <Row className='justify-content-center'>
+        <Col xxl={8} >
+          <Wrapper>
+            {!updateFlag ?
+              (<button className='Profile-main-edit' onClick={() => setUpdateFlag(!updateFlag)}><FontAwesomeIcon icon={faPenToSquare} /></button>)
+              : (<button className='Profile-main-cancel' onClick={() => setUpdateFlag(!updateFlag)}><FontAwesomeIcon icon={faXmark} /></button>)
+            }
+            <div className='edit-profile'>
+              <div className='profile_icon'>{data?.eUserType === 'admin' ? <img src={data?.sAvatar} alt={data?.sUserName} className='img-content' /> : <FontAwesomeIcon icon={faUser} />}</div>
+              <p>Profile Details</p>
+              <Form onSubmit={handleSubmit(onsubmit)} autoComplete='off'>
+                <EditProfileComponent
+                  register={register}
+                  control={control}
+                  errors={errors}
+                  clearErrors={clearErrors}
+                  trigger={trigger}
+                  values={getValues()}
+                  profileData={profileData}
+                  handleChange={(e) => handleChange(e)}
+                  setValue={setValue}
+                  updateFlag={updateFlag}
+                  usernameUpdate={usernameUpdate}
+                  mobileNumberUpdate={mobileNumberUpdate}
+                  genderUpdate={genderUpdate}
+                />
+                {updateFlag !== false &&
+                  <>
+                    <div className='d-flex justify-content-end'>
+                      <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || !updateFlag || isLoading}>
+                        <FormattedMessage id='update' />
+                        {isLoading && <Spinner animation='border' size='sm' />}
+                      </Button>
+                      <Button variant='secondary' disabled={isLoading} className='square' onClick={() => navigate(route.dashboard)}>
+                        Cancel
+                      </Button>
+                    </div>
+                  </>
+                }
+              </Form>
+            </div>
+          </Wrapper>
+        </Col>
+      </Row>
     </>
   )
 }

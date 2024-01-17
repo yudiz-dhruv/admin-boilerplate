@@ -1,5 +1,6 @@
-import { faCube, faGamepad, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faCube, faGamepad, faUser, faUserDoctor } from '@fortawesome/free-solid-svg-icons'
 import { route } from 'shared/constants/AllRoutes'
+
 
 export const sidebarConfig = [
   {
@@ -10,7 +11,7 @@ export const sidebarConfig = [
   },
   {
     path: route.admin,
-    icon: faUser,
+    icon: faUserDoctor,
     title: 'Admin Management',
     role: ['superAdmin']
   },

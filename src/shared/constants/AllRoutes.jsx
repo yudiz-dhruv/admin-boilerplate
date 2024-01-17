@@ -20,7 +20,7 @@ export const route = {
 
   adminGame: '/admin-game-management',
   adminGameSettings: '/admin-game-management/settings',
-  
+
   patient: '/patient-management',
   addPatient: '/patient-management/add',
   viewPatient: (id) => `/patient-management/view/${id}`,

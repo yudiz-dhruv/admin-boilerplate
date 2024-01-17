@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Col, Row } from 'react-bootstrap'
+import { Card, Col, Row, Spinner } from 'react-bootstrap'
 import Cards from 'shared/components/Card'
 import { Loader } from 'shared/components/Loader'
 import { faUsers, faDatabase, faUserMinus, faEnvelopeCircleCheck, faMobile, faIndianRupeeSign, faUserDoctor, faUser, faUserSlash, faGamepad } from '@fortawesome/free-solid-svg-icons'
@@ -39,7 +39,9 @@ function Dashboard () {
   return (
     <div>
       {false ? (
-        <Loader />
+        <div className='d-flex align-items-center justify-content-center'>
+          <Spinner animation='border' variant='info' />
+        </div>
       ) : (
         <>
           <Row>

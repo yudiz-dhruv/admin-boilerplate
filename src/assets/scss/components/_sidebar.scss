@@ -25,12 +25,12 @@
 
         &:nth-child(1) a i,
         &:nth-child(1) .list-name i {
-          color: #367596;
+          color: #2f6684;
         }
 
         &:nth-child(2) a i,
         &:nth-child(2) .list-name i {
-          color: #2db5ce;
+          color: #2799ad;
         }
 
         &:nth-child(3) a i,
@@ -78,7 +78,8 @@
           display: block;
         }
 
-        a, .list-name {
+        a,
+        .list-name {
           font-size: 14px;
           color: var(--secondary-text-color);
           text-transform: capitalize;
@@ -95,7 +96,7 @@
           }
 
           i {
-            font-size: $fs-16;
+            font-size: $fs-18;
             font-weight: normal;
             border-radius: 4px;
             display: inline-block;
@@ -148,7 +149,8 @@
             // margin-top: 0;
             margin: 5px 0;
 
-            a, .list-name {
+            a,
+            .list-name {
               padding: 9px 20px !important;
               font-weight: $fw-500;
               text-transform: none;
@@ -179,7 +181,9 @@
 
         @include media-min(xl) {
           &:hover {
-            >a, >.list-name {
+
+            >a,
+            >.list-name {
               background-color: var(--primary-color-light);
               border-color: var(--primary-color);
             }
@@ -230,7 +234,6 @@
 
             .side-bar-text {
               letter-spacing: 0.7px;
-              font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
             }
 
             i {
@@ -301,14 +304,14 @@ body.dark {
 
           &:nth-child(1) a i,
           &:nth-child(1) .list-name i {
-            color: #367596;
+            color: #226386;
           }
 
           &:nth-child(2) a i,
           &:nth-child(2) .list-name i {
-            color: #08abc8;
+            color: #1e99af;
           }
-          
+
           &:nth-child(3) a i,
           &:nth-child(3) .list-name i {
             color: #fa7658;

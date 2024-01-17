@@ -43,10 +43,14 @@ const GameManagement = () => {
   const [requestParams, setRequestParams] = useState(getRequestParams())
   const [columns, setColumns] = useState(getSortedColumns(GameListColumn, parsedData))
   const [modal, setModal] = useState({ open: false, type: '' })
+  const [data, setData] = useState()
 
   // List
-  const { isLoading, isFetching, data } = useQuery(['gameList', requestParams], () => getGameList(requestParams), {
+  const { isLoading, isFetching } = useQuery(['gameList', requestParams], () => getGameList(requestParams), {
     select: (data) => data.data.data,
+    onSuccess: (response) => {
+      setData(response)
+    }
   })
 
   // EDIT GAME
@@ -167,7 +171,7 @@ const GameManagement = () => {
           pagination={{ currentPage: requestParams.pageNumber, pageSize: requestParams.nLimit }}
           component={<GamelistFilters defaultValue={requestParams} setRequestParams={setRequestParams} />}
         >
-          {data && data?.game?.map((game, index) => {
+          {data?.game?.map((game, index) => {
             return (
               <GameList
                 key={game._id}

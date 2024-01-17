@@ -8,6 +8,7 @@
     }
   }
 }
+
 .dash-card {
   background-color: var(--boxes-color);
   border: none;
@@ -63,15 +64,19 @@ body.dark {
       }
     }
   }
+
   .dash-card {
     box-shadow: 6px 6px 20px 0px rgb(156 181 216 / 8%);
-    &:hover{
-        box-shadow: 6px 6px 20px 0px rgb(156 181 216 / 17%);
+
+    &:hover {
+      box-shadow: 6px 6px 20px 0px rgb(156 181 216 / 17%);
     }
+
     .card-body {
       .card-title {
         color: var(--secondary-400);
       }
+
       .card-text {
         color: var(--secondary-300);
       }

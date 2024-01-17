@@ -25,7 +25,9 @@ const ViewAdmin = () => {
                             <div className='details-card-data'>
                                 <div className='admin-img'>
                                     <div className='img-content'>
-                                        {isLoading ? <Spinner className='text-center mt-4' /> : <img src={data?.sAvatar} alt={data?.sUserName} />}
+                                        {isLoading ?
+                                            <Spinner animation='border' className='text-center mt-4' variant='primary' />
+                                            : <img src={data?.sAvatar} alt={data?.sUserName} />}
                                     </div>
                                     <span className='user-name'>{data?.sUserName || 'Loading...'}</span>
                                 </div>
@@ -34,6 +36,10 @@ const ViewAdmin = () => {
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Email Address</span>
                                         <span className='data-value'>{data?.sEmail || '-'}</span>
+                                    </Col>
+                                    <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                        <span className='data-title'>Mobile Number</span>
+                                        <span className='data-value'>{data?.sMobile ? `+91 ${data?.sMobile}` : '-'}</span>
                                     </Col>
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Company Name</span>
@@ -49,18 +55,18 @@ const ViewAdmin = () => {
                                     </Col>
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Purchase Date</span>
-                                        <span className='data-value'>{isLoading ? '-' : moment(data?.dStartAt).format('DD MMM, YYYY') || '-'}</span>
+                                        <span className='data-value'>{isLoading ? '-' : moment(data?.oGameValidity?.dStartAt).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Expiry Date</span>
-                                        <span className='data-value'>{isLoading ? '-' : moment(data?.dEndAt).format('DD MMM, YYYY') || '-'}</span>
+                                        <span className='data-value'>{isLoading ? '-' : moment(data?.oGameValidity?.dEndAt).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Created Date</span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD MMM, YYYY')}</span>
                                     </Col>
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Last Activity on</span>
+                                        <span className='data-title'>Last Updated Date</span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
                                 </Row>

@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal'
 import { Button, Spinner } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
 
-export default function CustomModal({
+export default function CustomModal ({
   open,
   handleConfirm,
   confirmValue,
