@@ -15,13 +15,8 @@ export async function forgotPassword({ sEmail }) {
 
 export async function resetPassWord(data) {
   return await axios.post(
-    `/auth/password/reset`,
-    data,
-    {
-      headers: {
-        authorization: data?.token
-      }
-    }
+    `/auth/password/reset/${data?.token}`,
+    data
   )
 }
 

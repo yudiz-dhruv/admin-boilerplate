@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
-import { OTP, PASSWORD } from 'shared/constants'
+import { PASSWORD } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { useMutation } from 'react-query'
 import { resetPassWord } from 'query/auth/auth.query'
@@ -10,7 +10,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toaster } from 'helper/helper'
 import { checkToken } from 'query/profile/profile.query'
 import NotFound from 'shared/components/404'
-import { route } from 'shared/constants/AllRoutes'
 
 function ResetPassword () {
   const navigate = useNavigate()
@@ -73,7 +72,7 @@ function ResetPassword () {
   })
 
   function onSubmit (data) {
-    mutate({ sNewPassword: data?.sNewPassword, sConfirmPassword: data?.sConfirmNewPassword, sAuthCode: data?.sAuthCode, token })
+    mutate({ sNewPassword: data?.sNewPassword, sConfirmPassword: data?.sConfirmNewPassword, token })
   }
 
   useEffect(() => {

@@ -87,7 +87,7 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                                 <RangeSlider
                                     value={value}
                                     onChange={e => {
-                                        setSettings({ ...settings, nBlur: +e.target.value })
+                                        setSettings({ ...settings, blur: +e.target.value })
                                         onChange(e)
                                     }}
                                     min={0}
