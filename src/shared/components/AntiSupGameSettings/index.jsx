@@ -44,7 +44,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
     return (
         <>
             <Wrapper>
-                <h3 className='game-title'><FontAwesomeIcon icon={faGamepad} color='var(--secondary-500)' /> {LABELS?.TITLE}</h3>
+                <h3 className='game-title'><FontAwesomeIcon icon={faGamepad} color='var(--secondary-500)' size='sm' /> {LABELS?.TITLE}</h3>
                 <div className='line'></div>
 
                 <div className='antisuppresion-details-button-group mt-4'>

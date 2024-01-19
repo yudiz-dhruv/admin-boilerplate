@@ -149,17 +149,17 @@ const AdminManagement = () => {
                 ]}
             />
 
-            <div className=''>
+            <div className='admin-list'>
                 <DataTable
                     columns={columns}
                     header={{
                         left: {
                             rows: true,
-                            search: true
+                            component: true,
                         },
                         right: {
+                            search: true,
                             filter: false,
-                            component: true
                         }
                     }}
                     sortEvent={handleSort}

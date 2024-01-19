@@ -13,6 +13,7 @@
             color: var(--primary-color);
             font-family: 'Helvetica-Bold';
             font-weight: 600;
+            font-size: 17px;
             text-transform: uppercase;
             letter-spacing: 0.8px;
         }
@@ -26,7 +27,7 @@
             border-radius: 99px;
             background-color: #216b93d5 !important;
             border-radius: 50px;
-            box-shadow: 6px 8px 10px #08080852;
+            box-shadow: 4px 7px 8px #00000056;
 
             * {
                 z-index: 2;
@@ -36,8 +37,9 @@
                 background-color: transparent !important;
                 border: none !important;
                 color: var(--text-color);
-                transition: all 0.5s ease-in-out;
+                transition: all 0.3s ease-in-out;
                 font-family: 'Helvetica-Bold';
+                padding: 5px 15px;
 
                 &:hover {
                     box-shadow: none !important;
@@ -95,7 +97,7 @@
             width: 100%;
             height: 1px;
             background-color: var(--secondary-300);
-            margin-bottom: 1rem;
+            margin-bottom: 1.6rem;
         }
 
         .game-title {
@@ -104,6 +106,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.8px;
+            font-size: 17px;
         }
 
         .antisuppresion-details-button-group {
@@ -149,11 +152,34 @@
                 font-weight: 400;
                 letter-spacing: 1px;
                 transition: 0.3s ease-in-out;
-
+                
                 &.btn-primary {
+                    svg {
+                        transition: 0.5s ease-in-out;
+                        transform: rotate(90deg);
+                        color: var(--secondary-100) !important;
+                    }
+
                     &:hover {
                         box-shadow: none !important;
+                        
+                        svg {
+                            color: var(--primary-color) !important;
+                        }
                     }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 500px) {
+    .game-settings {
+        .settings {
+            .tabs {
+                button {
+                    font-size: 12px;
+                    padding: 5px 10px;
                 }
             }
         }
@@ -348,6 +374,10 @@
 body.dark {
     .game-settings {
         .settings {
+            .data-title {
+                color: var(--text-hover);
+            }
+
             .tabs {
                 background-color: #256384c7 !important;
                 box-shadow: 6px 6px 10px #00000095;
@@ -362,7 +392,7 @@ body.dark {
                     }
 
                     &.checked {
-                        background-color: var(--secondary-800) !important;
+                        background-color: var(--secondary-100) !important;
 
                         span {
                             color: var(--primary-color) !important;

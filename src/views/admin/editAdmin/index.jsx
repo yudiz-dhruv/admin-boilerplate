@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { getDirtyFormValues, toaster } from 'helper/helper'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
@@ -17,6 +17,8 @@ import { getAdminById } from 'query/admin/admin.query'
 import makeAnimated from 'react-select/animated'
 import { updateAdmin } from 'query/admin/admin.mutation'
 import { getGameDropdownList } from 'query/game/game.query'
+import { FormattedMessage } from 'react-intl'
+import { PASSWORD } from 'shared/constants'
 
 const EditAdmin = () => {
   const navigate = useNavigate()
@@ -25,6 +27,7 @@ const EditAdmin = () => {
   const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch, getValues } = useForm({ mode: 'all' })
 
   const [payload, setPayload] = useState()
+  const [showNewPassword, setNewPassword] = useState(false)
   const [isButtonDisabled, setButtonDisabled] = useState(false)
 
   // DROPDOWN GAME LIST
@@ -32,7 +35,7 @@ const EditAdmin = () => {
     select: (data) => data?.data?.data,
   })
 
-  // SPEICIFC ADMIN
+  // SPECIFIC ADMIN
   const { data } = useQuery('adminDataById', () => getAdminById(id), {
     enabled: !!id,
     select: (data) => data?.data?.data,
@@ -53,6 +56,7 @@ const EditAdmin = () => {
         aGamesName: gameData,
         dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
         dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
+        sPassword: ''
       })
     }
   }, [data, eGameDropdown, reset])
@@ -80,11 +84,12 @@ const EditAdmin = () => {
       dStartAt: watch('dStartAt')?.toISOString(),
       dEndAt: watch('dEndAt')?.toISOString(),
       sAvatar: watch('sAvatar'),
+      sPassword: watch('sPassword')
     }
 
     const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
     setPayload(payloadData)
-  }, [dirtyFields, watch('sUserName'), watch('sCompanyName'), watch('aGamesName'), watch('nPrice'), watch('dStartAt'), watch('dEndAt'), watch('sAvatar')])
+  }, [dirtyFields, watch('sUserName'), watch('sCompanyName'), watch('aGamesName'), watch('nPrice'), watch('dStartAt'), watch('dEndAt'), watch('sAvatar'), watch('sPassword')])
 
   async function onSubmit (data) {
     if (isButtonDisabled) {
@@ -97,6 +102,10 @@ const EditAdmin = () => {
     setTimeout(() => {
       setButtonDisabled(false)
     }, 5000)
+  }
+
+  const handleNewPasswordToggle = () => {
+    setNewPassword(!showNewPassword)
   }
 
   useEffect(() => {
@@ -225,6 +234,54 @@ const EditAdmin = () => {
                     <Col lg={6} md={12} className='mt-2'>
                       <Form.Group className='form-group'>
                         <Form.Label>
+                          <FormattedMessage id='Password' />
+                          <span className='inputStar'>*</span>
+                        </Form.Label>
+                        <InputGroup>
+                          <Controller
+                            name='sPassword'
+                            control={control}
+                            render={({ field: { ref, value, onChange } }) => (
+                              <Form.Control
+                                className={`form-control ${errors.sPassword && 'error'}`}
+                                placeholder='Enter new password'
+                                type={!showNewPassword ? 'password' : 'text'}
+                                name='sPassword'
+                                ref={ref}
+                                value={value}
+                                onChange={(e) => {
+                                  e.target.value = e.target.value?.trim();
+                                  onChange(e);
+                                }}
+                              />
+                            )}
+                            rules={{
+                              required: 'New Password is required.',
+                              pattern: {
+                                value: PASSWORD,
+                                message: 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+                              },
+                              maxLength: {
+                                value: 12,
+                                message: validationErrors.rangeLength(8, 12),
+                              },
+                              minLength: {
+                                value: 8,
+                                message: validationErrors.rangeLength(8, 12),
+                              },
+                            }}
+                          />
+                          <Button onClick={handleNewPasswordToggle} variant='link' className='icon-right'>
+                            <i className={showNewPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
+                          </Button>
+                        </InputGroup>
+                        {errors.sPassword && (<Form.Control.Feedback type='invalid'>{errors.sPassword.message}</Form.Control.Feedback>)}
+                      </Form.Group>
+                    </Col>
+
+                    <Col lg={6} md={12} className='mt-2'>
+                      <Form.Group className='form-group'>
+                        <Form.Label>
                           <span>
                             Games
                             <span className='inputStar'>*</span>
@@ -271,8 +328,8 @@ const EditAdmin = () => {
                         errors={errors}
                         className={`form-control ${errors?.nPrice && 'error'}`}
                         name='nPrice'
-                        label='Price'
-                        placeholder='Enter the price'
+                        label='Package Price'
+                        placeholder='Enter the package price'
                         required
                         validation={{
                           pattern: {
@@ -281,7 +338,7 @@ const EditAdmin = () => {
                           },
                           required: {
                             value: true,
-                            message: 'Price is required'
+                            message: 'Package price is required'
                           },
                         }}
                         onChange={(e) => {
@@ -296,7 +353,7 @@ const EditAdmin = () => {
                       <Form.Group className='form-group'>
                         <Form.Label className='date-lable'>
                           <span>
-                            Start Date
+                            Purchase Date
                             <span className='inputStar'>*</span>
                           </span>
                         </Form.Label>
@@ -306,19 +363,19 @@ const EditAdmin = () => {
                           rules={{
                             required: {
                               value: true,
-                              message: 'Start date is required.'
+                              message: 'Purchase date is required.'
                             }
                           }}
                           render={({ field }) => (
                             <DatePicker
                               {...field}
                               selected={field.value}
-                              placeholderText='Select Start Date'
+                              placeholderText='Select Purchase Date'
                               onChange={(date) => field.onChange(date)}
                               className="datepicker-inputbox"
                               showIcon
                               toggleCalendarOnIconClick
-                              minDate={new Date(watch('dStartAt'))}
+                              minDate={new Date()}
                             />
                           )}
                         />
@@ -334,7 +391,7 @@ const EditAdmin = () => {
                       <Form.Group className='form-group'>
                         <Form.Label className='date-lable'>
                           <span>
-                            End Date
+                            Expiry Date
                             <span className='inputStar'>*</span>
                           </span>
                         </Form.Label>
@@ -344,14 +401,14 @@ const EditAdmin = () => {
                           rules={{
                             required: {
                               value: true,
-                              message: 'End date is required.'
+                              message: 'Expiry date is required.'
                             }
                           }}
                           render={({ field }) => (
                             <DatePicker
                               {...field}
                               selected={field.value}
-                              placeholderText='Select End Date'
+                              placeholderText='Select Expiry Date'
                               onChange={(date) => field.onChange(date)}
                               minDate={getValues('dStartAt')}
                               filterDate={(date) => date >= new Date(getValues('dStartAt'))}

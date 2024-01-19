@@ -72,20 +72,20 @@ const AdminGame = () => {
         <div className='personal-details'>
           <div className='admin-game-form'>
             <Row className='justify-content-center'>
-              <Col xxl={4} xl={6} lg={7} md={9}>
+              <Col xxl={8} xl={12} md={12}>
                 <Wrapper>
                   <Row>
-                    <Col md={12}>
+                    <Col lg={6} md={12}>
                       <Form.Group className='form-group'>
                         <Form.Label> Patient Name </Form.Label>
                         <Row className='patient-name'>
-                          <Col xs={9}>
+                          <Col xl={9} lg={8} md={9} xs={9}>
                             <Controller
                               name='ePatientName'
                               control={control}
                               render={({ field: { onChange, value, ref } }) => (
                                 <Select
-                                  placeholder="Enter patient name..."
+                                  placeholder="Enter patient name"
                                   ref={ref}
                                   options={ePatientDropdown}
                                   className={`react-select border-0 ${errors.ePatientName && 'error'}`}
@@ -99,7 +99,7 @@ const AdminGame = () => {
                               )}
                             />
                           </Col>
-                          <Col xs={3}>
+                          <Col xl={3} lg={4} md={3} xs={3}>
                             <Button variant='primary' type='button' className='me-2 add-patient' onClick={() => navigate(route?.addPatient)}>
                               <FontAwesomeIcon icon={faPlus} /> Add
                             </Button>
@@ -108,7 +108,7 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={12}>
+                    <Col lg={6} md={6}>
                       <CommonInput
                         type='text'
                         register={register}
@@ -126,7 +126,7 @@ const AdminGame = () => {
                       />
                     </Col>
 
-                    <Col md={12}>
+                    <Col lg={6} md={6}>
                       <CommonInput
                         type='text'
                         register={register}
@@ -144,7 +144,7 @@ const AdminGame = () => {
                       />
                     </Col>
 
-                    <Col md={12}>
+                    <Col md={6}>
                       <Form.Group className='form-group'>
                         <Form.Label> Dominant Eye </Form.Label>
                         <Controller
@@ -152,7 +152,7 @@ const AdminGame = () => {
                           control={control}
                           render={({ field: { onChange, value, ref } }) => (
                             <Select
-                              placeholder='Select Dominant Eye...'
+                              placeholder='Select Dominant Eye'
                               ref={ref}
                               options={eDominantEyeOptions}
                               className={`react-select border-0 ${errors.eDominantEye && 'error'}`}
@@ -169,7 +169,7 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={12}>
+                    <Col md={6}>
                       <Form.Group className='form-group'>
                         <Form.Label> Has Amblyopia? </Form.Label>
                         <Controller
@@ -177,7 +177,7 @@ const AdminGame = () => {
                           control={control}
                           render={({ field: { onChange, value, ref } }) => (
                             <Select
-                              placeholder="Select patient's Amblyopia status..."
+                              placeholder="Select patient's Amblyopia status"
                               ref={ref}
                               options={eIsPresent}
                               className={`react-select border-0 ${errors.eAmblyopia && 'error'}`}
@@ -194,7 +194,7 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={12}>
+                    <Col md={6}>
                       <Form.Group className='form-group'>
                         <Form.Label> Has Strabisums? </Form.Label>
                         <Controller
@@ -202,7 +202,7 @@ const AdminGame = () => {
                           control={control}
                           render={({ field: { onChange, value, ref } }) => (
                             <Select
-                              placeholder="Select patient's Strabisums status..."
+                              placeholder="Select patient's Strabisums status"
                               ref={ref}
                               options={eIsPresent}
                               className={`react-select border-0 ${errors.eStrabismus && 'error'}`}

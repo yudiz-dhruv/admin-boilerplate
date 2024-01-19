@@ -13,7 +13,6 @@ const GamelistFilters = ({ defaultValue, setRequestParams }) => {
         { label: 'All', value: '' },
         { label: 'Active', value: 'y' },
         { label: 'In-Active', value: 'n' },
-        { label: 'Deleted', value: 'd' },
     ]
 
     useEffect(() => {

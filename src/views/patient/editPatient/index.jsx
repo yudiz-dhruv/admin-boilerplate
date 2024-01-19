@@ -91,7 +91,7 @@ const EditPatient = () => {
             <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)} >
                 <div className='personal-details'>
                     <div className='patient-form'>
-                        <Row>
+                        <Row className='d-flex justify-content-center'>
                             <Col xxl={8}>
                                 <Wrapper>
                                     <Row>

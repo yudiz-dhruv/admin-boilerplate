@@ -3,11 +3,11 @@ import { fileToDataUri, toaster } from 'helper/helper'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import CommonInput from 'shared/components/CommonInput'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import { EMAIL } from 'shared/constants'
+import { EMAIL, PASSWORD } from 'shared/constants'
 import { route } from 'shared/constants/AllRoutes'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker';
@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { addAdmin } from 'query/admin/admin.mutation'
 import { getGameDropdownList } from 'query/game/game.query'
+import { FormattedMessage } from 'react-intl'
 
 const AddAdmin = () => {
   const navigate = useNavigate()
@@ -23,6 +24,7 @@ const AddAdmin = () => {
   const fileInputRef = useRef(null)
 
   const [isButtonDisabled, setButtonDisabled] = useState(false)
+  const [showNewPassword, setNewPassword] = useState(false)
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
@@ -54,6 +56,7 @@ const AddAdmin = () => {
       dEndAt: data?.dEndAt?.toISOString() || '',
       sCompanyName: data?.sCompanyName || '',
       sAvatar: '',
+      sPassword: data?.sPassword || ''
     }
     const sAvatarFile = data?.sAvatar
 
@@ -73,6 +76,10 @@ const AddAdmin = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click()
     }
+  }
+
+  const handleNewPasswordToggle = () => {
+    setNewPassword(!showNewPassword)
   }
 
   useEffect(() => {
@@ -190,34 +197,8 @@ const AddAdmin = () => {
                         }}
                       />
                     </Col>
-                    <Col lg={6} md={12} className=''>
-                      <CommonInput
-                        type='text'
-                        register={register}
-                        errors={errors}
-                        className={`form-control ${errors?.sEmail && 'error'}`}
-                        name='sEmail'
-                        label='Email ID'
-                        placeholder='Enter the email address'
-                        required
-                        validation={{
-                          pattern: {
-                            value: EMAIL,
-                            message: 'Provide a valid email address.'
-                          },
-                          required: {
-                            value: true,
-                            message: validationErrors?.emailRequired
-                          },
-                          maxLength: {
-                            value: 45,
-                            message: 'Email address must be less than 45 char long.'
-                          }
-                        }}
-                      />
-                    </Col>
 
-                    <Col lg={6} md={12} className='mt-2'>
+                    <Col lg={6} md={12}>
                       <CommonInput
                         type='text'
                         register={register}
@@ -250,6 +231,118 @@ const AddAdmin = () => {
                             value: /^[a-zA-Z ]+$/,
                             message: 'Special characters and numbers are not allowed'
                           }
+                        }}
+                      />
+                    </Col>
+
+                    <Col lg={6} md={12} className='mt-2'>
+                      <CommonInput
+                        type='text'
+                        register={register}
+                        errors={errors}
+                        className={`form-control ${errors?.sEmail && 'error'}`}
+                        name='sEmail'
+                        label='Email ID'
+                        placeholder='Enter the email address'
+                        required
+                        validation={{
+                          pattern: {
+                            value: EMAIL,
+                            message: 'Provide a valid email address.'
+                          },
+                          required: {
+                            value: true,
+                            message: validationErrors?.emailRequired
+                          },
+                          maxLength: {
+                            value: 45,
+                            message: 'Email address must be less than 45 char long.'
+                          }
+                        }}
+                      />
+                    </Col>
+
+                    <Col lg={6} md={12} className='mt-2'>
+                      <Form.Group className='form-group'>
+                        <Form.Label>
+                          <FormattedMessage id='Password' />
+                          <span className='inputStar'>*</span>
+                        </Form.Label>
+                        <InputGroup>
+                          <Controller
+                            name='sPassword'
+                            control={control}
+                            render={({ field: { ref, value, onChange } }) => (
+                              <Form.Control
+                                className={`form-control ${errors.sPassword && 'error'}`}
+                                placeholder='Enter new password'
+                                type={!showNewPassword ? 'password' : 'text'}
+                                name='sPassword'
+                                ref={ref}
+                                value={value}
+                                onChange={(e) => {
+                                  e.target.value = e.target.value?.trim();
+                                  onChange(e);
+                                }}
+                              />
+                            )}
+                            rules={{
+                              required: 'New Password is required.',
+                              pattern: {
+                                value: PASSWORD,
+                                message: 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+                              },
+                              maxLength: {
+                                value: 12,
+                                message: validationErrors.rangeLength(8, 12),
+                              },
+                              minLength: {
+                                value: 8,
+                                message: validationErrors.rangeLength(8, 12),
+                              },
+                            }}
+                          />
+                          <Button onClick={handleNewPasswordToggle} variant='link' className='icon-right'>
+                            <i className={showNewPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
+                          </Button>
+                        </InputGroup>
+                        {errors.sPassword && (<Form.Control.Feedback type='invalid'>{errors.sPassword.message}</Form.Control.Feedback>)}
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={6} className='mt-2'>
+                      <CommonInput
+                        type='text'
+                        register={register}
+                        errors={errors}
+                        className={`form-control ${errors?.sMobile && 'error'}`}
+                        name='sMobile'
+                        label='Mobile'
+                        placeholder='Enter mobile number'
+                        required
+                        validation={{
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: 'Only numbers are allowed'
+                          },
+                          required: {
+                            value: true,
+                            message: 'Mobile number is required'
+                          },
+                          // minLength: {
+                          //     value: 10,
+                          //     message: 'Mobile number must be atleast 10 digits.'
+                          // },
+                          maxLength: {
+                            value: 10,
+                            message: 'Mobile number should be of 10 digits.'
+                          }
+                        }}
+                        maxLength={10}
+                        onChange={(e) => {
+                          e.target.value =
+                            e.target.value?.trim() &&
+                            e.target.value.replace(/^[a-zA-z]+$/g, '')
                         }}
                       />
                     </Col>
@@ -302,8 +395,8 @@ const AddAdmin = () => {
                         errors={errors}
                         className={`form-control ${errors?.nPrice && 'error'}`}
                         name='nPrice'
-                        label='Price'
-                        placeholder='Enter the price'
+                        label='Package Price'
+                        placeholder='Enter the package price'
                         required
                         validation={{
                           pattern: {
@@ -312,7 +405,7 @@ const AddAdmin = () => {
                           },
                           required: {
                             value: true,
-                            message: 'Price is required'
+                            message: 'Package price is required'
                           },
                         }}
                         onChange={(e) => {
@@ -327,7 +420,7 @@ const AddAdmin = () => {
                       <Form.Group className='form-group'>
                         <Form.Label className='date-lable'>
                           <span>
-                            Start Date
+                            Purchase Date
                             <span className='inputStar'>*</span>
                           </span>
                         </Form.Label>
@@ -337,14 +430,14 @@ const AddAdmin = () => {
                           rules={{
                             required: {
                               value: true,
-                              message: 'Start date is required.'
+                              message: 'Purchase date is required.'
                             }
                           }}
                           render={({ field }) => (
                             <DatePicker
                               {...field}
                               selected={field.value}
-                              placeholderText='Select Start Date'
+                              placeholderText='Select Purchase Date'
                               onChange={(date) => field.onChange(date)}
                               className="datepicker-inputbox"
                               showIcon
@@ -365,7 +458,7 @@ const AddAdmin = () => {
                       <Form.Group className='form-group'>
                         <Form.Label className='date-lable'>
                           <span>
-                            End Date
+                            Expiry Date
                             <span className='inputStar'>*</span>
                           </span>
                         </Form.Label>
@@ -375,14 +468,14 @@ const AddAdmin = () => {
                           rules={{
                             required: {
                               value: true,
-                              message: 'End date is required.'
+                              message: 'Expiry date is required.'
                             }
                           }}
                           render={({ field }) => (
                             <DatePicker
                               {...field}
                               selected={field.value}
-                              placeholderText='Select End Date'
+                              placeholderText='Select Expiry Date'
                               onChange={(date) => field.onChange(date)}
                               minDate={getValues('dStartAt')}
                               filterDate={(date) => date >= new Date(getValues('dStartAt'))}

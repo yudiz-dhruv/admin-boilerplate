@@ -16,7 +16,7 @@
   input[type='radio'] {
     &:checked~label {
       &:before {
-        border-color: var(--primary-color);
+        border-color: var(--text-hover);
       }
 
       &:after {
@@ -26,6 +26,7 @@
 
     &~label {
       padding-left: 29px;
+      padding-top: 2px;
 
       &:before {
         content: '';
@@ -44,7 +45,7 @@
         content: '';
         width: 10px;
         height: 10px;
-        background-color: var(--primary-color);
+        background-color: var(--text-hover);
         border-radius: 100%;
         top: 5px;
         left: 5px;

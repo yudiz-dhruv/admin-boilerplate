@@ -5,13 +5,13 @@ import { useIntl } from 'react-intl'
 import { parseParams } from 'shared/utils'
 // import { useNavigate } from 'react-router-dom'
 import iconSearch from '../../../assets/images/icons/search.svg'
-function Search({ size, searchEvent, className, disabled }) {
+function Search ({ size, searchEvent, className, disabled }) {
   const refEdit = useRef(null)
   // const navigate = useNavigate()
   const [timer, setTimer] = useState(null)
   // eslint-disable-next-line no-restricted-globals
   const params = parseParams(location.search)
-  function handleChange(e) {
+  function handleChange (e) {
     e.target.value = e.target.value?.trimStart()
     if (timer) {
       clearTimeout(timer)

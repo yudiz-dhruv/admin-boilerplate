@@ -15,7 +15,7 @@ const DominantEyeSettings = ({ buttonToggle, setButtonToggle }) => {
     return (
         <>
             <Wrapper>
-                <h3 className='data-title'><FontAwesomeIcon icon={faEye} color='var(--secondary-500)' /> Dominant Eye</h3>
+                <h3 className='data-title'><FontAwesomeIcon icon={faEye} color='var(--secondary-500)' size='sm' /> Dominant Eye</h3>
                 <div className='line'></div>
 
                 <div className='mt-2 tabs'>

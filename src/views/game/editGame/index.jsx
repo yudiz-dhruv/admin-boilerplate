@@ -26,7 +26,7 @@ const EditGame = () => {
     const [payload, setPayload] = useState()
     const [assetFile, setAssetFile] = useState()
 
-    // SPEICIFC GAME
+    // SPECIFIC GAME
     const { data } = useQuery('gameDataById', () => getGameById(id), {
         enabled: !!id,
         select: (data) => data?.data?.data,
@@ -94,173 +94,169 @@ const EditGame = () => {
                         <Row className='justify-content-center'>
                             <Col xxl={8}>
                                 <Wrapper>
-                                    <Row>
-                                        <Col lg={4} md={12}>
-                                            <Row>
-                                                <Col sm={12} className='admin-profile-img'>
-                                                    <div className='fileinput'>
-                                                        <div className='inputtypefile'>
-                                                            <div className='inputMSG'>
-                                                                {!errors?.sAvatar && watch('sAvatar') ? <>
-                                                                    <div className="document-preview-group">
-                                                                        {watch('sAvatar') && (
-                                                                            typeof (watch('sAvatar')) !== 'string'
-                                                                                ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
-                                                                                : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
-                                                                        }
-                                                                    </div>
-                                                                </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
+                                    <Row sm={12} className='admin-profile-img'>
+                                        <Col sm={12}>
+                                            <div className='fileinput'>
+                                                <div className='inputtypefile'>
+                                                    <div className='inputMSG'>
+                                                        {!errors?.sAvatar && watch('sAvatar') ? <>
+                                                            <div className="document-preview-group">
+                                                                {watch('sAvatar') && (
+                                                                    typeof (watch('sAvatar')) !== 'string'
+                                                                        ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
+                                                                        : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
+                                                                }
                                                             </div>
-                                                        </div>
-
-                                                        <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                                                        </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
                                                     </div>
-                                                </Col>
-                                                <Col sm={12} className=''>
-                                                    <CommonInput
-                                                        type='text'
-                                                        register={register}
-                                                        errors={errors}
-                                                        className={`form-control ${errors?.sName && 'error'}`}
-                                                        name='sName'
-                                                        label='Game Name'
-                                                        placeholder='Enter game name'
-                                                        required
-                                                        maxLength={20}
-                                                        onChange={(e) => {
-                                                            e.target.value =
-                                                                e.target.value?.trim() &&
-                                                                e.target.value.replace(/^[0-9]+$/g, '')
-                                                        }}
-                                                        validation={{
-                                                            required: {
-                                                                value: true,
-                                                                message: validationErrors.gameNameRequired
-                                                            },
-                                                            maxLength: {
-                                                                value: 20,
-                                                                message: 'Game name must be less than 20 char long.'
-                                                            },
-                                                            pattern: {
-                                                                value: /^[a-zA-Z ]+$/,
-                                                                message: 'Special characters & numbers are not allowed'
+                                                </div>
+
+                                                <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <div className="line"></div>
+                                    <Row>
+                                        <Col xl={6} lg={6} className=''>
+                                            <CommonInput
+                                                type='text'
+                                                register={register}
+                                                errors={errors}
+                                                className={`form-control ${errors?.sName && 'error'}`}
+                                                name='sName'
+                                                label='Game Name'
+                                                placeholder='Enter game name'
+                                                required
+                                                onChange={(e) => {
+                                                    e.target.value =
+                                                        e.target.value?.trim() &&
+                                                        e.target.value.replace(/^[0-9]+$/g, '')
+                                                }}
+                                                maxLength={20}
+                                                validation={{
+                                                    required: {
+                                                        value: true,
+                                                        message: validationErrors.gameNameRequired
+                                                    },
+                                                    maxLength: {
+                                                        value: 20,
+                                                        message: 'Game name must be less than 20 char long.'
+                                                    },
+                                                    pattern: {
+                                                        value: /^[a-zA-Z ]+$/,
+                                                        message: 'Special characters & numbers are not allowed'
+                                                    }
+                                                }}
+                                            />
+                                        </Col>
+                                        <Col lg={6} className='category-selection mt-lg-0 mt-md-2 mt-2'>
+                                            <Form.Group className='form-group'>
+                                                <Form.Label>
+                                                    <span>
+                                                        Category
+                                                        <span className='inputStar'>*</span>
+                                                    </span>
+                                                </Form.Label>
+                                                <Controller
+                                                    name='eCategory'
+                                                    control={control}
+                                                    rules={{
+                                                        required: {
+                                                            value: true,
+                                                            message: 'Game category is required.'
+                                                        }
+                                                    }}
+                                                    render={({ field: { onChange, value, ref } }) => (
+                                                        <Select
+                                                            placeholder='Select Games'
+                                                            ref={ref}
+                                                            options={eGameCategoryOption}
+                                                            className={`react-select border-0 ${errors.eCategory && 'error'}`}
+                                                            classNamePrefix='select'
+                                                            isSearchable={false}
+                                                            value={value}
+                                                            onChange={onChange}
+                                                            isMulti={false}
+                                                            getOptionLabel={(option) => option.label}
+                                                            getOptionValue={(option) => option.value}
+                                                        />
+                                                    )}
+                                                />
+                                                {errors.eCategory && (
+                                                    <Form.Control.Feedback type='invalid'>
+                                                        {errors.eCategory.message}
+                                                    </Form.Control.Feedback>
+                                                )}
+                                            </Form.Group>
+                                        </Col>
+
+                                        <Col xl={6} lg={6} className='mt-2'>
+                                            <div className='fileinput'>
+                                                <label className='d-flex justify-content-between'>
+                                                    <span>Game Assets File<span className='inputStar'>*</span></span>
+                                                </label>
+                                                <div className='inputtypefile'>
+                                                    <div className='inputMSG'>
+                                                        {watch('sUrl') || assetFile?.previousFile ?
+                                                            <span className='bundle-name'>File: {assetFile?.previousFile ? assetFile?.previousFile?.name : typeof watch('sUrl') === 'string' ? watch('sUrl') : watch('sUrl')?.name}</span> : <span>Upload Game Assets file</span>
+                                                        }
+                                                    </div>
+                                                    <Controller
+                                                        name={`sUrl`}
+                                                        control={control}
+                                                        rules={{
+                                                            required: "Please add game assets bundle file",
+                                                            validate: {
+                                                                fileType: (value) => {
+                                                                    if (value && typeof (watch(`sUrl`)) !== 'string') {
+                                                                        const allowedFormats = ['bundle', 'BUNDLE'];
+                                                                        const fileExtension = value.name?.split('.').pop().toLowerCase();
+
+                                                                        if (!allowedFormats.includes(fileExtension)) {
+                                                                            return "Unsupported file format";
+                                                                        }
+
+                                                                        // const maxSize = 1 * 1000 * 1000; // 1MB in bytes
+                                                                        // if (value.size >= maxSize) {
+                                                                        //     return "File size must be less than 1MB";
+                                                                        // }
+                                                                    }
+                                                                    return true;
+                                                                },
                                                             }
                                                         }}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                        <Col lg={8} md={12}>
-                                            <Row className='mt-lg-0 mt-md-2 mt-2'>
-                                                <Col sm={12}>
-                                                    <Row>
-                                                        <Col sm={6}>
-                                                            <div className='fileinput'>
-                                                                <label className='d-flex justify-content-between'>
-                                                                    <span>Game Assets File<span className='inputStar'>*</span></span>
-                                                                </label>
-                                                                <div className='inputtypefile'>
-                                                                    <div className='inputMSG'>
-                                                                        {watch('sUrl') || assetFile?.previousFile ?
-                                                                            <span className='bundle-name'>File: {assetFile?.previousFile ? assetFile?.previousFile?.name : typeof watch('sUrl') === 'string' ? watch('sUrl') : watch('sUrl')?.name}</span> : <span>Upload Game Assets file</span>
-                                                                        }
-                                                                    </div>
-                                                                    <Controller
-                                                                        name={`sUrl`}
-                                                                        control={control}
-                                                                        rules={{
-                                                                            required: "Please add game assets bundle file",
-                                                                            validate: {
-                                                                                fileType: (value) => {
-                                                                                    if (value && typeof (watch(`sUrl`)) !== 'string') {
-                                                                                        const allowedFormats = ['bundle', 'BUNDLE'];
-                                                                                        const fileExtension = value.name?.split('.').pop().toLowerCase();
-
-                                                                                        if (!allowedFormats.includes(fileExtension)) {
-                                                                                            return "Unsupported file format";
-                                                                                        }
-
-                                                                                        // const maxSize = 1 * 1000 * 1000; // 1MB in bytes
-                                                                                        // if (value.size >= maxSize) {
-                                                                                        //     return "File size must be less than 1MB";
-                                                                                        // }
-                                                                                    }
-                                                                                    return true;
-                                                                                },
-                                                                            }
-                                                                        }}
-                                                                        render={({ field: { onChange, value, ref } }) => {
-                                                                            return <>
-                                                                                <Form.Control
-                                                                                    ref={ref}
-                                                                                    type='file'
-                                                                                    name={`sUrl`}
-                                                                                    title={typeof watch('sUrl') === 'string' ? watch('sUrl') : watch('sUrl')?.name}
-                                                                                    defaultValue={assetFile?.previousFile ? assetFile?.previousFile?.name : (assetFile?.currentFile?.name || watch('sUrl')?.name)}
-                                                                                    accept='.bundle,.BUNDLE'
-                                                                                    errors={errors}
-                                                                                    className={errors?.sUrl && 'error'}
-                                                                                    onChange={(e) => {
-                                                                                        setAssetFile((prev) => ({
-                                                                                            ...prev,
-                                                                                            previousFile: prev?.currentFile,
-                                                                                            currentFile: e.target.files?.[0],
-                                                                                        }))
-                                                                                        onChange(e.target.files?.[0])
-                                                                                    }}
-                                                                                />
-                                                                            </>
-                                                                        }}
-                                                                    />
-                                                                </div>
-
-                                                                <span className='card-error'>{assetFile?.previousFile ? '' : errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
-                                                            </div>
-                                                        </Col>
-                                                        <Col sm={6} className='category-selection'>
-                                                            <Form.Group className='form-group'>
-                                                                <Form.Label>
-                                                                    <span>
-                                                                        Category
-                                                                        <span className='inputStar'>*</span>
-                                                                    </span>
-                                                                </Form.Label>
-                                                                <Controller
-                                                                    name='eCategory'
-                                                                    control={control}
-                                                                    rules={{
-                                                                        required: {
-                                                                            value: true,
-                                                                            message: 'Game category is required.'
-                                                                        }
+                                                        render={({ field: { onChange, value, ref } }) => {
+                                                            return <>
+                                                                <Form.Control
+                                                                    ref={ref}
+                                                                    type='file'
+                                                                    name={`sUrl`}
+                                                                    title={typeof watch('sUrl') === 'string' ? watch('sUrl') : watch('sUrl')?.name}
+                                                                    defaultValue={assetFile?.previousFile ? assetFile?.previousFile?.name : (assetFile?.currentFile?.name || watch('sUrl')?.name)}
+                                                                    accept='.bundle,.BUNDLE'
+                                                                    errors={errors}
+                                                                    className={errors?.sUrl && 'error'}
+                                                                    onChange={(e) => {
+                                                                        setAssetFile((prev) => ({
+                                                                            ...prev,
+                                                                            previousFile: prev?.currentFile,
+                                                                            currentFile: e.target.files?.[0],
+                                                                        }))
+                                                                        onChange(e.target.files?.[0])
                                                                     }}
-                                                                    render={({ field: { onChange, value, ref } }) => (
-                                                                        <Select
-                                                                            placeholder='Select Games...'
-                                                                            ref={ref}
-                                                                            options={eGameCategoryOption}
-                                                                            className={`react-select border-0 ${errors.eCategory && 'error'}`}
-                                                                            classNamePrefix='select'
-                                                                            isSearchable={false}
-                                                                            value={value}
-                                                                            onChange={onChange}
-                                                                            isMulti={false}
-                                                                            getOptionLabel={(option) => option.label}
-                                                                            getOptionValue={(option) => option.value}
-                                                                        />
-                                                                    )}
                                                                 />
-                                                                {errors.eCategory && (
-                                                                    <Form.Control.Feedback type='invalid'>
-                                                                        {errors.eCategory.message}
-                                                                    </Form.Control.Feedback>
-                                                                )}
-                                                            </Form.Group>
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
+                                                            </>
+                                                        }}
+                                                    />
+                                                </div>
 
-                                                <Col sm={12}>
+                                                <span className='card-error'>{assetFile?.previousFile ? '' : errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
+                                            </div>
+                                        </Col>
+
+                                        <Col xl={12} lg={12} sm={12}>
+                                            <Row>
+                                                <Col xl={6} lg={6} md={12} sm={12}>
                                                     <CommonInput
                                                         type='textarea'
                                                         register={register}
@@ -285,23 +281,23 @@ const EditGame = () => {
                                                 </Col>
                                             </Row>
                                         </Col>
+                                    </Row>
 
-                                        <Row className='mt-3'>
-                                            <Col sm={12}>
-                                                <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
-                                                    Update Game
-                                                </Button>
-                                                <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
-                                                    Cancel
-                                                </Button>
-                                            </Col>
-                                        </Row>
+                                    <Row className='mt-3'>
+                                        <Col sm={12}>
+                                            <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
+                                                Update Game
+                                            </Button>
+                                            <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
+                                                Cancel
+                                            </Button>
+                                        </Col>
                                     </Row>
                                 </Wrapper>
-                            </Col>
-                        </Row>
-                    </div>
-                </div>
+                            </Col >
+                        </Row >
+                    </div >
+                </div >
             </Form >
         </>
     )

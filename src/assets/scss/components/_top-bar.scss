@@ -16,13 +16,13 @@
       border: 1px solid transparent;
       padding: 8px 12px;
       color: var(--primary-color);
-      font-family: 'Helvetica-Bold';
+      font-family: 'Helvetica-bold';
       letter-spacing: 0.5px;
       border-color: var(--primary-color);
       background-color: var(--boxes-color);
 
       &:hover {
-        background-color: transparent;
+        background-color: var(--primary-color);
         color: var(--white-color) !important;
         border-color: var(--white-color) !important;
       }

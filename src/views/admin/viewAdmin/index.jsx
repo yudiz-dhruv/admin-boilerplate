@@ -46,11 +46,7 @@ const ViewAdmin = () => {
                                         <span className='data-value'>{data?.sCompanyName || '-'}</span>
                                     </Col>
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>No. of Games</span>
-                                        <span className='data-value capitalize'>{data?.aGamesName?.length || '0'}</span>
-                                    </Col>
-                                    <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Price</span>
+                                        <span className='data-title'>Package Price</span>
                                         <span className='data-value'><FontAwesomeIcon icon={faIndianRupee} size='sm' /> {data?.nPrice || '0'}</span>
                                     </Col>
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
@@ -68,6 +64,17 @@ const ViewAdmin = () => {
                                     <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Last Updated Date</span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD MMM, YYYY') || '-'}</span>
+                                    </Col>
+                                </Row>
+                                <div className='line'></div>
+                                <Row className='details-data-row p-0 m-0'>
+                                    <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                        <span className='data-title'>No. of Games</span>
+                                        <span className='data-value capitalize'>{data?.aGamesName?.length || '0'}</span>
+                                    </Col>
+                                    <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
+                                        <span className='data-title'>Games</span>
+                                        <span className='data-value capitalize'>{data?.aGamesName ? `[ ${data?.aGamesName} ]` : 'No Games'}</span>
                                     </Col>
                                 </Row>
                             </div>

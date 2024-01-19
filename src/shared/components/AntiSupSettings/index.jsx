@@ -17,7 +17,7 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
     return (
         <>
             <Wrapper>
-                <h3 className='data-title'><FontAwesomeIcon icon={faGear} color='var(--secondary-500)' /> {LABELS?.TITLE}</h3>
+                <h3 className='data-title'><FontAwesomeIcon icon={faGear} color='var(--secondary-500)' size='sm' /> {LABELS?.TITLE}</h3>
                 <div className='line'></div>
 
                 <div className='slider-input'>
@@ -38,7 +38,7 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                                     }}
                                     defaultValue={settings?.contrast}
                                     min={0}
-                                    max={5}
+                                    max={100}
                                     tooltipLabel={currentValue => `${currentValue || 0}%`}
                                     tooltipPlacement='top'
                                 />
@@ -91,7 +91,7 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                                         onChange(e)
                                     }}
                                     min={0}
-                                    max={5}
+                                    max={100}
                                     defaultValue={settings?.blur}
                                     tooltipLabel={currentValue => `${currentValue || 0}%`}
                                     tooltipPlacement='top'

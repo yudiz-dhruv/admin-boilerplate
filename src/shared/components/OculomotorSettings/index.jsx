@@ -40,7 +40,7 @@ const OculomotorSettings = ({ buttonToggle, setButtonToggle, control, errors, wa
     return (
         <>
             <Wrapper>
-                <h3 className='game-title'><FontAwesomeIcon icon={faCircleDot} color='var(--secondary-500)' /> {LABELS?.TITLE}</h3>
+                <h3 className='game-title'><FontAwesomeIcon icon={faCircleDot} color='var(--secondary-500)' size='sm' /> {LABELS?.TITLE}</h3>
                 <div className='line'></div>
 
                 <div className='antisuppresion-details-button-group mt-4'>

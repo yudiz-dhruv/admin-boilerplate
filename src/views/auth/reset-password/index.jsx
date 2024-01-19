@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Form, InputGroup, Spinner } from 'react-bootstrap'
-import { useForm } from 'react-hook-form'
+import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
+import { useForm, Controller } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
 import { OTP, PASSWORD } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toaster } from 'helper/helper'
 import { checkToken } from 'query/profile/profile.query'
 import NotFound from 'shared/components/404'
+import { route } from 'shared/constants/AllRoutes'
 
 function ResetPassword () {
   const navigate = useNavigate()
@@ -17,8 +18,24 @@ function ResetPassword () {
 
   const [showPassword, setShowPassword] = useState({ newPassword: true, confirmPassword: true })
   const sNewPassword = useRef({})
+  // const [timer, setTimer] = useState(true)
+  // const [timerValue, setTimerValue] = useState(30)
 
   const [tokneWrong, setTokenWrong] = useState(false)
+
+  // useEffect(() => {
+  //   if (timer) {
+  //     const timerId = setTimeout(() => {
+  //       setTimerValue((prev) => (prev > 0 ? prev - 1 : prev))
+  //     }, 1000)
+
+  //     if (timerValue === 0) {
+  //       setTimer(false)
+  //     }
+
+  //     return () => clearTimeout(timerId)
+  //   }
+  // }, [timerValue])
 
   // const { mutate: tokenMutation, isLoading: tokenLoading } = useMutation(checkToken, {
   //   onError: () => {
@@ -31,12 +48,13 @@ function ResetPassword () {
   // }, [token])
 
   const {
+    control,
     register: fields,
     handleSubmit,
     watch,
     formState: { errors },
     clearErrors
-  } = useForm({ mode: 'onTouched' })
+  } = useForm({ mode: 'all' })
   sNewPassword.current = watch('sNewPassword')
 
   function handlePasswordToggle (name) {
@@ -76,7 +94,7 @@ function ResetPassword () {
         </div>
       ) : (
         <>
-          <Form.Group className='form-group'>
+          {/* <Form.Group className='form-group'>
             <Form.Label>
               <FormattedMessage id='OTP' />
             </Form.Label>
@@ -101,39 +119,50 @@ function ResetPassword () {
                 })}
               />
             </InputGroup>
+            {'0:0:' + timerValue}
             {errors.sAuthCode && <Form.Control.Feedback type='invalid'>{errors.sAuthCode.message}</Form.Control.Feedback>}
-          </Form.Group>
+          </Form.Group> */}
 
           <Form.Group className='form-group'>
             <Form.Label>
               <FormattedMessage id='newPassword' />
             </Form.Label>
             <InputGroup>
-              <Form.Control
-                type={showPassword.newPassword ? 'password' : 'text'}
-                required
+              <Controller
                 name='sNewPassword'
-                // onPaste={(e) => {
-                //   e.preventDefault()
-                //   return false
-                // }}
-                placeholder='Enter your new password'
-                className={errors.sNewPassword && 'error'}
-                {...fields('sNewPassword', {
-                  required: 'New password is required.',
+                control={control}
+                render={({ field: { ref, value, onChange } }) => (
+                  <Form.Control
+                    className={`form-control ${errors.sNewPassword && 'error'}`}
+                    placeholder='Enter your new password'
+                    type={showPassword?.newPassword ? 'password' : 'text'}
+                    name='sNewPassword'
+                    ref={ref}
+                    value={value}
+                    onChange={(e) => {
+                      e.target.value = e.target.value?.trim();
+                      onChange(e);
+                    }}
+                  />
+                )}
+                rules={{
+                  required: 'New Password is required.',
                   pattern: {
                     value: PASSWORD,
-                    message: 'Provide a valid Password.'
+                    message: 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
                   },
-                  maxLength: { value: 12, message: validationErrors.rangeLength(8, 12) },
-                  minLength: { value: 8, message: validationErrors.rangeLength(8, 12) },
-                  onChange: (e) => {
-                    e.target.value = e?.target?.value?.trim()
-                  }
-                })}
+                  maxLength: {
+                    value: 12,
+                    message: validationErrors.rangeLength(8, 12),
+                  },
+                  minLength: {
+                    value: 8,
+                    message: validationErrors.rangeLength(8, 12),
+                  },
+                }}
               />
               <Button onClick={() => handlePasswordToggle('newPassword')} variant='link' className='icon-right'>
-                <i className={showPassword.newPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
+                <i className={!showPassword.newPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
               </Button>
             </InputGroup>
             {errors.sNewPassword && <Form.Control.Feedback type='invalid'>{errors.sNewPassword.message}</Form.Control.Feedback>}
@@ -143,26 +172,42 @@ function ResetPassword () {
               <FormattedMessage id='confirmNewPassword' />
             </Form.Label>
             <InputGroup>
-              <Form.Control
-                type={showPassword.confirmPassword ? 'password' : 'text'}
-                required
+              <Controller
                 name='sConfirmNewPassword'
-                // onPaste={(e) => {
-                //   e.preventDefault()
-                //   return false
-                // }}
-                placeholder='Enter same new password'
-                className={errors.sConfirmNewPassword && 'error'}
-                {...fields('sConfirmNewPassword', {
+                control={control}
+                render={({ field: { ref, value, onChange } }) => (
+                  <Form.Control
+                    className={`form-control ${errors.sConfirmNewPassword && 'error'}`}
+                    placeholder='Enter same new password'
+                    type={showPassword?.confirmPassword ? 'password' : 'text'}
+                    name='sConfirmNewPassword'
+                    ref={ref}
+                    value={value}
+                    onChange={(e) => {
+                      e.target.value = e.target.value?.trim();
+                      onChange(e);
+                    }}
+                  />
+                )}
+                rules={{
                   required: 'Confirm password is required.',
-                  validate: (value) => value !== sNewPassword.current ? 'Password does not match.' : clearErrors('sConfirmPassword'),
-                  onChange: (e) => {
-                    e.target.value = e?.target?.value?.trim()
-                  }
-                })}
+                  pattern: {
+                    value: PASSWORD,
+                    message: 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+                  },
+                  maxLength: {
+                    value: 12,
+                    message: validationErrors.rangeLength(8, 12),
+                  },
+                  minLength: {
+                    value: 8,
+                    message: validationErrors.rangeLength(8, 12),
+                  },
+                  validate: (value) => value !== sNewPassword.current ? 'Password does not match.' : clearErrors('sConfirmPassword')
+                }}
               />
               <Button onClick={() => handlePasswordToggle('confirmPassword')} variant='link' className='icon-right'>
-                <i className={showPassword.confirmPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
+                <i className={!showPassword.confirmPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
               </Button>
             </InputGroup>
             {errors.sConfirmNewPassword && (
@@ -171,9 +216,13 @@ function ResetPassword () {
           </Form.Group>
 
           <div className='button-section'>
-            <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
-              <FormattedMessage id='reset' /> {isLoading && <Spinner animation='border' size='sm' />}
-            </Button>
+            <Row>
+              <Col sm={12}>
+                <Button variant='primary' type='submit' disabled={isLoading} className='login-btn me-2'>
+                  <FormattedMessage id='reset' /> {isLoading && <Spinner animation='border' size='sm' />}
+                </Button>
+              </Col>
+            </Row>
           </div>
         </>
       )}

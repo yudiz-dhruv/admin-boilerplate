@@ -21,8 +21,7 @@ function ForgotPassword () {
 
   const { mutate, isLoading } = useMutation(forgotPassword, {
     onSuccess: (response) => {
-      navigate(route.resetPassword(response?.headers?.authorization))
-      toaster(response?.data?.message)
+      toaster('Reset Link send successfully. Please check you mail.', 'success')
     }
   })
 

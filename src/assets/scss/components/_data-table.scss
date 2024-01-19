@@ -64,15 +64,7 @@
       }
     }
 
-    .left .bulk-action+.bulk-action {
-      margin-left: 20px;
-    }
-
-    .right *+* {
-      margin-left: 20px;
-    }
-
-    .right {
+    .left {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -82,11 +74,11 @@
         flex-wrap: wrap;
         gap: 10px;
         margin: 0;
-
+  
         .form-group {
           display: inline-flex;
           margin-bottom: 0;
-
+  
           .form-label {
             text-wrap: nowrap;
             display: flex !important;
@@ -101,18 +93,18 @@
             color: var(--gray-medium) !important;
             margin-top: 2px;
           }
-
+  
           .react-select {
             margin-left: 10px;
-
+  
             .select__control {
               margin: 0;
-
+  
               .select__input-container {
                 margin: 0;
               }
             }
-
+  
             .select__menu {
               z-index: 2;
               margin: 5px 0 !important;
@@ -123,43 +115,43 @@
               background-color: var(--boxes-color);
               border: none;
             }
-
+  
             .select__menu-list {
               background-color: var(--boxes-color);
               padding: 0;
               z-index: 1;
               text-align: left;
               overflow: hidden;
-
+  
               &::-webkit-scrollbar {
                 width: 0;
               }
-
+  
               .select__option {
                 color: var(--text-color);
                 font-size: $fs-14;
                 background-color: transparent;
                 cursor: pointer;
                 margin: 0;
-
+  
                 &:not(.select__option--is-disabled):hover,
                 &.select__option--is-selected {
                   background-color: var(--primary-color);
                   color: var(--white-color);
                 }
-
+  
                 &:not(.select__option--is-selected).select__option--is-disabled {
                   cursor: not-allowed;
                   opacity: 0.5;
                 }
-
+  
                 &.select__option--is-focused {
                   background-color: transparent;
                   color: var(--text-color);
                 }
               }
             }
-
+  
             .select__indicator {
               margin: 0;
             }
@@ -168,9 +160,18 @@
       }
     }
 
+    .left .bulk-action+.bulk-action {
+      margin-left: 20px;
+    }
+
+    .right *+* {
+      margin-left: 20px;
+    }
+
     .search-box {
       // width: 206px;
       width: 285px;
+      margin: 0 !important;
       height: 40px;
       border: 1px solid #dfe4ec;
       border-radius: 8px;

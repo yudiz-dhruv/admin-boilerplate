@@ -37,7 +37,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, ga
     return (
         <>
             <Wrapper>
-                <h3 className='game-title'><FontAwesomeIcon icon={faCube} color='var(--secondary-500)' /> {LABELS?.TITLE}</h3>
+                <h3 className='game-title'><FontAwesomeIcon icon={faCube} color='var(--secondary-500)' size='sm' /> {LABELS?.TITLE}</h3>
                 <div className='line'></div>
 
                 <div className='antisuppresion-details-button-group mt-4'>
@@ -145,10 +145,10 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, ga
                                                         render={({ field: { ref, value, onChange } }) => (
                                                             <Form.Check
                                                                 className='form-check checkbox-wrap m-0'
-                                                                type='checkbox'
+                                                                type='radio'
                                                                 ref={ref}
                                                                 id='child'
-                                                                name='child'
+                                                                name='armLength'
                                                                 value={value}
                                                                 onChange={onChange}
                                                                 checked={value}
@@ -164,12 +164,12 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, ga
                                                         render={({ field: { ref, value, onChange } }) => (
                                                             <Form.Check
                                                                 className='form-check checkbox-wrap m-0'
-                                                                type='checkbox'
+                                                                type='radio'
                                                                 id='adult'
                                                                 ref={ref}
                                                                 value={value}
                                                                 onChange={onChange}
-                                                                name='adult'
+                                                                name='armLength'
                                                                 checked={value}
                                                                 label='Adult'
                                                             />

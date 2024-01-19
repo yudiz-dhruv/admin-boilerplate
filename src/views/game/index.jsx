@@ -28,7 +28,7 @@ const GameManagement = () => {
       nStart: (+data?.pageNumber?.[0] - 1) || 0,
       search: data?.search || '',
       nLimit: data?.nLimit || 10,
-      eStatus: data.eStatus || 'y',
+      eStatus: data.eStatus || '',
       eCategory: data?.eCategory || '',
       sort: data.sort || '',
       orderBy: +data.orderBy === 1 ? 'ASC' : 'DESC',
@@ -156,11 +156,11 @@ const GameManagement = () => {
           header={{
             left: {
               rows: true,
-              search: true
+              component: true
             },
             right: {
+              search: true,
               filter: false,
-              component: true
             }
           }}
           sortEvent={handleSort}

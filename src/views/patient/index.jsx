@@ -151,11 +151,11 @@ const PatientManagement = () => {
                     header={{
                         left: {
                             rows: true,
-                            search: true
+                            component: true
                         },
                         right: {
                             filter: false,
-                            component: true
+                            search: true
                         }
                     }}
                     component={<PatientListFilters setRequestParams={setRequestParams} defaultValue={requestParams} />}

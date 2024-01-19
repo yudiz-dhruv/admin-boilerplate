@@ -29,16 +29,19 @@ function Login () {
   }
 
   const { mutate, isLoading } = useMutation(login, {
-    onSuccess: (response) => {
-      localStorage.setItem('token', response?.headers?.authorization)
-      setIsLoginSuccess(true)
-    },
-    onError: (err) => {
-      setIsLoginSuccess(false)
-      reset({
-        sEmail: '',
-        sPassword: ''
-      })
+    onSettled: (response, err) => {
+      if (response) {
+        localStorage.setItem('token', response?.headers?.authorization)
+        setIsLoginSuccess(true)
+      } else {
+        toaster(err?.response?.data?.message, 'error')
+
+        setIsLoginSuccess(false)
+        reset({
+          sEmail: '',
+          sPassword: ''
+        })
+      }
     }
   })
 
@@ -119,7 +122,7 @@ function Login () {
               })}
             />
             <Button onClick={handlePasswordToggle} variant='link' className='icon-right'>
-              <i className={showPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
+              <i className={!showPassword ? 'icon-visibility' : 'icon-visibility-off'}></i>
             </Button>
           </InputGroup>
           {errors.sPassword && <Form.Control.Feedback type='invalid'>{errors.sPassword.message}</Form.Control.Feedback>}
