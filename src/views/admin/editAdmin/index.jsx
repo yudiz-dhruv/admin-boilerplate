@@ -84,12 +84,13 @@ const EditAdmin = () => {
       dStartAt: watch('dStartAt')?.toISOString(),
       dEndAt: watch('dEndAt')?.toISOString(),
       sAvatar: watch('sAvatar'),
-      sPassword: watch('sPassword')
+      sPassword: watch('sPassword'),
+      sMobile: watch('sMobile')
     }
 
     const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
     setPayload(payloadData)
-  }, [dirtyFields, watch('sUserName'), watch('sCompanyName'), watch('aGamesName'), watch('nPrice'), watch('dStartAt'), watch('dEndAt'), watch('sAvatar'), watch('sPassword')])
+  }, [dirtyFields, watch('sUserName'), watch('sCompanyName'), watch('aGamesName'), watch('nPrice'), watch('dStartAt'), watch('dEndAt'), watch('sAvatar'), watch('sPassword'), watch('sMobile')])
 
   async function onSubmit (data) {
     if (isButtonDisabled) {
@@ -180,21 +181,8 @@ const EditAdmin = () => {
                         }}
                       />
                     </Col>
-                    <Col lg={6} md={12} className=''>
-                      <CommonInput
-                        type='text'
-                        register={register}
-                        errors={errors}
-                        className={`form-control ${errors?.sEmail && 'error'}`}
-                        name='sEmail'
-                        label='Email ID'
-                        placeholder='Enter the email address'
-                        required
-                        disabled
-                      />
-                    </Col>
 
-                    <Col lg={6} md={12} className='mt-2'>
+                    <Col lg={6} md={12}>
                       <CommonInput
                         type='text'
                         register={register}
@@ -228,6 +216,20 @@ const EditAdmin = () => {
                             message: 'Special characters and numbers are not allowed'
                           }
                         }}
+                      />
+                    </Col>
+
+                    <Col lg={6} md={12} className='mt-2'>
+                      <CommonInput
+                        type='text'
+                        register={register}
+                        errors={errors}
+                        className={`form-control ${errors?.sEmail && 'error'}`}
+                        name='sEmail'
+                        label='Email ID'
+                        placeholder='Enter the email address'
+                        required
+                        disabled
                       />
                     </Col>
 
@@ -277,6 +279,39 @@ const EditAdmin = () => {
                         </InputGroup>
                         {errors.sPassword && (<Form.Control.Feedback type='invalid'>{errors.sPassword.message}</Form.Control.Feedback>)}
                       </Form.Group>
+                    </Col>
+
+                    <Col md={6} className='mt-2'>
+                      <CommonInput
+                        type='text'
+                        register={register}
+                        errors={errors}
+                        className={`form-control ${errors?.sMobile && 'error'}`}
+                        name='sMobile'
+                        label='Mobile'
+                        placeholder='Enter mobile number'
+                        required
+                        validation={{
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: 'Only numbers are allowed'
+                          },
+                          required: {
+                            value: true,
+                            message: 'Mobile number is required'
+                          },
+                          maxLength: {
+                            value: 10,
+                            message: 'Mobile number should be of 10 digits.'
+                          }
+                        }}
+                        maxLength={10}
+                        onChange={(e) => {
+                          e.target.value =
+                            e.target.value?.trim() &&
+                            e.target.value.replace(/^[a-zA-z]+$/g, '')
+                        }}
+                      />
                     </Col>
 
                     <Col lg={6} md={12} className='mt-2'>

@@ -18,6 +18,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
     ]
 
     const [tabButtons, setTabButtons] = useState(tab_buttons)
+    const [techMode, setTechMode] = useState('y')
 
     useEffect(() => {
         if (!games) {
@@ -32,6 +33,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
     const LABELS = {
         TITLE: 'Anti-Suppression',
         LEVEL_SELECTION: 'Level Selection',
+        TECH_MODE: 'Tech Mode',
         HOOP_SIZE: 'Hoop Size',
         BALL_SPEED: 'Ball Speed',
         STIMULUS_SIZE: 'Stimulus Size',
@@ -39,6 +41,10 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
         ACTIVE_DURATION: 'Active Duration',
         GABOR_PATCH: 'No. of Gabor Patch',
         ORIENTATION: 'Orientation'
+    }
+
+    const handleConfirmStatus = (status, id) => {
+        status ? setTechMode('y') : setTechMode('n')
     }
 
     return (
@@ -69,7 +75,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                         <div className='mt-3 form-content'>
                             <Wrapper>
                                 <Row>
-                                    <Col xxl={6} xl={12} lg={6} sm={12}>
+                                    <Col xxl={6} xl={8} lg={6} md={8} sm={8}>
                                         <Form.Group className='form-group'>
                                             <Form.Label>{LABELS?.LEVEL_SELECTION}</Form.Label>
                                             <Controller
@@ -86,6 +92,27 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                         isMulti={false}
                                                         getOptionLabel={(option) => option.label}
                                                         getOptionValue={(option) => option.value}
+                                                    />
+                                                )}
+                                            />
+                                            {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
+                                        </Form.Group>
+                                    </Col>
+
+                                    <Col xxl={6} xl={4} lg={6} md={4} sm={4}>
+                                        <Form.Group className='form-group'>
+                                            <Form.Label>{LABELS?.TECH_MODE}</Form.Label><br />
+                                            <Controller
+                                                name='eTechMode'
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Form.Check
+                                                        {...field}
+                                                        type='switch'
+                                                        name='eTechMode'
+                                                        className='d-inline-block mt-2'
+                                                        checked={techMode === 'y'}
+                                                        onChange={(e) => handleConfirmStatus(e.target.checked)}
                                                     />
                                                 )}
                                             />

@@ -56,7 +56,8 @@ const AddAdmin = () => {
       dEndAt: data?.dEndAt?.toISOString() || '',
       sCompanyName: data?.sCompanyName || '',
       sAvatar: '',
-      sPassword: data?.sPassword || ''
+      sPassword: data?.sPassword || '',
+      sMobile: data?.sMobile || ''
     }
     const sAvatarFile = data?.sAvatar
 
@@ -329,10 +330,6 @@ const AddAdmin = () => {
                             value: true,
                             message: 'Mobile number is required'
                           },
-                          // minLength: {
-                          //     value: 10,
-                          //     message: 'Mobile number must be atleast 10 digits.'
-                          // },
                           maxLength: {
                             value: 10,
                             message: 'Mobile number should be of 10 digits.'

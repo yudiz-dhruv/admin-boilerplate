@@ -61,8 +61,6 @@ export const eHoopieLevels = [
     { label: '1', value: 1 },
     { label: '2', value: 2 },
     { label: '3', value: 3 },
-    { label: '4', value: 4 },
-    { label: '5', value: 5 },
 ]
 
 export const eRingRunnerLevels = [
@@ -89,17 +87,21 @@ export const eHeadlockType = [
 ]
 
 export const eHoopSize = [
-    { label: '1.2', value: 1.2 },
+    { label: 'Small', value: 'small' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'Large', value: 'large' }
 ]
 
 export const eBallSpeed = [
-    { label: '10', value: 10 },
+    { label: 'Slow', value: 'slow' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'Fast', value: 'fast' }
 ]
 
 export const eBubbleDistance = [
-    { label: '0.1', value: 0.1 },
-    { label: '0.2', value: 0.2 },
-    { label: '0.3', value: 0.3 },
+    { label: 'Near', value: 'near' },
+    { label: 'Far', value: 'far' },
+    { label: 'Farther', value: 'farther' },
 ]
 
 export const eOrientation = [

@@ -141,7 +141,7 @@ function DataTable ({
           )}
         </tbody>
       </Table>
-      {isLoading && <div className='d-flex justify-content-center align-item-center'><Spinner animation="border" variant='primary' /></div>}
+      {isLoading && <div className='loading-spinner'><Spinner animation="border" variant='primary' /></div>}
       {pagination && (
         <Suspense fallback={<div />}>
           <CustomPagination

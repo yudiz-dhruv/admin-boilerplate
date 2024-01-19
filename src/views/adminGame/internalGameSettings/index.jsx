@@ -136,6 +136,7 @@ const InternalGameSettings = () => {
                       <div className='mt-3'>
                         <StereopsisSettings
                           errors={errors}
+                          register={register}
                           control={control}
                           buttonToggle={buttonToggle}
                           setButtonToggle={setButtonToggle}

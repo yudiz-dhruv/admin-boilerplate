@@ -199,7 +199,7 @@ export default function ChangePassword () {
                 </InputGroup>
                 {errors.sConfirmPassword && (<Form.Control.Feedback type='invalid'>{errors.sConfirmPassword.message}</Form.Control.Feedback>)}
               </Form.Group>
-              <Col lg={12} className='d-flex align-items-center justify-content-end mt-4'>
+              <Col lg={12} className='mt-4'>
                 <div className='top-d-button'>
                   <Button variant='primary' type='submit' className='me-2 square' disabled={isLoading}>
                     <FormattedMessage id='submit' />{' '}

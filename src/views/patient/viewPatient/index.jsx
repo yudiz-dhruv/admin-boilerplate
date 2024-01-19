@@ -92,19 +92,17 @@ const ViewPatient = () => {
                                         <div className='img-content'>
                                             <FontAwesomeIcon icon={faUser} />
                                         </div>
+                                        <span className='user-name'>{data?.sUserName || 'Loading...'}</span>
                                     </div>
+                                    <div className='line'></div>
                                     <Row className='details-data-row p-0 m-0'>
                                         <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Full Name</span>
-                                            <span className='data-value'>{data?.sUserName || '-'}</span>
-                                        </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                             <span className='data-title'>Mobile No.</span>
-                                            <span className='data-value'>{data?.sMobile || '-'}</span>
+                                            <span className='data-value'>{data?.sMobile ? `+91 ${data?.sMobile}` : '-'}</span>
                                         </Col>
                                         <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                             <span className='data-title'>Age</span>
-                                            <span className='data-value'>{data?.sAge || '-'}</span>
+                                            <span className='data-value'>{data?.sAge || '0'}</span>
                                         </Col>
                                         <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                             <span className='data-title'>Dominant Eye</span>
@@ -116,7 +114,7 @@ const ViewPatient = () => {
                                         </Col>
                                         <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                             <span className='data-title'>Has Strabismus?</span>
-                                            <span className='data-value capitalize'>{data?.eStrabismus === 'yes' ? 'Yes' : 'No'}</span>
+                                            <span className='data-value capitalize'>{data?.eStrabismus || '-'}</span>
                                         </Col>
                                         <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
                                             <span className='data-title'>Status</span>

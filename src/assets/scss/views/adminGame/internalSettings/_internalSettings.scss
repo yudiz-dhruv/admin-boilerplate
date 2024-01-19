@@ -23,10 +23,11 @@
             gap: 10px;
             width: fit-content;
             position: relative;
-            padding: 0.5rem;
+            padding: 6px;
             border-radius: 99px;
             background-color: #216b93d5 !important;
             border-radius: 50px;
+            margin-top: 0 !important;
             box-shadow: 4px 7px 8px #00000056;
 
             * {
@@ -40,6 +41,7 @@
                 transition: all 0.3s ease-in-out;
                 font-family: 'Helvetica-Bold';
                 padding: 5px 15px;
+                font-size: 14px;
 
                 &:hover {
                     box-shadow: none !important;
@@ -380,7 +382,7 @@ body.dark {
 
             .tabs {
                 background-color: #256384c7 !important;
-                box-shadow: 6px 6px 10px #00000095;
+                box-shadow: 5px 5px 10px #0000005e !important;
 
                 * {
                     z-index: 2;

@@ -117,7 +117,7 @@ function EditProfile () {
                 />
                 {updateFlag !== false &&
                   <>
-                    <div className='d-flex justify-content-end'>
+                    <div className=''>
                       <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || !updateFlag || isLoading}>
                         <FormattedMessage id='update' />
                         {isLoading && <Spinner animation='border' size='sm' />}
