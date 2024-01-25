@@ -25,10 +25,9 @@
       }
 
       &.textLogo {
-        width: 115px;
+        width: 120px;
         height: auto;
-        margin-left: 15px;
-        margin-top: 5px;
+        margin-top: 10px;
       }
     }
 
@@ -83,8 +82,8 @@
 
       .superadmin-label {
         font-size: 11px;
-        color: #7828C8;
-        background-color: #ead8fc;
+        color: #2860bb;
+        background-color: #ccedfb;
         border-radius: 10px;
         padding: 3px 6px;
         text-transform: lowercase;
@@ -94,7 +93,7 @@
 
         svg {
           position: relative;
-          top: -1px;
+          top: 0px;
         }
       }
 
@@ -111,7 +110,7 @@
 
         svg {
           position: relative;
-          top: -1px;
+          top: 0px;
         }
       }
     }
@@ -241,7 +240,7 @@ body.dark {
   .header {
     .header-right {
       .slider {
-        background-color: #1470a2;
+        background-color: #00846c;
       }
 
       input {

@@ -142,10 +142,10 @@
 body.dark {
 
   .dropdown-menu {
-    box-shadow: 0px 0px 10px rgba(178, 191, 210, 0.25);
+    box-shadow: 0px 0px 10px rgba(178, 210, 198, 0.25);
 
     &.up-arrow {
-      box-shadow: 0px 0px 20px 5px rgba(178, 191, 210, 0.35);
+      box-shadow: 0px 0px 10px 8px rgba(117, 229, 190, 0.4);
 
       &:before {
         border-bottom: 10px solid var(--secondary-700);

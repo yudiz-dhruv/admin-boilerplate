@@ -1,61 +1,175 @@
 .game-form {
+    .wrapper {
+        overflow: hidden;
+        box-shadow: 0px 5px 15px 2px rgba(27, 34, 99, 0.2);
 
-    .form-group,
-    .form-label {
-        margin-bottom: 0;
+        .form-group,
+        .form-label {
+            margin-bottom: 0;
 
-        textarea {
-            height: 125px;
+            textarea {
+                height: 125px;
+            }
         }
-    }
 
-    .line {
-        content: '';
-        width: 100%;
-        display: block;
-        height: 1px;
-        background-color: var(--secondary-300);
-        margin: 10px 0;
-        margin-top: 20px !important;
-    }
+        .line {
+            content: '';
+            width: 100%;
+            display: block;
+            height: 1px;
+            background-color: var(--secondary-300);
+            margin: 10px 0;
+            margin-top: 20px !important;
+        }
 
-    .category-selection {
-        position: relative;
-        top: -3px;
-    }
+        .category-selection {
+            position: relative;
+            top: -3px;
+        }
 
-    .admin-profile-img {
-        display: flex;
-        justify-content: center;
+        .admin-profile-img {
+            display: flex;
+            justify-content: center;
+
+            .fileinput {
+                display: flex;
+                flex-wrap: nowrap;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                padding: 10px;
+
+                .inputtypefile {
+                    border: 3px solid var(--theme-color);
+                    outline: 4px solid var(--secondary-300);
+                    width: 130px;
+                    height: 130px;
+                    min-width: 130px;
+                    margin: 0;
+                    position: relative;
+                    background-color: var(--input-background-color);
+                    border-radius: 100%;
+                    overflow: hidden;
+                    padding: 0;
+
+                    .inputMSG {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .document-preview-group {
+                            margin: 0;
+                            position: relative;
+                            width: 100%;
+                            z-index: 12;
+
+                            .img-over {
+                                position: absolute;
+                                width: 100%;
+                                height: 100%;
+                                padding: 10px 30px;
+                                background-color: rgba(59, 59, 59, 0.419);
+                                display: none;
+                                text-align: center;
+                                justify-content: center;
+                                align-items: center;
+                                color: #ffffff;
+                                font-size: 12px;
+                                font-weight: 800;
+                                cursor: pointer;
+                            }
+
+                            &:hover {
+                                .img-over {
+                                    display: flex;
+                                }
+                            }
+
+                            .document-preview {
+                                width: 100%;
+                                overflow: hidden;
+                                display: flex;
+                                flex-wrap: nowrap;
+                                justify-content: center;
+                                align-items: center;
+
+                                img {
+                                    height: 130px;
+                                }
+                            }
+                        }
+
+                        span {
+                            all: unset;
+                            font-size: 11px;
+                            color: var(--text-color);
+                            padding: 5px 10px;
+                            border-radius: 5px;
+                            font-family: 'helvetica-regular';
+                            font-weight: 400;
+
+                            svg {
+                                font-size: 30px;
+                                color: var(--secondary-300);
+                            }
+                        }
+                    }
+
+                    input {
+                        opacity: 0;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        margin-bottom: 0;
+                        position: absolute;
+
+                        &:disabled {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
 
         .fileinput {
-            display: flex;
-            flex-wrap: nowrap;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            padding: 10px;
+            label {
+                color: var(--text-color);
+                text-align: start;
+                width: 100%;
+                padding: 0;
+
+                .information {
+                    display: flex;
+                    justify-content: end;
+                    align-items: center;
+                    cursor: pointer;
+                }
+            }
 
             .inputtypefile {
-                border: 3px solid var(--theme-color);
-                outline: 4px solid var(--secondary-300);
-                width: 130px;
-                height: 130px;
-                min-width: 130px;
-                margin: 0;
+                margin: 3px 0;
+                margin-top: 3px;
+                padding: 5px;
                 position: relative;
                 background-color: var(--input-background-color);
-                border-radius: 100%;
-                overflow: hidden;
-                padding: 0;
+                border-radius: 4px;
 
                 .inputMSG {
                     width: 100%;
-                    height: 100%;
                     display: flex;
                     align-items: center;
-                    justify-content: center;
+                    justify-content: space-between;
+
+                    .bundle-name {
+                        word-break: break-all;
+                        background-color: var(--primary-color);
+                        letter-spacing: 0.8px;
+                        font-weight: 600;
+                    }
 
                     .document-preview-group {
                         margin: 0;
@@ -67,14 +181,12 @@
                             position: absolute;
                             width: 100%;
                             height: 100%;
-                            padding: 10px 30px;
-                            background-color: rgba(59, 59, 59, 0.419);
+                            background-color: rgba(0, 0, 0, 0.512);
                             display: none;
-                            text-align: center;
                             justify-content: center;
                             align-items: center;
                             color: #ffffff;
-                            font-size: 12px;
+                            font-size: 18px;
                             font-weight: 800;
                             cursor: pointer;
                         }
@@ -94,7 +206,8 @@
                             align-items: center;
 
                             img {
-                                height: 130px;
+                                width: 100%;
+                                height: 180px;
                             }
                         }
                     }
@@ -102,16 +215,12 @@
                     span {
                         all: unset;
                         font-size: 11px;
-                        color: var(--text-color);
+                        color: var(--white-color);
+                        background-color: var(--input-select-background-color);
                         padding: 5px 10px;
                         border-radius: 5px;
                         font-family: 'helvetica-regular';
                         font-weight: 400;
-
-                        svg {
-                            font-size: 30px;
-                            color: var(--secondary-300);
-                        }
                     }
                 }
 
@@ -127,111 +236,6 @@
                     &:disabled {
                         display: none;
                     }
-                }
-            }
-        }
-    }
-
-    .fileinput {
-        label {
-            color: var(--text-color);
-            text-align: start;
-            width: 100%;
-            padding: 0;
-
-            .information {
-                display: flex;
-                justify-content: end;
-                align-items: center;
-                cursor: pointer;
-            }
-        }
-
-        .inputtypefile {
-            margin: 3px 0;
-            margin-top: 3px;
-            padding: 5px;
-            position: relative;
-            background-color: var(--input-background-color);
-            border-radius: 4px;
-
-            .inputMSG {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                .bundle-name {
-                    word-break: break-all;
-                    background-color: var(--primary-color);
-                    letter-spacing: 0.8px;
-                    font-weight: 600;
-                }
-
-                .document-preview-group {
-                    margin: 0;
-                    position: relative;
-                    width: 100%;
-                    z-index: 12;
-
-                    .img-over {
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
-                        background-color: rgba(0, 0, 0, 0.512);
-                        display: none;
-                        justify-content: center;
-                        align-items: center;
-                        color: #ffffff;
-                        font-size: 18px;
-                        font-weight: 800;
-                        cursor: pointer;
-                    }
-
-                    &:hover {
-                        .img-over {
-                            display: flex;
-                        }
-                    }
-
-                    .document-preview {
-                        width: 100%;
-                        overflow: hidden;
-                        display: flex;
-                        flex-wrap: nowrap;
-                        justify-content: center;
-                        align-items: center;
-
-                        img {
-                            width: 100%;
-                            height: 180px;
-                        }
-                    }
-                }
-
-                span {
-                    all: unset;
-                    font-size: 11px;
-                    color: var(--white-color);
-                    background-color: var(--input-select-background-color);
-                    padding: 5px 10px;
-                    border-radius: 5px;
-                    font-family: 'helvetica-regular';
-                    font-weight: 400;
-                }
-            }
-
-            input {
-                opacity: 0;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                margin-bottom: 0;
-                position: absolute;
-
-                &:disabled {
-                    display: none;
                 }
             }
         }
@@ -270,19 +274,23 @@
 
 body.dark {
     .game-form {
-        .line {
-            background-color: var(--secondary-500);
-        }
+        .wrapper {
+            box-shadow: 0px 0px 15px 8px rgba(117, 229, 190, 0.4);
 
-        .admin-profile-img {
-            .fileinput {
-                .inputtypefile {
-                    outline: 4px solid var(--secondary-600);
+            .line {
+                background-color: var(--secondary-500);
+            }
 
-                    .inputMSG {
-                        span {
-                            svg {
-                                color: var(--secondary-400);
+            .admin-profile-img {
+                .fileinput {
+                    .inputtypefile {
+                        outline: 4px solid var(--secondary-600);
+
+                        .inputMSG {
+                            span {
+                                svg {
+                                    color: var(--secondary-400);
+                                }
                             }
                         }
                     }

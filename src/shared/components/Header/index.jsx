@@ -7,7 +7,7 @@ import { logout } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
 import { toaster } from 'helper/helper'
 import CustomModal from 'shared/components/Modal'
-import textLogo from 'assets/images/vivid-vision-logo.png'
+import textLogo from 'assets/images/Yantra.Care.svg'
 import { profile } from 'query/profile/profile.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
@@ -70,13 +70,13 @@ function Header ({ isOpen }) {
       <div className='header-left'>
         <Link className='logo' to={route.dashboard}>
           {/* <img src={logo} className="logoIcon" alt='run to learn' /> */}
-          {/* <img src={textLogo} className="textLogo" alt='Yantra Healthcare Logo' /> */}
-          <div className='logo-text'>Yantra Healthcare</div>
+          <img src={textLogo} className="textLogo" alt='Yantra Healthcare Logo' />
+          {/* <div className='logo-text'>Yantra Healthcare</div> */}
         </Link>
       </div>
       <div className='header-right'>
         <div className='user-name'>{profileLoader ?
-          <Spinner animation='border' size='sm' />
+          <Spinner animation='border' size='sm' variant='default' />
           : <span><span>{data?.sUserName}</span> {data?.eUserType === 'superAdmin' ? <span className='superadmin-label'><RxDotFilled /> Super Admin</span> : <span className='admin-label'><RxDotFilled /> Admin</span>}</span>}</div>
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>

@@ -1,16 +1,20 @@
-.Profile-main-edit,
-.Profile-main-cancel {
-  position: absolute;
-  right: 15px;
-  cursor: pointer;
-  top: 15px;
-  border: none;
-  background: transparent;
-  width: fit-content;
+.wrapper {
+  box-shadow: 0px 5px 15px 2px rgba(27, 34, 99, 0.2) !important;
 
-  svg {
-    font-size: 25px;
-    color: var(--text-color);
+  .Profile-main-edit,
+  .Profile-main-cancel {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    top: 15px;
+    border: none;
+    background: transparent;
+    width: fit-content;
+
+    svg {
+      font-size: 25px;
+      color: var(--text-color);
+    }
   }
 }
 
@@ -190,9 +194,3 @@
     }
   }
 }
-
-
-
-
-
-// ----- 

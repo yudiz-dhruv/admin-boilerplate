@@ -22,7 +22,7 @@ const ViewGame = () => {
                         <div className='details-card-data'>
                             <div className='game-avatar'>
                                 <div className='img-content'>
-                                    {isLoading ? <Spinner animation='border' variant='primary' className='text-center mt-4' />
+                                    {isLoading ? <Spinner animation='border' variant='success' className='text-center mt-4' />
                                         : <img src={data?.sAvatar} alt={data?.sUserName} />}
                                 </div>
                                 <span className='game-name'>{data?.sName || 'Loading...'}</span>

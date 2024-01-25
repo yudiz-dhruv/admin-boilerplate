@@ -9,6 +9,7 @@ import { EMAIL } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { route } from 'shared/constants/AllRoutes'
 import { toaster } from 'helper/helper'
+import textLogo from 'assets/images/Yantra.Care.svg'
 
 function ForgotPassword () {
   const navigate = useNavigate()
@@ -35,12 +36,16 @@ function ForgotPassword () {
   return (
     <>
       <Form noValidate className='login-form' onSubmit={handleSubmit(onSubmit)}>
-        <div className='title-b'>
-          <h2 className='title text-center'>
+        <div className='yantra-logo'>
+          <img src={textLogo} className="textLogo" alt='Yantra Healthcare' />
+        </div>
+        <div className='title-b mt-5'>
+          <h2 className='title me-2 m-0'>
             <FormattedMessage id='forgotPassword' />
           </h2>
         </div>
-        <Form.Group className='form-group mt-5'>
+        <div className='line'></div>
+        <Form.Group className='form-group'>
           <Form.Label>
             <FormattedMessage id='emailAddress' />
           </Form.Label>

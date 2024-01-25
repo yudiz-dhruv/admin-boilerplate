@@ -56,7 +56,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={
           <div className='d-flex align-items-center justify-content-center top-0 left-0 position-fixed h-100 w-100'>
-            <Spinner animation='border' variant='primary' />
+            <Spinner animation='border' variant='success' />
           </div>
         }>
         <AllRoutes />

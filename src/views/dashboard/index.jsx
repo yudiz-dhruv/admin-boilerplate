@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Spinner } from 'react-bootstrap'
 import Cards from 'shared/components/Card'
-import { Loader } from 'shared/components/Loader'
-import { faUsers, faDatabase, faUserMinus, faEnvelopeCircleCheck, faMobile, faIndianRupeeSign, faUserDoctor, faUser, faUserSlash, faGamepad } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUserDoctor, faUser, faUserSlash, faGamepad } from '@fortawesome/free-solid-svg-icons'
 import Wrapper from 'shared/components/Wrap'
 
 function Dashboard () {
@@ -40,7 +38,7 @@ function Dashboard () {
     <div>
       {false ? (
         <div className='d-flex align-items-center justify-content-center'>
-          <Spinner animation='border' variant='info' />
+          <Spinner animation='border' variant='success' />
         </div>
       ) : (
         <>

@@ -141,7 +141,7 @@ function DataTable ({
           )}
         </tbody>
       </Table>
-      {isLoading && <div className='loading-spinner'><Spinner animation="border" variant='primary' /></div>}
+      {isLoading && <div className='loading-spinner'><Spinner animation="border" variant='success' /></div>}
       {pagination && (
         <Suspense fallback={<div />}>
           <CustomPagination

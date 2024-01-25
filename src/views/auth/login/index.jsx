@@ -10,6 +10,8 @@ import { useMutation, useQuery } from 'react-query'
 import { toaster } from 'helper/helper'
 import { EMAIL } from 'shared/constants'
 import { profile } from 'query/profile/profile.query'
+import textLogo from 'assets/images/Yantra.Care.svg'
+
 
 function Login () {
   const navigate = useNavigate()
@@ -74,14 +76,18 @@ function Login () {
   return (
     <>
       <Form noValidate onSubmit={handleSubmit(onSubmit)} className='login-form'>
-        <div className='title-b'>
-          <div className='d-flex align-items-center justify-content-center'>
+        <div className='yantra-logo'>
+          <img src={textLogo} className="textLogo" alt='Yantra Healthcare' />
+        </div>
+        <div className='title-b mt-5'>
+          <div className=''>
             <h2 className='title me-2 m-0'>
               <FormattedMessage id='signIn' />
             </h2>
           </div>
         </div>
-        <Form.Group className='form-group mt-5'>
+        <div className='line'></div>
+        <Form.Group className='form-group'>
           <Form.Label>
             <FormattedMessage id='emailAddress' />
           </Form.Label>

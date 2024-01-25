@@ -26,7 +26,7 @@ const ViewAdmin = () => {
                                 <div className='admin-img'>
                                     <div className='img-content'>
                                         {isLoading ?
-                                            <Spinner animation='border' className='text-center mt-4' variant='primary' />
+                                            <Spinner animation='border' className='text-center mt-4' variant='success' />
                                             : <img src={data?.sAvatar} alt={data?.sUserName} />}
                                     </div>
                                     <span className='user-name'>{data?.sUserName || 'Loading...'}</span>

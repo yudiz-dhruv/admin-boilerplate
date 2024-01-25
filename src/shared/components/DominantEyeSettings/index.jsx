@@ -14,18 +14,16 @@ const DominantEyeSettings = ({ buttonToggle, setButtonToggle }) => {
 
     return (
         <>
-            <Wrapper>
-                <h3 className='data-title'><FontAwesomeIcon icon={faEye} color='var(--secondary-500)' size='sm' /> Dominant Eye</h3>
-                <div className='line'></div>
+            <h3 className='data-title'><FontAwesomeIcon icon={faEye} color='var(--secondary-500)' size='sm' /> Dominant Eye</h3>
+            <div className='line'></div>
 
-                <div className='mt-2 tabs'>
-                    {tabs?.map(tab => (
-                        <Button key={tab.key} type='button' className={`${buttonToggle[tab?.key] ? 'checked' : ''}`} onClick={() => setButtonToggle({ [tab?.key]: true })}>
-                            <span className='tab'>{tab?.label}</span>
-                        </Button>
-                    ))}
-                </div>
-            </Wrapper>
+            <div className='mt-2 tabs'>
+                {tabs?.map(tab => (
+                    <Button key={tab.key} type='button' className={`${buttonToggle[tab?.key] ? 'checked' : ''}`} onClick={() => setButtonToggle({ [tab?.key]: true })}>
+                        <span className='tab'>{tab?.label}</span>
+                    </Button>
+                ))}
+            </div>
         </>
     )
 }

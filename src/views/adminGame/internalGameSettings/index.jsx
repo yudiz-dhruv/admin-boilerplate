@@ -14,7 +14,10 @@ import { getGameDropdownList, getGameList } from 'query/game/game.query'
 import CommonInput from 'shared/components/CommonInput'
 import Select from 'react-select'
 import Datetime from 'react-datetime'
+import { io } from 'socket.io-client'
+import useMediaQuery from 'shared/hooks/useMediaQuery'
 
+const socket = io.connect('http://localhost:3000/')
 const InternalGameSettings = () => {
   const location = useLocation()
   const params = useRef(parseParams(location.search))
@@ -39,6 +42,8 @@ const InternalGameSettings = () => {
   const { register, formState: { errors }, control, watch, handleSubmit } = useForm({ mode: 'all' })
 
   const [modal, setModal] = useState(false)
+  const screenWidth = useMediaQuery('(max-width: 1200px)')
+  const [tabletMode, setTabletMode] = useState(false)
 
   const [dominantEyeButton, setDominantEyeButton] = useState({
     left: true,
@@ -78,87 +83,172 @@ const InternalGameSettings = () => {
 
   useEffect(() => {
     document.title = 'Game Settings | Yantra Healthcare'
-  }, [])
+
+    if (screenWidth) {
+      setTabletMode(true)
+    } else {
+      setTabletMode(false)
+    }
+  }, [screenWidth])
 
   return (
     <>
       <Form className='step-one' autoComplete='off'>
         <Row>
           <Col xs={12}>
-            <Wrapper>
-              <div className='game-settings'>
-                <Row>
-                  <Col xl={6} lg={12}>
-                    <div className='settings'>
-                      <div className=''>
-                        <DominantEyeSettings
-                          buttonToggle={dominantEyeButton}
-                          setButtonToggle={setDominantEyeButton} />
-                      </div>
+            <div className='game-settings'>
+              <Row>
+                {tabletMode ?
+                  <>
+                    <Col xl={4} lg={12}>
+                      <Wrapper>
+                        <div className='settings'>
+                          <div className=''>
+                            <DominantEyeSettings
+                              buttonToggle={dominantEyeButton}
+                              setButtonToggle={setDominantEyeButton} />
+                          </div>
 
-                      <div className='mt-3'>
-                        <AntiSupSettings
-                          control={control}
-                          settings={antiSupSettings}
-                          setSettings={setAntiSupSettings}
-                        />
-                      </div>
-                    </div>
-                  </Col>
+                          <div className='mt-4'>
+                            <AntiSupSettings
+                              control={control}
+                              settings={antiSupSettings}
+                              setSettings={setAntiSupSettings}
+                            />
+                          </div>
+                        </div>
+                      </Wrapper>
+                    </Col>
 
-                  <Col xl={6} lg={12} className='mt-xl-0 mt-3'>
-                    <div className='games'>
-                      <div className=''>
-                        <AntiSupGameSettings
-                          control={control}
-                          errors={errors}
-                          register={register}
-                          buttonToggle={buttonToggle}
-                          setButtonToggle={setButtonToggle}
-                          games={data}
-                          isLoading={isLoading}
-                        />
-                      </div>
+                    <Col xl={8} lg={12} className='mt-xl-0 mt-3'>
+                      <Wrapper>
+                        <div className='games'>
+                          <div className=''>
+                            <AntiSupGameSettings
+                              control={control}
+                              errors={errors}
+                              register={register}
+                              buttonToggle={buttonToggle}
+                              setButtonToggle={setButtonToggle}
+                              games={data}
+                              isLoading={isLoading}
+                            />
+                          </div>
 
-                      <div className='mt-3'>
-                        <OculomotorSettings
-                          control={control}
-                          errors={errors}
-                          watch={watch}
-                          register={register}
-                          buttonToggle={buttonToggle}
-                          setButtonToggle={setButtonToggle}
-                          games={data}
-                          isLoading={isLoading}
-                        />
-                      </div>
+                          <div className='mt-4'>
+                            <OculomotorSettings
+                              control={control}
+                              errors={errors}
+                              watch={watch}
+                              register={register}
+                              buttonToggle={buttonToggle}
+                              setButtonToggle={setButtonToggle}
+                              games={data}
+                              isLoading={isLoading}
+                            />
+                          </div>
 
-                      <div className='mt-3'>
-                        <StereopsisSettings
-                          errors={errors}
-                          register={register}
-                          control={control}
-                          buttonToggle={buttonToggle}
-                          setButtonToggle={setButtonToggle}
-                          games={data}
-                          isLoading={isLoading}
-                        />
-                      </div>
+                          <div className='mt-4'>
+                            <StereopsisSettings
+                              errors={errors}
+                              register={register}
+                              control={control}
+                              buttonToggle={buttonToggle}
+                              setButtonToggle={setButtonToggle}
+                              games={data}
+                              isLoading={isLoading}
+                            />
+                          </div>
 
-                      {Object.values(buttonToggle).some(Boolean) ?
-                        <Row className='mt-3 text-end'>
-                          <Col sm={12}>
-                            <Button variant='primary' type='button' className='square' onClick={() => setModal(true)}>
-                              End Game
-                            </Button>
-                          </Col>
-                        </Row>
-                        : null}
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-            </Wrapper>
+                          {Object.values(buttonToggle).some(Boolean) ?
+                            <Row className='mt-3 text-end'>
+                              <Col sm={12}>
+                                <Button variant='primary' type='button' className='square' onClick={() => setModal(true)}>
+                                  End Game
+                                </Button>
+                              </Col>
+                            </Row>
+                            : null}
+                        </div>
+                      </Wrapper>
+                    </Col>
+                  </> :
+                  <>
+                    <Col xl={8} lg={12}>
+                      <Wrapper>
+                        <div className='games'>
+                          <div className=''>
+                            <AntiSupGameSettings
+                              control={control}
+                              errors={errors}
+                              register={register}
+                              buttonToggle={buttonToggle}
+                              setButtonToggle={setButtonToggle}
+                              games={data}
+                              isLoading={isLoading}
+                            />
+                          </div>
+
+                          <div className='mt-4'>
+                            <OculomotorSettings
+                              control={control}
+                              errors={errors}
+                              watch={watch}
+                              register={register}
+                              buttonToggle={buttonToggle}
+                              setButtonToggle={setButtonToggle}
+                              games={data}
+                              isLoading={isLoading}
+                            />
+                          </div>
+
+                          <div className='mt-4'>
+                            <StereopsisSettings
+                              errors={errors}
+                              register={register}
+                              control={control}
+                              buttonToggle={buttonToggle}
+                              setButtonToggle={setButtonToggle}
+                              games={data}
+                              isLoading={isLoading}
+                            />
+                          </div>
+
+                          {Object.values(buttonToggle).some(Boolean) ?
+                            <Row className='mt-3 text-end'>
+                              <Col sm={12}>
+                                <Button variant='primary' type='button' className='square' onClick={() => setModal(true)}>
+                                  End Game
+                                </Button>
+                              </Col>
+                            </Row>
+                            : null}
+                        </div>
+                      </Wrapper>
+                    </Col>
+
+                    <Col xl={4} lg={12} className='mt-xl-0 mt-3'>
+                      <Wrapper>
+                        <div className='settings'>
+                          <div className=''>
+                            <DominantEyeSettings
+                              buttonToggle={dominantEyeButton}
+                              setButtonToggle={setDominantEyeButton} />
+                          </div>
+
+                          <div className='mt-4'>
+                            <AntiSupSettings
+                              control={control}
+                              settings={antiSupSettings}
+                              setSettings={setAntiSupSettings}
+                            />
+                          </div>
+                        </div>
+                      </Wrapper>
+                    </Col>
+                  </>}
+              </Row>
+            </div>
           </Col>
         </Row>
       </Form>

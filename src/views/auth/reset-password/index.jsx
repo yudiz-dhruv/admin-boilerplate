@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toaster } from 'helper/helper'
 import { checkToken } from 'query/profile/profile.query'
 import NotFound from 'shared/components/404'
+import textLogo from 'assets/images/Yantra.Care.svg'
 
 function ResetPassword () {
   const navigate = useNavigate()
@@ -81,11 +82,15 @@ function ResetPassword () {
 
   return (
     <Form noValidate onSubmit={handleSubmit(onSubmit)} className='login-form'>
-      <div className='title-b'>
+      <div className='yantra-logo'>
+        <img src={textLogo} className="textLogo" alt='Yantra Healthcare' />
+      </div>
+      <div className='title-b mt-5'>
         <h2 className='title'>
           <FormattedMessage id='resetPassword' />
         </h2>
       </div>
+      <div className='line'></div>
       {tokneWrong ? (
         <div className='reset_expire'>
           <h5>Your Reset Password Link is expired</h5>

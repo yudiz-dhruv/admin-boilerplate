@@ -243,4 +243,10 @@ body.dark {
       }
     }
   }
+
+  .form-control {
+    &:disabled {
+      color: var(--secondary-400);
+    }
+  }
 }
