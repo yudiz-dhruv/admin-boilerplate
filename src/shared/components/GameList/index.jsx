@@ -5,8 +5,12 @@ import { Dropdown, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { route } from 'shared/constants/AllRoutes'
 import CustomModal from '../Modal'
+import { useMutation, useQueryClient } from 'react-query'
+import { updateGame } from 'query/game/game.mutation'
+import { toaster } from 'helper/helper'
 
-const GameList = ({ key, index, game, updateMutate, onDelete }) => {
+const GameList = ({ key, index, game, onDelete }) => {
+    const query = useQueryClient()
     const navigate = useNavigate()
     const [modal, setModal] = useState({ open: false })
     const [isButtonDisabled, setButtonDisabled] = useState(false)
@@ -16,18 +20,31 @@ const GameList = ({ key, index, game, updateMutate, onDelete }) => {
             TITLE: 'Confirm Activation?',
             WARNING: 'This might affect your current users who have deactivated this game.',
             MESSAGE: 'Are you sure you want to Activate this Game?'
-        }, 
+        },
         false: {
             TITLE: 'Confirm Deactivation?',
             WARNING: 'This might affect your current users who have activated this game.',
             MESSAGE: 'Are you sure you want to Deactivate this Game?'
         }
     }
-    
+
+    // EDIT GAME
+    const { mutate: updateMutate } = useMutation(updateGame, {
+        onSettled: (response, err) => {
+            if (response) {
+                toaster('Game Status Updated Successfully.', 'success')
+                query.invalidateQueries('gameList')
+                setModal({ open: false, type: '' })
+            } else {
+                toaster(err.data.message, 'error')
+            }
+        }
+    })
+
     const handleStatus = (status, id) => {
         setModal({ open: true, status, id })
     }
-    
+
     const handleConfirmStatus = (status, id) => {
         if (isButtonDisabled) {
             return;

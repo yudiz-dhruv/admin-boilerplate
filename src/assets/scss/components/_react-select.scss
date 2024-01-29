@@ -3,12 +3,14 @@
   font-size: $fs-14;
   background-color: var(--input-background-color);
   color: var(--heading-color);
+
   &.custom-select {
     .select__control {
       max-height: 55px;
       overflow-y: auto;
     }
   }
+
   // width: 100px;
   height: 38px;
   border: 1px solid #dfe4ec;
@@ -88,6 +90,7 @@
     position: relative;
     top: 1px;
   }
+
   .select__single-value--is-disabled {
     color: var(--secondary-500);
   }
@@ -186,14 +189,17 @@
     }
   }
 }
+
 .modal-content {
   .react-select.custom-select .select__control {
     max-height: unset !important;
   }
+
   .react-select {
     height: auto !important;
   }
 }
+
 .react-select {
   .select__menu {
     z-index: 99;
@@ -212,9 +218,14 @@ body.dark {
     .select__menu {
       overflow: unset;
     }
+
     .select__menu-list {
       box-shadow: 0px 7px 20px 0px rgb(89 111 142 / 24%);
       border-radius: 9px;
+    }
+
+    .select__single-value--is-disabled {
+      color: var(--secondary-400);
     }
   }
 }

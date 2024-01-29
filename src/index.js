@@ -4,12 +4,9 @@ import { IntlProvider } from 'react-intl'
 
 import App from 'App'
 import 'bootstrap/scss/bootstrap.scss'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import 'assets/scss/main.scss'
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datetime/css/react-datetime.css';
-import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.scss'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 import en from './lang/en.json'

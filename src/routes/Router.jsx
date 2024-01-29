@@ -84,7 +84,7 @@ const RoutesDetails = [
       { path: route.editGame(':id'), Component: EditGame, exact: true },
 
       { path: route.adminGame, Component: AdminGameManagement, exact: true },
-      { path: route.adminGameSettings, Component: AdminGameSettings, exact: true },
+      { path: route.adminGameSettings(':id'), Component: AdminGameSettings, exact: true },
     ]
   }
 ]

@@ -51,7 +51,7 @@ const ViewPatient = () => {
         { label: 'Patient History', toggle: 'history' },
     ]
 
-    // SPEICIFC PATIENT
+    // SPECIFIC PATIENT
     const { data, isLoading } = useQuery('patientDataById', () => getPatientById(id), {
         enabled: !!id,
         select: (data) => data?.data?.data,
@@ -73,7 +73,7 @@ const ViewPatient = () => {
     return (
         <>
             <Row className='details-row justify-content-center'>
-                <Col xxl={8} xl={12} md={12} sm={12}>
+                <Col xxl={9} xl={12} md={12} sm={12}>
                     <div className='details-card'>
                         <div className='patient-details-button-group'>
                             {tab_buttons?.map((tab, index) => {
@@ -86,51 +86,68 @@ const ViewPatient = () => {
                         </div>
 
                         {buttonToggle?.information &&
-                            <Wrapper>
-                                <div className='details-card-data'>
-                                    <div className='patient-img'>
-                                        <div className='img-content'>
-                                            <FontAwesomeIcon icon={faUser} />
-                                        </div>
-                                        <span className='user-name'>{data?.sUserName || 'Loading...'}</span>
-                                    </div>
-                                    <div className='line'></div>
-                                    <Row className='details-data-row p-0 m-0'>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Mobile No.</span>
-                                            <span className='data-value'>{data?.sMobile ? `+91 ${data?.sMobile}` : '-'}</span>
+                            <>
+                                <div className='details-row'>
+                                    <Row>
+                                        <Col xxl={4} xl={4} lg={5} md={12} sm={12}>
+                                            <div className='details-card'>
+                                                <div className='details-card-data'>
+                                                    <div className='admin-img'>
+                                                        <div className='img-content'>
+                                                            <FontAwesomeIcon icon={faUser} />
+                                                        </div>
+                                                        <span className='user-name'>{data?.sUserName || 'Loading...'}</span>
+                                                    </div>
+                                                    <div className='line'></div>
+                                                    <Row className='details-data-row p-0 m-0'>
+                                                        <Col lg={12} md={6} sm={6} xs={12} className="p-0 m-0">
+                                                            <span className='data-title'>Mobile Number</span>
+                                                            <span className='data-value'>{data?.sMobile ? `+91 ${data?.sMobile}` : '-'}</span>
+                                                        </Col>
+                                                    </Row>
+                                                </div>
+                                            </div>
                                         </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Age</span>
-                                            <span className='data-value'>{data?.sAge || '0'}</span>
+                                        <Col xxl={8} xl={8} lg={7} md={12} className='mt-lg-0 mt-3'>
+                                            <div className='details-card'>
+                                                <div className='details-card-data'>
+                                                    <Row className='details-data-row p-0 m-0'>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Age</span>
+                                                            <span className='data-value'>{data?.sAge || '0'}</span>
+                                                        </Col>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Dominant Eye</span>
+                                                            <span className='data-value capitalize'>{data?.eDominantEye || '-'}</span>
+                                                        </Col>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Has Amblyopia?</span>
+                                                            <span className='data-value capitalize'>{data?.eAmblyopia || '-'}</span>
+                                                        </Col>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Has Strabismus?</span>
+                                                            <span className='data-value capitalize'>{data?.eStrabismus || '-'}</span>
+                                                        </Col>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Status</span>
+                                                            <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
+                                                        </Col>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Created Date</span>
+                                                            <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
+                                                        </Col>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Last Activity on</span>
+                                                            <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD-MM-YYYY') || '-'}</span>
+                                                        </Col>
+                                                    </Row>
+                                                </div>
+                                            </div>
                                         </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Dominant Eye</span>
-                                            <span className='data-value capitalize'>{data?.eDominantEye || '-'}</span>
-                                        </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Has Amblyopia?</span>
-                                            <span className='data-value capitalize'>{data?.eAmblyopia || '-'}</span>
-                                        </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Has Strabismus?</span>
-                                            <span className='data-value capitalize'>{data?.eStrabismus || '-'}</span>
-                                        </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Status</span>
-                                            <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
-                                        </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Created Date</span>
-                                            <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
-                                        </Col>
-                                        <Col xxl={3} xl={4} lg={4} md={6} sm={6} className="p-0 m-0">
-                                            <span className='data-title'>Last Activity on</span>
-                                            <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD-MM-YYYY') || '-'}</span>
-                                        </Col>
+
                                     </Row>
                                 </div>
-                            </Wrapper>
+                            </>
                         }
 
                         {buttonToggle?.history &&

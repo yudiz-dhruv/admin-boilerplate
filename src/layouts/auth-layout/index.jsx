@@ -13,12 +13,12 @@ function AuthLayout ({ children }) {
           </div>
         </Col>
         <Col xl={6} lg={6} md={6} sm={12} className='login-form-container'>
-          {/* <Suspense
+          <Suspense
             fallback={
-              <Spinner animation='border' variant='primary' />
-            }> */}
-          {children}
-          {/* </Suspense> */}
+              <Spinner animation='border' variant='success' />
+            }>
+            {children}
+          </Suspense>
         </Col>
       </div>
     </div>

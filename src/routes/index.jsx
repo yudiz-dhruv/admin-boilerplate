@@ -17,11 +17,13 @@ function AllRoutes () {
           key={path}
           path={path}
           element={
-            // <Suspense fallback={
-            //   <Spinner animation='border' size='lg' variant='primary' />
-            // }>
-            <Component {...props} />
-            // </Suspense>
+            <Suspense fallback={
+              <div className='d-flex align-items-center justify-content-center top-0 left-0 position-fixed h-100 w-100'>
+                <Spinner animation='border' size='lg' variant='success' />
+              </div>
+            }>
+              <Component {...props} />
+            </Suspense>
           }
           exact={exact}
         />

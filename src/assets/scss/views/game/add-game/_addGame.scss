@@ -41,7 +41,7 @@
                 padding: 10px;
 
                 .inputtypefile {
-                    border: 3px solid var(--theme-color);
+                    border: 4px solid var(--theme-color);
                     outline: 4px solid var(--secondary-300);
                     width: 130px;
                     height: 130px;
@@ -284,7 +284,8 @@ body.dark {
             .admin-profile-img {
                 .fileinput {
                     .inputtypefile {
-                        outline: 4px solid var(--secondary-600);
+                        outline: 4px solid var(--secondary-500);
+                        border: 4px solid var(--boxes-color);
 
                         .inputMSG {
                             span {

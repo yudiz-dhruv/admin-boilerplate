@@ -17,7 +17,7 @@ const ViewGame = () => {
     return (
         <>
             <Row className='details-row justify-content-center'>
-                <Col xxl={8} xl={12} md={12} sm={12}>
+                <Col xxl={3} xl={4} lg={5} md={12} sm={12}>
                     <div className='details-card'>
                         <div className='details-card-data'>
                             <div className='game-avatar'>
@@ -27,29 +27,34 @@ const ViewGame = () => {
                                 </div>
                                 <span className='game-name'>{data?.sName || 'Loading...'}</span>
                             </div>
-                            <div className='line'></div>
-                            <Row className='details-data-row p-0 m-0 mt-4'>
-                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
+                        </div>
+                    </div>
+                </Col>
+                <Col xxl={6} xl={8} lg={7} md={12} sm={12}>
+                    <div className='details-card'>
+                        <div className='details-card-data'>
+                            <Row className='details-data-row p-0 m-0'>
+                                <Col sm={12} className="p-0 m-0">
                                     <span className='data-title'>Url</span>
                                     <span className='data-value'>{data?.sUrl || '-'}</span>
                                 </Col>
-                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={6} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Description</span>
                                     <span className='data-value'>{data?.sDescription || '-'}</span>
                                 </Col>
-                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={6} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Category</span>
                                     <span className='data-value capitalize'>{data?.eCategory || '-'}</span>
                                 </Col>
-                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={6} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Status</span>
                                     <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
                                 </Col>
-                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={6} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Created Date</span>
                                     <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
                                 </Col>
-                                <Col lg={4} md={6} sm={6} className="p-0 m-0">
+                                <Col lg={6} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Last Activity on</span>
                                     <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD-MM-YYYY') || '-'}</span>
                                 </Col>

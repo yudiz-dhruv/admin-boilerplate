@@ -59,7 +59,7 @@ const AdminGame = () => {
   }, [dirtyFields, watch('ePatientName')])
 
   async function onSubmit () {
-    patientDetails ? navigate(route?.adminGameSettings, { state: patientDetails }) : toaster('Please fill the data', 'error')
+    patientDetails ? navigate(route?.adminGameSettings(patientDetails?._id), { state: patientDetails }) : toaster('Please fill the data', 'error')
   }
 
   useEffect(() => {

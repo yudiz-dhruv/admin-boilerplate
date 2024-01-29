@@ -3,6 +3,7 @@ import { Card, Col, Row, Spinner } from 'react-bootstrap'
 import Cards from 'shared/components/Card'
 import { faUserDoctor, faUser, faUserSlash, faGamepad } from '@fortawesome/free-solid-svg-icons'
 import Wrapper from 'shared/components/Wrap'
+import ReactApexChart from 'react-apexcharts'
 
 function Dashboard () {
   const [userData, setUserData] = useState({})
@@ -28,7 +29,88 @@ function Dashboard () {
   //   }
   // })
 
+  const columnBarOptions = {
+    series: [{
+      name: 'Revenue',
+      data: [20000, 5000, 10000, 6000, 15000, 25000]
+    }],
+    options: {
+      chart: {
+        height: 250,
+        type: 'bar',
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          barHeight: '1px',
+          borderRadius: 0,
+          dataLabels: {
+            position: 'top', // top, center, bottom
+          },
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+          return val + "%";
+        },
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          colors: ['#000']
+        }
+      },
+      xaxis: {
+        categories: ['2019', '2020', '2021', '2022', '2023', '2024'],
+        position: 'bottom',
+        axisBorder: {
+          show: true
+        },
+        axisTicks: {
+          show: true
+        },
+        crosshairs: {
+          fill: {
+            type: 'gradient',
+            gradient: {
+              colorFrom: '#D8E3F0',
+              colorTo: '#BED1E6',
+              stops: [0, 100],
+              opacityFrom: 0.4,
+              opacityTo: 0.5,
+            }
+          }
+        },
+        tooltip: {
+          enabled: true,
+        }
+      },
+      yaxis: {
+        axisBorder: {
+          show: true
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false,
+          formatter: function (val) {
+            return val + "%";
+          }
+        }
 
+      },
+      title: {
+        text: 'Total Revenue Per Year',
+        floating: true,
+        offsetY: 100,
+        align: 'center',
+        style: {
+          color: '#444'
+        }
+      }
+    },
+  }
 
   useEffect(() => {
     document.title = 'Dashboard'
@@ -43,63 +125,6 @@ function Dashboard () {
       ) : (
         <>
           <Row>
-            {/* <Col xxl={4} lg={4} sm={12} md={12} className='pb-3 pb-lg-0 card-box dashboard-card-1' >
-              <Card className='dash-card'>
-                <Card.Body className='up-card-1'>
-                  <div>
-                    <Card.Text>{userData?.nTotalUsers}</Card.Text>
-                    <Card.Title className='d-flex align-items-center gap-3'>Total Users</Card.Title>
-                  </div>
-                  <div>
-                    <FontAwesomeIcon icon={faUsers} className="dashboard-card-icon-1" />
-                  </div>
-                </Card.Body>
-                <Row className='down-card-1 card-body dashIcons-2'>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Active :- {userData?.nUserActive || '0'}</Card.Title>
-                </Col>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Verified : {userData?.nKYCVerified || '0'}</Card.Title>
-                </Col>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Active :- {userData?.nUserActive || '0'}</Card.Title>
-                </Col>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Verified : {userData?.nKYCVerified || '0'}</Card.Title>
-                </Col>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Active :- {userData?.nUserActive || '0'}</Card.Title>
-                </Col>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Verified : {userData?.nKYCVerified || '0'}</Card.Title>
-                </Col>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Active :- {userData?.nUserActive || '0'}</Card.Title>
-                </Col>
-                <Col sm={6} className="p-0 d-flex justify-content-center">
-                  <Card.Title className='d-flex align-items-center gap-2'>Verified : {userData?.nKYCVerified || '0'}</Card.Title>
-                </Col>
-              </Row>
-              </Card>
-            </Col>
-            <Col xxl={8} lg={8} sm={12} md={12} className='pb-xxl-3 pb-lg-0 card-box m-0' >
-              <Row>
-                <Col xxl={6} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Active Users' cardtext={userData?.nTotalActiveUsers || 0} cardIcon={faDatabase} className={'dashboard-card-icon-2'} />
-                </Col>
-
-                <Col xxl={6} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Deleted Users' cardtext={userData?.nTotalDeletedUsers || 0} cardIcon={faUserMinus} className={'dashboard-card-icon-3'} />
-                </Col>
-                <Col xxl={6} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Email Verified Users' cardtext={userData?.nTotalEmailVerifiedUsers || 0} cardIcon={faEnvelopeCircleCheck} className={'dashboard-card-icon-4'} />
-                </Col>
-
-                <Col xxl={6} lg={6} sm={12} md={6} className='pb-3 pb-lg-0 card-box' >
-                  <Cards cardtitle='Mobile Verified Users' cardtext={userData?.nTotalMobileVerifiedUsers || 0} cardIcon={faMobile} className={'dashboard-card-icon-5'} />
-                </Col>
-              </Row>
-            </Col> */}
             <Col xxl={6} xl={6} lg={12} className='active-user'>
               <Wrapper>
                 <h3>Active Users</h3>
@@ -136,6 +161,15 @@ function Dashboard () {
                     <Cards cardtitle='Total Games' cardtext={10} cardIcon={faGamepad} className={'dashboard-card-icon-7'} />
                   </Col>
                 </Row>
+              </Wrapper>
+            </Col>
+
+          </Row>
+          <Row>
+            <Col xxl={6} xl={6} lg={12} className='active-user mt-3'>
+              <Wrapper>
+                <h3>Revenue</h3>
+                <ReactApexChart options={columnBarOptions?.options} series={columnBarOptions.series} type="bar" height={350} />
               </Wrapper>
             </Col>
           </Row>

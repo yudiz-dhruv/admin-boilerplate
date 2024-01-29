@@ -84,11 +84,11 @@
         flex-wrap: wrap;
         gap: 10px;
         margin: 0;
-  
+
         .form-group {
           display: inline-flex;
           margin-bottom: 0;
-  
+
           .form-label {
             text-wrap: nowrap;
             display: flex !important;
@@ -103,18 +103,18 @@
             color: var(--gray-medium) !important;
             margin-top: 2px;
           }
-  
+
           .react-select {
             margin-left: 10px;
-  
+
             .select__control {
               margin: 0;
-  
+
               .select__input-container {
                 margin: 0;
               }
             }
-  
+
             .select__menu {
               z-index: 2;
               margin: 5px 0 !important;
@@ -125,43 +125,43 @@
               background-color: var(--boxes-color);
               border: none;
             }
-  
+
             .select__menu-list {
               background-color: var(--boxes-color);
               padding: 0;
               z-index: 1;
               text-align: left;
               overflow: hidden;
-  
+
               &::-webkit-scrollbar {
                 width: 0;
               }
-  
+
               .select__option {
                 color: var(--text-color);
                 font-size: $fs-14;
                 background-color: transparent;
                 cursor: pointer;
                 margin: 0;
-  
+
                 &:not(.select__option--is-disabled):hover,
                 &.select__option--is-selected {
                   background-color: var(--primary-color);
                   color: var(--white-color);
                 }
-  
+
                 &:not(.select__option--is-selected).select__option--is-disabled {
                   cursor: not-allowed;
                   opacity: 0.5;
                 }
-  
+
                 &.select__option--is-focused {
                   background-color: transparent;
                   color: var(--text-color);
                 }
               }
             }
-  
+
             .select__indicator {
               margin: 0;
             }
@@ -423,6 +423,12 @@ body.dark {
 
       .left .bulk-action+.bulk-action {}
 
+      .left {
+        .form-label {
+          color: var(--secondary-200) !important;
+        }
+      }
+
       .right *+* {}
 
       .right {
@@ -509,7 +515,7 @@ body.dark {
         font-size: $fs-12;
         line-height: 1.14;
         opacity: 0.7;
-        color: var(--gray-medium);
+        color: var(--secondary-400);
         font-weight: $fw-500;
         font-family: 'Helvetica-Bold';
         padding: 10px 16px;

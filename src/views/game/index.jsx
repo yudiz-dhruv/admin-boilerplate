@@ -9,7 +9,7 @@ import CustomModal from 'shared/components/Modal'
 import { GameListColumn } from 'shared/constants/TableHeaders'
 import { getGameList } from 'query/game/game.query'
 import GameList from 'shared/components/GameList'
-import { deleteGame, updateGame } from 'query/game/game.mutation'
+import { deleteGame } from 'query/game/game.mutation'
 import { toaster } from 'helper/helper'
 import GamelistFilters from 'shared/components/GameListFilters'
 
@@ -50,18 +50,6 @@ const GameManagement = () => {
     select: (data) => data.data.data,
     onSuccess: (response) => {
       setData(response)
-    }
-  })
-
-  // EDIT GAME
-  const { mutate: updateMutate } = useMutation(updateGame, {
-    onSettled: (response, err) => {
-      if (response) {
-        toaster('Game Status Updated Successfully.', 'success')
-        query.invalidateQueries('gameList')
-      } else {
-        toaster(err.data.message, 'error')
-      }
     }
   })
 
@@ -178,7 +166,6 @@ const GameManagement = () => {
                 index={index}
                 game={game}
                 onDelete={onDelete}
-                updateMutate={updateMutate}
               />
             )
           })}

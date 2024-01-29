@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
+import logo from './assets/images/YantraHealthcare.png'
 const AllRoutes = React.lazy(() => import('routes'))
 
 export const queryClient = new QueryClient({
@@ -55,9 +56,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={
-          <div className='d-flex align-items-center justify-content-center top-0 left-0 position-fixed h-100 w-100'>
-            <Spinner animation='border' variant='success' />
-          </div>
+        <div className='d-flex align-items-center justify-content-center top-0 left-0 position-fixed h-100 w-100'>
+          <Spinner animation='border' size='lg' variant='success' />
+        </div>
+          // <div className='loading-screen'>
+          //   <section className="call-buton">
+          //     <span className="cc-calto-action-ripple"><img src={logo} alt="" />
+          //     </span>
+          //   </section>
+          // </div>
         }>
         <AllRoutes />
       </Suspense>

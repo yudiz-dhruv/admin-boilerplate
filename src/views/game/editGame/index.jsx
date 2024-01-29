@@ -117,77 +117,105 @@ const EditGame = () => {
                                     </Row>
                                     <div className="line"></div>
                                     <Row>
-                                        <Col xl={6} lg={6} className=''>
+                                        <Col lg={6} md={12} sm={12} className=''>
+                                            <Row>
+                                                <Col lg={12} md={6} sm={12}>
+                                                    <CommonInput
+                                                        type='text'
+                                                        register={register}
+                                                        errors={errors}
+                                                        className={`form-control ${errors?.sName && 'error'}`}
+                                                        name='sName'
+                                                        label='Game Name'
+                                                        placeholder='Enter game name'
+                                                        required
+                                                        onChange={(e) => {
+                                                            e.target.value =
+                                                                e.target.value?.trim() &&
+                                                                e.target.value.replace(/^[0-9]+$/g, '')
+                                                        }}
+                                                        maxLength={20}
+                                                        validation={{
+                                                            required: {
+                                                                value: true,
+                                                                message: validationErrors.gameNameRequired
+                                                            },
+                                                            maxLength: {
+                                                                value: 20,
+                                                                message: 'Game name must be less than 20 char long.'
+                                                            },
+                                                            pattern: {
+                                                                value: /^[a-zA-Z ]+$/,
+                                                                message: 'Special characters & numbers are not allowed'
+                                                            }
+                                                        }}
+                                                    />
+                                                </Col>
+                                                <Col lg={12} md={6} sm={12} className='category-selection mt-lg-2 mt-md-0 mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>
+                                                            <span>
+                                                                Category
+                                                                <span className='inputStar'>*</span>
+                                                            </span>
+                                                        </Form.Label>
+                                                        <Controller
+                                                            name='eCategory'
+                                                            control={control}
+                                                            rules={{
+                                                                required: {
+                                                                    value: true,
+                                                                    message: 'Game category is required.'
+                                                                }
+                                                            }}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select Games'
+                                                                    ref={ref}
+                                                                    options={eGameCategoryOption}
+                                                                    className={`react-select border-0 ${errors.eCategory && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={onChange}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.eCategory && (
+                                                            <Form.Control.Feedback type='invalid'>
+                                                                {errors.eCategory.message}
+                                                            </Form.Control.Feedback>
+                                                        )}
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+
+                                        <Col lg={6} md={12} sm={12} className='mt-lg-0 mt-md-2'>
                                             <CommonInput
-                                                type='text'
+                                                type='textarea'
                                                 register={register}
                                                 errors={errors}
-                                                className={`form-control ${errors?.sName && 'error'}`}
-                                                name='sName'
-                                                label='Game Name'
-                                                placeholder='Enter game name'
+                                                className={`for m-control ${errors?.sDescription && 'error'}`}
+                                                name='sDescription'
+                                                label='Description'
+                                                placeholder='Enter game description...'
                                                 required
+                                                validation={{
+                                                    required: {
+                                                        value: true,
+                                                        message: 'Description is required'
+                                                    },
+                                                }}
                                                 onChange={(e) => {
                                                     e.target.value =
                                                         e.target.value?.trim() &&
                                                         e.target.value.replace(/^[0-9]+$/g, '')
                                                 }}
-                                                maxLength={20}
-                                                validation={{
-                                                    required: {
-                                                        value: true,
-                                                        message: validationErrors.gameNameRequired
-                                                    },
-                                                    maxLength: {
-                                                        value: 20,
-                                                        message: 'Game name must be less than 20 char long.'
-                                                    },
-                                                    pattern: {
-                                                        value: /^[a-zA-Z ]+$/,
-                                                        message: 'Special characters & numbers are not allowed'
-                                                    }
-                                                }}
                                             />
-                                        </Col>
-                                        <Col lg={6} className='category-selection mt-lg-0 mt-md-2 mt-2'>
-                                            <Form.Group className='form-group'>
-                                                <Form.Label>
-                                                    <span>
-                                                        Category
-                                                        <span className='inputStar'>*</span>
-                                                    </span>
-                                                </Form.Label>
-                                                <Controller
-                                                    name='eCategory'
-                                                    control={control}
-                                                    rules={{
-                                                        required: {
-                                                            value: true,
-                                                            message: 'Game category is required.'
-                                                        }
-                                                    }}
-                                                    render={({ field: { onChange, value, ref } }) => (
-                                                        <Select
-                                                            placeholder='Select Games'
-                                                            ref={ref}
-                                                            options={eGameCategoryOption}
-                                                            className={`react-select border-0 ${errors.eCategory && 'error'}`}
-                                                            classNamePrefix='select'
-                                                            isSearchable={false}
-                                                            value={value}
-                                                            onChange={onChange}
-                                                            isMulti={false}
-                                                            getOptionLabel={(option) => option.label}
-                                                            getOptionValue={(option) => option.value}
-                                                        />
-                                                    )}
-                                                />
-                                                {errors.eCategory && (
-                                                    <Form.Control.Feedback type='invalid'>
-                                                        {errors.eCategory.message}
-                                                    </Form.Control.Feedback>
-                                                )}
-                                            </Form.Group>
                                         </Col>
 
                                         <Col xl={6} lg={6} className='mt-2'>
@@ -252,34 +280,6 @@ const EditGame = () => {
 
                                                 <span className='card-error'>{assetFile?.previousFile ? '' : errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
                                             </div>
-                                        </Col>
-
-                                        <Col xl={12} lg={12} sm={12}>
-                                            <Row>
-                                                <Col xl={6} lg={6} md={12} sm={12}>
-                                                    <CommonInput
-                                                        type='textarea'
-                                                        register={register}
-                                                        errors={errors}
-                                                        className={`for m-control ${errors?.sDescription && 'error'}`}
-                                                        name='sDescription'
-                                                        label='Description'
-                                                        placeholder='Enter game description...'
-                                                        required
-                                                        validation={{
-                                                            required: {
-                                                                value: true,
-                                                                message: 'Description is required'
-                                                            },
-                                                        }}
-                                                        onChange={(e) => {
-                                                            e.target.value =
-                                                                e.target.value?.trim() &&
-                                                                e.target.value.replace(/^[0-9]+$/g, '')
-                                                        }}
-                                                    />
-                                                </Col>
-                                            </Row>
                                         </Col>
                                     </Row>
 

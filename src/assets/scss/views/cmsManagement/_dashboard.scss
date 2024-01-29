@@ -10,7 +10,7 @@
   }
 
   svg.dashboard-card-icon-3 {
-    background: linear-gradient(310deg, #01b869, #2dcecc) !important;
+    background: linear-gradient(310deg, #008e50, #76e2b5) !important;
   }
 
   svg.dashboard-card-icon-4 {
@@ -22,11 +22,11 @@
   }
 
   svg.dashboard-card-icon-6 {
-    background: linear-gradient(310deg, #f5365c, #f56036) !important;
+    background: linear-gradient(310deg, #d70000, #ff8888) !important;
   }
 
   svg.dashboard-card-icon-7 {
-    background: linear-gradient(310deg, #8411ef, #c934ffd8) !important;
+    background: linear-gradient(310deg, #740ad6, #c76fe7e7) !important;
   }
 
   svg.dashboard-card-icon-8 {
@@ -160,7 +160,11 @@
 .active-user {
   .wrapper {
     h3 {
-      color: var(--text-color);
+      color: var(--primary-color);
+      font-family: 'Helvetica-Bold';
+      letter-spacing: 1px;
+      font-weight: 600;
+      text-transform: uppercase;
     }
   }
 }
@@ -190,7 +194,7 @@ body.dark {
     }
 
     svg.dashboard-card-icon-6 {
-      background: linear-gradient(310deg, #971f37, #ba4828) !important;
+      background: linear-gradient(310deg, #8e1212, #e63b3b) !important;
     }
 
     svg.dashboard-card-icon-7 {

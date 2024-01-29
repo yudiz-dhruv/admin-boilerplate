@@ -8,11 +8,11 @@ export default function Cards ({ cardtext, cardtitle, cardIcon, className }) {
   return (
     <Card className='dash-card'>
       <Card.Body>
-        <div>
-          <Card.Text>{cardtext}</Card.Text>
+        <div className='card-content'>
           <Card.Title>{cardtitle}</Card.Title>
+          <Card.Text>{cardtext}</Card.Text>
         </div>
-        <div>
+        <div className='card-logo'>
           <FontAwesomeIcon icon={cardIcon} className={className} />
         </div>
       </Card.Body>

@@ -1,11 +1,10 @@
 import React from 'react'
-import Wrapper from '../Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { Form } from 'react-bootstrap'
-import RangeSlider from 'react-bootstrap-range-slider'
 import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
+import { Slider } from '@mui/material'
 
 const AntiSupSettings = ({ control, settings, setSettings }) => {
     const LABELS = {
@@ -13,6 +12,44 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
         CONTRAST_LEVEL: 'Contrast Level',
         OCCLUSION_LEVEL: 'Occlusion Level',
         BLUR_LEVEL: 'Blur Level'
+    }
+
+    const SLIDER_STYLE = {
+        width: '96%',
+        margin: '0 8px',
+        color: '#008d74',
+        '& .MuiSlider-track': {
+            border: 'none',
+        },
+        '& .MuiSlider-thumb': {
+            border: '2px solid #008d74',
+            '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+                boxShadow: 'inherit',
+            },
+            '&::before': {
+                display: 'none',
+            },
+        },
+        '& .MuiSlider-valueLabel': {
+            lineHeight: 1.2,
+            fontSize: 12,
+            background: 'unset',
+            padding: 0,
+            width: 32,
+            height: 32,
+            fontWeight: 'bolder',
+            borderRadius: '50% 50% 50% 0',
+            backgroundColor: 'rgb(0, 191, 127)',
+            transformOrigin: 'bottom left',
+            transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
+            '&::before': { display: 'none' },
+            '&.MuiSlider-valueLabelOpen': {
+                transform: 'translate(50%, -90%) rotate(-45deg) scale(1)',
+            },
+            '& > *': {
+                transform: 'rotate(45deg)',
+            },
+        },
     }
     return (
         <>
@@ -28,18 +65,19 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                     <Controller
                         name='nContrast'
                         control={control}
+                        defaultValue={settings?.contrast}
                         render={({ field: { onChange, value } }) => (
-                            <RangeSlider
+                            <Slider
+                                defaultValue={settings?.contrast}
+                                valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
                                     setSettings({ ...settings, contrast: +e.target.value })
                                     onChange(e)
                                 }}
-                                defaultValue={settings?.contrast}
                                 min={0}
                                 max={100}
-                                tooltipLabel={currentValue => `${currentValue || 0}%`}
-                                tooltipPlacement='top'
+                                sx={SLIDER_STYLE}
                             />
                         )}
                     />
@@ -55,8 +93,11 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                     <Controller
                         name='nOcclusion'
                         control={control}
+                        defaultValue={settings?.occlusion}
                         render={({ field: { onChange, value } }) => (
-                            <RangeSlider
+                            <Slider
+                                defaultValue={settings?.occlusion}
+                                valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
                                     setSettings({ ...settings, occlusion: +e.target.value })
@@ -64,9 +105,7 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                                 }}
                                 min={0}
                                 max={100}
-                                defaultValue={settings?.occlusion}
-                                tooltipLabel={currentValue => `${currentValue || 0}%`}
-                                tooltipPlacement='top'
+                                sx={SLIDER_STYLE}
                             />
                         )}
                     />
@@ -82,8 +121,11 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                     <Controller
                         name='nBlur'
                         control={control}
+                        defaultValue={settings?.blur}
                         render={({ field: { onChange, value } }) => (
-                            <RangeSlider
+                            <Slider
+                                defaultValue={settings?.blur}
+                                valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
                                     setSettings({ ...settings, blur: +e.target.value })
@@ -91,9 +133,7 @@ const AntiSupSettings = ({ control, settings, setSettings }) => {
                                 }}
                                 min={0}
                                 max={100}
-                                defaultValue={settings?.blur}
-                                tooltipLabel={currentValue => `${currentValue || 0}%`}
-                                tooltipPlacement='top'
+                                sx={SLIDER_STYLE}
                             />
                         )}
                     />

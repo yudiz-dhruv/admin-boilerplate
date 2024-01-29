@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { Form, Row, Col, Button, InputGroup, Spinner } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
-
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { PASSWORD } from 'shared/constants'
 import { useMutation } from 'react-query'
@@ -13,10 +12,12 @@ import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
 
 export default function ChangePassword () {
+  const navigate = useNavigate()
+
   const [showCurrentPassword, setShowCurrentPassword] = useState(true)
   const [showNewPassword, setShowNewPassword] = useState(true)
   const [showConfirmPassword, setConfirmPassword] = useState(true)
-  const navigate = useNavigate()
+
   const {
     control,
     handleSubmit,

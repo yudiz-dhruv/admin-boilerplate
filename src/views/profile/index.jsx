@@ -16,6 +16,7 @@ import { faPenToSquare, faUser, faXmark } from '@fortawesome/free-solid-svg-icon
 function EditProfile () {
   const navigate = useNavigate()
   const query = useQueryClient()
+
   const [updateFlag, setUpdateFlag] = useState(false)
   const [profileData, setProfileData] = useState({})
   const [payload, setPayload] = useState()
@@ -78,14 +79,8 @@ function EditProfile () {
     mutate({ ...payload })
   }
 
-  function usernameUpdate () {
-  }
-  function mobileNumberUpdate () {
-  }
-  function genderUpdate () {
-  }
   useEffect(() => {
-    document.title = 'My Profile'
+    document.title = 'My Profile | Yantra Healthcare'
   }, [])
   return (
     <>
@@ -111,9 +106,6 @@ function EditProfile () {
                   handleChange={(e) => handleChange(e)}
                   setValue={setValue}
                   updateFlag={updateFlag}
-                  usernameUpdate={usernameUpdate}
-                  mobileNumberUpdate={mobileNumberUpdate}
-                  genderUpdate={genderUpdate}
                 />
                 {updateFlag !== false &&
                   <>

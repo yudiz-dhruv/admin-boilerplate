@@ -16,8 +16,10 @@ import Select from 'react-select'
 import Datetime from 'react-datetime'
 import { io } from 'socket.io-client'
 import useMediaQuery from 'shared/hooks/useMediaQuery'
+import PatientInfo from 'shared/components/PatientInfo'
 
-const socket = io.connect('http://localhost:3000/')
+const socket = io.connect('http://localhost:3000')
+console.log('socket: ', socket)
 const InternalGameSettings = () => {
   const location = useLocation()
   const params = useRef(parseParams(location.search))
@@ -75,6 +77,7 @@ const InternalGameSettings = () => {
   })
 
   async function onSubmit (data) {
+    console.log('data: ', data);
   }
 
   function handleClear () {
@@ -104,6 +107,12 @@ const InternalGameSettings = () => {
                       <Wrapper>
                         <div className='settings'>
                           <div className=''>
+                            <PatientInfo
+                              data={location?.state}
+                            />
+                          </div>
+
+                          <div className='mt-3'>
                             <DominantEyeSettings
                               buttonToggle={dominantEyeButton}
                               setButtonToggle={setDominantEyeButton} />
@@ -231,6 +240,12 @@ const InternalGameSettings = () => {
                       <Wrapper>
                         <div className='settings'>
                           <div className=''>
+                            <PatientInfo
+                              data={location?.state}
+                            />
+                          </div>
+
+                          <div className='mt-3'>
                             <DominantEyeSettings
                               buttonToggle={dominantEyeButton}
                               setButtonToggle={setDominantEyeButton} />
