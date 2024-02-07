@@ -3,17 +3,14 @@ import { Button, Form, Spinner } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { FormattedMessage } from 'react-intl'
 import { useMutation } from 'react-query'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { forgotPassword } from 'query/auth/auth.query'
 import { EMAIL } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import { route } from 'shared/constants/AllRoutes'
-import { toaster } from 'helper/helper'
 import textLogo from 'assets/images/Yantra.Care.svg'
+import { Zoom, toast } from 'react-toastify'
 
 function ForgotPassword () {
-  const navigate = useNavigate()
-
   const {
     register: fields,
     handleSubmit,
@@ -22,7 +19,16 @@ function ForgotPassword () {
 
   const { mutate, isLoading } = useMutation(forgotPassword, {
     onSuccess: (response) => {
-      toaster('Reset Link send successfully. Please check you mail.', 'success')
+      toast.success('Reset Link send successfully. Please check you mail.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
     }
   })
 

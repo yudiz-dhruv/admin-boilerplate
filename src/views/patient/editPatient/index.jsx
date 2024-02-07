@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
-import { getDirtyFormValues, toaster } from 'helper/helper'
+import { getDirtyFormValues } from 'helper/helper'
 import { updatePatient } from 'query/patient/patient.mutation'
 import { getPatientById } from 'query/patient/patient.query'
 import { Button, Col, Form, Row } from 'react-bootstrap'
@@ -12,6 +12,7 @@ import { route } from 'shared/constants/AllRoutes'
 import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
+import { Zoom, toast } from 'react-toastify'
 
 const EditPatient = () => {
     const location = useLocation()
@@ -45,12 +46,30 @@ const EditPatient = () => {
     const { mutate: updateMutate } = useMutation(updatePatient, {
         onSettled: (response, err) => {
             if (response) {
-                toaster('Patient Record Updated Successfully.', 'success')
+                toast.success('Patient Record Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 navigate(route.patient)
 
                 reset()
             } else {
-                toaster(err.data.message, 'error')
+                toast.error(err.data.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
             }
         }
     })

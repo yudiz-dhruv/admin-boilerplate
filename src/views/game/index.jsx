@@ -10,8 +10,8 @@ import { GameListColumn } from 'shared/constants/TableHeaders'
 import { getGameList } from 'query/game/game.query'
 import GameList from 'shared/components/GameList'
 import { deleteGame } from 'query/game/game.mutation'
-import { toaster } from 'helper/helper'
 import GamelistFilters from 'shared/components/GameListFilters'
+import { Zoom, toast } from 'react-toastify'
 
 const GameManagement = () => {
   const location = useLocation()
@@ -58,10 +58,28 @@ const GameManagement = () => {
     onSettled: (res, err) => {
       if (res) {
         query.invalidateQueries('gameList')
-        toaster('Game Deleted Successfully.', 'success')
+        toast.success('Game Deleted Successfully!', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Zoom,
+        })
         setModal({ open: false, type: '' })
       } else {
-        toaster(err?.response?.data?.message, 'error')
+        toast.error(err?.response?.data?.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Zoom,
+        })
         setModal({ open: false, type: '' })
       }
     }

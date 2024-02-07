@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { toaster } from 'helper/helper'
 import { deletePatient, updatePatient } from 'query/patient/patient.mutation'
 import { getPatientList } from 'query/patient/patient.query'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -12,6 +11,7 @@ import TopBar from 'shared/components/Topbar'
 import { route } from 'shared/constants/AllRoutes'
 import { PatientListColumn } from 'shared/constants/TableHeaders'
 import { appendParams, parseParams } from 'shared/utils'
+import { Zoom, toast } from 'react-toastify'
 
 const PatientManagement = () => {
     const location = useLocation()
@@ -53,10 +53,28 @@ const PatientManagement = () => {
     const { mutate: updateMutate } = useMutation(updatePatient, {
         onSettled: (response, err) => {
             if (response) {
-                toaster('Patient Status Updated Successfully.', 'success')
+                toast.success('Patient Status Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 query.invalidateQueries('patientList')
             } else {
-                toaster(err.data.message, 'error')
+                toast.error(err.data.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
             }
         }
     })
@@ -66,10 +84,28 @@ const PatientManagement = () => {
         onSettled: (res, err) => {
             if (res) {
                 query.invalidateQueries('patientList')
-                toaster('Patient Deleted Successfully.', 'success')
+                toast.success('Patient Deleted Successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 setModal({ open: false, type: '' })
             } else {
-                toaster(err?.response?.data?.message, 'error')
+                toast.error(err?.response?.data?.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 setModal({ open: false, type: '' })
             }
         }

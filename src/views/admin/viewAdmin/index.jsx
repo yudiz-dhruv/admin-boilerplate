@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIndianRupee } from '@fortawesome/free-solid-svg-icons'
 import { getAdminById } from 'query/admin/admin.query'
 import moment from 'moment'
+import { motion } from 'framer-motion'
 
 const ViewAdmin = () => {
     const { id } = useParams()
@@ -21,12 +22,14 @@ const ViewAdmin = () => {
             <div className='view-admin'>
                 <Row className='details-row justify-content-center'>
                     <Col xxl={3} xl={4} lg={5} md={12} sm={12}>
-                        <div className='details-card'>
+                        <motion.div className='details-card' initial={{ x: -20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ duration: 0.6, ease: 'easeInOut' }}>
                             <div className='details-card-data'>
                                 <div className='admin-img'>
                                     <div className='img-content'>
                                         {isLoading ?
-                                            <Spinner animation='border' className='text-center mt-4' variant='success' />
+                                            <Spinner animation='border' className='text-center mt-5' variant='success' />
                                             : <img src={data?.sAvatar} alt={data?.sUserName} />}
                                     </div>
                                     <span className='user-name'>{data?.sUserName || 'Loading...'}</span>
@@ -43,11 +46,13 @@ const ViewAdmin = () => {
                                     </Col>
                                 </Row>
                             </div>
-                        </div>
+                        </motion.div>
                     </Col>
 
                     <Col xxl={6} xl={8} lg={7} md={12} sm={12}>
-                        <div className='details-card'>
+                        <motion.div className='details-card' initial={{ x: 20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ duration: 0.6, ease: 'easeInOut' }}>
                             <div className='details-card-data'>
                                 <Row className='details-data-row p-0 m-0'>
                                     <Col md={6} sm={6} className="p-0 m-0">
@@ -88,7 +93,7 @@ const ViewAdmin = () => {
                                     </Col>
                                 </Row>
                             </div>
-                        </div>
+                        </motion.div>
                     </Col>
                 </Row>
             </div>

@@ -11,6 +11,7 @@ import Wrapper from 'shared/components/Wrap'
 import DataTable from 'shared/components/DataTable'
 import { appendParams, parseParams } from 'shared/utils'
 import { PatientHistory } from 'shared/constants/TableHeaders'
+import { motion } from 'framer-motion'
 
 const ViewPatient = () => {
     const { id } = useParams()
@@ -90,7 +91,9 @@ const ViewPatient = () => {
                                 <div className='details-row'>
                                     <Row>
                                         <Col xxl={4} xl={4} lg={5} md={12} sm={12}>
-                                            <div className='details-card'>
+                                            <motion.div className='details-card' initial={{ x: -20, opacity: 0 }}
+                                                animate={{ x: 0, opacity: 1 }}
+                                                transition={{ duration: 0.6, ease: 'easeInOut' }}>
                                                 <div className='details-card-data'>
                                                     <div className='admin-img'>
                                                         <div className='img-content'>
@@ -106,10 +109,12 @@ const ViewPatient = () => {
                                                         </Col>
                                                     </Row>
                                                 </div>
-                                            </div>
+                                            </motion.div>
                                         </Col>
                                         <Col xxl={8} xl={8} lg={7} md={12} className='mt-lg-0 mt-3'>
-                                            <div className='details-card'>
+                                            <motion.div className='details-card' initial={{ x: 20, opacity: 0 }}
+                                                animate={{ x: 0, opacity: 1 }}
+                                                transition={{ duration: 0.6, ease: 'easeInOut' }}>
                                                 <div className='details-card-data'>
                                                     <Row className='details-data-row p-0 m-0'>
                                                         <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
@@ -142,7 +147,7 @@ const ViewPatient = () => {
                                                         </Col>
                                                     </Row>
                                                 </div>
-                                            </div>
+                                            </motion.div>
                                         </Col>
 
                                     </Row>

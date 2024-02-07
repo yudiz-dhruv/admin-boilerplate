@@ -6,12 +6,13 @@ import { FormattedMessage } from 'react-intl'
 import EditProfileComponent from 'shared/components/Profile'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { profile, UpdateProfile } from 'query/profile/profile.query'
-import { getDirtyFormValues, toaster } from 'helper/helper'
+import { getDirtyFormValues } from 'helper/helper'
 import { useNavigate } from 'react-router-dom'
 import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { Zoom, toast } from 'react-toastify'
 
 function EditProfile () {
   const navigate = useNavigate()
@@ -44,6 +45,7 @@ function EditProfile () {
         sUserName: data?.sUserName,
         sEmail: data?.sEmail,
         sMobile: data?.sMobile,
+        eUserType: data?.eUserType
       })
     },
     onError: () => {
@@ -53,7 +55,16 @@ function EditProfile () {
 
   const { mutate, isLoading } = useMutation(UpdateProfile, {
     onSuccess: (response) => {
-      toaster(response?.data?.message || 'Profile updated successfully')
+      toast.success(response?.data?.message || 'Profile updated successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
       query.invalidateQueries({ queryKey: ['profile'] })
       navigate('/dashboard')
     }

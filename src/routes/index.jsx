@@ -32,7 +32,7 @@ function AllRoutes () {
   }
   return (
     <>
-      <Toaster limit={5} />
+      {/* <Toaster limit={5} /> */}
       <BrowserRouter>
         <Routes>
           {Router?.map(({ isPrivateRoute, children, Component }) => {

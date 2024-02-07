@@ -8,12 +8,13 @@ import CommonInput from 'shared/components/CommonInput'
 import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import { fileToDataUri, toaster } from 'helper/helper'
+import { fileToDataUri } from 'helper/helper'
 import { addGame } from 'query/game/game.mutation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { eGameCategoryOption } from 'shared/constants/TableHeaders'
 import Select from 'react-select'
+import { Zoom, toast } from 'react-toastify'
 
 const AddGame = () => {
     const navigate = useNavigate()
@@ -26,7 +27,16 @@ const AddGame = () => {
     // ADD GAME
     const { mutate } = useMutation(addGame, {
         onSuccess: (res) => {
-            toaster('New Game Added Successfully.', 'success')
+            toast.success('New Game Added Successfully!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "light",
+                transition: Zoom,
+            })
             navigate(route.game)
             reset()
         }
@@ -44,7 +54,8 @@ const AddGame = () => {
             sDescription: data?.sDescription || '',
             sUrl: '',
             sAvatar: '',
-            eCategory: data?.eCategory?.value
+            eCategory: data?.eCategory?.value,
+            sVersion: data?.sVersion
         }
 
         const sAvatarFile = data?.sAvatar
@@ -187,7 +198,7 @@ const AddGame = () => {
                                                         }}
                                                     />
                                                 </Col>
-                                                <Col lg={12} md={6} sm={12} className='category-selection mt-lg-2 mt-md-0 mt-2'>
+                                                <Col lg={12} md={6} sm={12} className='category-selection mt-lg-2 mt-md-1 mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>
                                                             <span>
@@ -274,9 +285,14 @@ const AddGame = () => {
                                                                 fileType: (value) => {
                                                                     if (value && typeof (watch(`sUrl`)) !== 'string') {
                                                                         const allowedFormats = ['bundle', 'BUNDLE'];
-                                                                        const fileExtension = value.name.split('.').pop().toLowerCase();
+                                                                        // const fileExtension = value.name.split('.').pop().toLowerCase();
+                                                                        let fileExtension = '';
 
-                                                                        if (!allowedFormats.includes(fileExtension)) {
+                                                                        if (value.name.includes('.')) {
+                                                                            fileExtension = value.name.split('.').pop().toLowerCase();
+                                                                        }
+
+                                                                        if (fileExtension && !allowedFormats.includes(fileExtension)) {
                                                                             return "Unsupported file format";
                                                                         }
 
@@ -309,6 +325,34 @@ const AddGame = () => {
 
                                                 <span className='card-error'>{errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
                                             </div>
+                                        </Col>
+
+                                        <Col xl={6} lg={6} className='mt-1'>
+                                            <CommonInput
+                                                type='text'
+                                                register={register}
+                                                errors={errors}
+                                                className={`form-control ${errors?.sVersion && 'error'}`}
+                                                name='sVersion'
+                                                label='Asset Version'
+                                                placeholder='Enter asset file version'
+                                                required
+                                                validation={{
+                                                    pattern: {
+                                                        value: /^(0|[1-9]\d?)\.(0|[1-9]\d?)\.(0|[1-9]\d?)$/,
+                                                        message: 'Add Valid Version Number'
+                                                    },
+                                                    required: {
+                                                        value: true,
+                                                        message: 'Asset file version is required'
+                                                    },
+                                                }}
+                                                onChange={(e) => {
+                                                    e.target.value =
+                                                        e.target.value?.trim() &&
+                                                        e.target.value.replace(/^[a-zA-z]+$/g, '')
+                                                }}
+                                            />
                                         </Col>
                                     </Row>
 

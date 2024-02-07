@@ -8,8 +8,10 @@ import 'assets/scss/main.scss'
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datetime/css/react-datetime.css';
 import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 import en from './lang/en.json'
+import { ToastContainer } from 'react-toastify'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 root.render(
@@ -17,5 +19,6 @@ root.render(
     <IntlProvider messages={en} locale='en' defaultLocale='en'>
       <App />
     </IntlProvider>
+    <ToastContainer stacked />
   </React.StrictMode>
 )

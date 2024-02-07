@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Spinner } from 'react-bootstrap'
 import Cards from 'shared/components/Card'
-import { faUserDoctor, faUser, faUserSlash, faGamepad } from '@fortawesome/free-solid-svg-icons'
+import { faUserDoctor, faUser, faUserSlash, faGamepad, faUsers } from '@fortawesome/free-solid-svg-icons'
 import Wrapper from 'shared/components/Wrap'
 import ReactApexChart from 'react-apexcharts'
+import { GRAPH_OPTIONS } from 'shared/constants'
+import { useQuery } from 'react-query'
+import { getSuperAdminStats } from 'query/dashboard/dashboard.query'
+import { motion } from 'framer-motion';
 
 function Dashboard () {
-  const [userData, setUserData] = useState({})
+  const [statsData, setStatsData] = useState({})
   const [userRevenueData, setUserRevenueData] = useState([])
 
-  // const { isLoading, isFetching } = useQuery('userData', () => getUserData(), {
-  //   select: (data) => data.data.data,
-  //   onSuccess: (response) => {
-  //     setUserData(response)
-  //   },
-  //   onError: () => {
-  //     setUserData({})
-  //   }
-  // })
+  const type = localStorage.getItem('type')
+
+  // super admin statistics
+  useQuery('superAdminStats', () => getSuperAdminStats(), {
+    select: (data) => data.data.data,
+    onSuccess: (response) => {
+      setStatsData(response)
+    },
+    onError: () => {
+      setStatsData({})
+    }
+  })
 
   // const { isLoading: userRevenueLoading, isFetching: userRevenueFetching } = useQuery('userRevenue', () => getUserRevenue(), {
   //   select: (data) => data.data.data,
@@ -28,89 +35,6 @@ function Dashboard () {
   //     setUserData({})
   //   }
   // })
-
-  const columnBarOptions = {
-    series: [{
-      name: 'Revenue',
-      data: [20000, 5000, 10000, 6000, 15000, 25000]
-    }],
-    options: {
-      chart: {
-        height: 250,
-        type: 'bar',
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          barHeight: '1px',
-          borderRadius: 0,
-          dataLabels: {
-            position: 'top', // top, center, bottom
-          },
-        }
-      },
-      dataLabels: {
-        enabled: true,
-        formatter: function (val) {
-          return val + "%";
-        },
-        offsetY: -20,
-        style: {
-          fontSize: '12px',
-          colors: ['#000']
-        }
-      },
-      xaxis: {
-        categories: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        position: 'bottom',
-        axisBorder: {
-          show: true
-        },
-        axisTicks: {
-          show: true
-        },
-        crosshairs: {
-          fill: {
-            type: 'gradient',
-            gradient: {
-              colorFrom: '#D8E3F0',
-              colorTo: '#BED1E6',
-              stops: [0, 100],
-              opacityFrom: 0.4,
-              opacityTo: 0.5,
-            }
-          }
-        },
-        tooltip: {
-          enabled: true,
-        }
-      },
-      yaxis: {
-        axisBorder: {
-          show: true
-        },
-        axisTicks: {
-          show: false,
-        },
-        labels: {
-          show: false,
-          formatter: function (val) {
-            return val + "%";
-          }
-        }
-
-      },
-      title: {
-        text: 'Total Revenue Per Year',
-        floating: true,
-        offsetY: 100,
-        align: 'center',
-        style: {
-          color: '#444'
-        }
-      }
-    },
-  }
 
   useEffect(() => {
     document.title = 'Dashboard'
@@ -125,51 +49,143 @@ function Dashboard () {
       ) : (
         <>
           <Row>
-            <Col xxl={6} xl={6} lg={12} className='active-user'>
-              <Wrapper>
-                <h3>Active Users</h3>
-                <Row>
-                  <Col sm={6} className='card-box' >
-                    <Cards cardtitle='Total Doctor' cardtext={123} cardIcon={faUserDoctor} className={'dashboard-card-icon-1'} />
-                  </Col>
-                  <Col sm={6} className='card-box' >
-                    <Cards cardtitle='Total Patient' cardtext={123} cardIcon={faUser} className={'dashboard-card-icon-3'} />
-                  </Col>
-                </Row>
-              </Wrapper>
-            </Col>
+            {type === 'superAdmin' ?
+              <>
+                <Col xxl={6} xl={6} lg={6} className='active-user'>
+                  <Wrapper>
+                    <h3>Active Users</h3>
+                    <Row>
+                      <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='Total Doctor' cardtext={statsData?.totalDoctors || '0'} cardIcon={faUserDoctor} className={'dashboard-card-icon-3'} />
+                        </motion.div>
+                      </Col>
+                      <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='Total Patient' cardtext={statsData?.totalPatients || '0'} cardIcon={faUser} className={'dashboard-card-icon-4'} />
+                        </motion.div>
+                      </Col>
+                    </Row>
+                  </Wrapper>
+                </Col>
 
-            <Col xxl={6} xl={6} lg={12} className='active-user mt-xl-0 mt-3'>
-              <Wrapper>
-                <h3>Accounts</h3>
-                <Row>
-                  <Col sm={6} className='card-box' >
-                    <Cards cardtitle='New Added' cardtext={100} cardIcon={faUser} className={'dashboard-card-icon-3'} />
-                  </Col>
-                  <Col sm={6} className='card-box' >
-                    <Cards cardtitle='Going to expire' cardtext={8} cardIcon={faUserSlash} className={'dashboard-card-icon-6'} />
-                  </Col>
-                </Row>
-              </Wrapper>
-            </Col>
+                <Col xxl={6} xl={6} lg={6} className='active-user mt-lg-0 mt-3'>
+                  <Wrapper>
+                    <h3>Accounts <span className='current-month'>(Current Month)</span></h3>
+                    <Row>
+                      <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='New Added' cardtext={statsData?.totalCurrentMonthDoctor || '0'} cardIcon={faUsers} className={'dashboard-card-icon-3'} />
+                        </motion.div>
+                      </Col>
+                      <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='Going to expire' cardtext={statsData?.totalExpireMonthDoctor || '0'} cardIcon={faUserSlash} className={'dashboard-card-icon-6'} />
+                        </motion.div>
+                      </Col>
+                    </Row>
+                  </Wrapper>
+                </Col>
 
-            <Col xxl={6} xl={6} lg={12} className='active-user mt-3'>
-              <Wrapper>
-                <h3>Games</h3>
-                <Row>
-                  <Col sm={6} className='card-box' >
-                    <Cards cardtitle='Total Games' cardtext={10} cardIcon={faGamepad} className={'dashboard-card-icon-7'} />
-                  </Col>
-                </Row>
-              </Wrapper>
-            </Col>
+                <Col xxl={6} xl={6} lg={6} className='active-user mt-3'>
+                  <Wrapper>
+                    <h3>Games</h3>
+                    <Row>
+                      <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='Total Games' cardtext={statsData?.totalGames || '0'} cardIcon={faGamepad} className={'dashboard-card-icon-7'} />
+                        </motion.div>
+                      </Col>
+                    </Row>
+                  </Wrapper>
+                </Col>
+              </> : <>
+                <Col xxl={3} xl={6} lg={6} md={6} sm={6} className='active-user'>
+                  <Wrapper>
+                    <h3>Active Users</h3>
+                    <Row>
+                      <Col xxl={12} xl={8} md={12} sm={12} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='Total Patient' cardtext={123} cardIcon={faUser} className={'dashboard-card-icon-4'} />
+                        </motion.div>
+                      </Col>
+                    </Row>
+                  </Wrapper>
+                </Col>
 
+                <Col xxl={3} xl={6} lg={6} md={6} sm={6} className='active-user mt-md-0 mt-sm-0 mt-3'>
+                  <Wrapper>
+                    <h3>Games</h3>
+                    <Row>
+                      <Col xxl={12} xl={8} md={12} sm={12} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='Total Games' cardtext={10} cardIcon={faGamepad} className={'dashboard-card-icon-7'} />
+                        </motion.div>
+                      </Col>
+                    </Row>
+                  </Wrapper>
+                </Col>
+
+                <Col xxl={6} xl={6} lg={12} className='active-user mt-xxl-0 mt-xl-3  mt-3'>
+                  <Wrapper>
+                    <h3>Accounts</h3>
+                    <Row>
+                      <Col sm={6} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='New Added' cardtext={100} cardIcon={faUsers} className={'dashboard-card-icon-3'} />
+                        </motion.div>
+                      </Col>
+                      <Col sm={6} className='card-box' >
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                        >
+                          <Cards cardtitle='Going to expire' cardtext={8} cardIcon={faUserSlash} className={'dashboard-card-icon-6'} />
+                        </motion.div>
+                      </Col>
+                    </Row>
+                  </Wrapper>
+                </Col>
+              </>}
           </Row>
           <Row>
             <Col xxl={6} xl={6} lg={12} className='active-user mt-3'>
               <Wrapper>
                 <h3>Revenue</h3>
-                <ReactApexChart options={columnBarOptions?.options} series={columnBarOptions.series} type="bar" height={350} />
+                <ReactApexChart options={GRAPH_OPTIONS?.options} series={GRAPH_OPTIONS.series} type="bar" height={350} />
               </Wrapper>
             </Col>
           </Row>

@@ -5,13 +5,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
 import { logout } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
-import { toaster } from 'helper/helper'
 import CustomModal from 'shared/components/Modal'
 import textLogo from 'assets/images/Yantra.Care.svg'
 import { profile } from 'query/profile/profile.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { RxDotFilled } from "react-icons/rx"
+import { Zoom, toast } from 'react-toastify'
 
 function Header ({ isOpen }) {
   const navigate = useNavigate()
@@ -30,7 +30,16 @@ function Header ({ isOpen }) {
       localStorage.removeItem('token')
       localStorage.removeItem('type')
       navigate('/login')
-      toaster(res?.data?.message)
+      toast.success(res?.data?.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
     },
     onError: () => {
       localStorage.removeItem('token')

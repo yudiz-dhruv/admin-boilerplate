@@ -28,7 +28,7 @@ const AdminListFilters = ({ defaultValue, setRequestParams }) => {
                     <Controller
                         name='eStatus'
                         control={control}
-                        render={({ field: { onChange, value = [], ref } }) => (
+                        render={({ field: { onChange, value, ref } }) => (
                             <Select
                                 ref={ref}
                                 value={value}

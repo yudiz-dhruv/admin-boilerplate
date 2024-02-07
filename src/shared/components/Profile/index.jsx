@@ -1,10 +1,10 @@
 import React from 'react'
-import { Form, Row, Col } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { EMAIL } from 'shared/constants'
 import CommonInput from '../CommonInput'
-function EditProfileComponent ({ register, errors, profileData, handleChange, control, updateFlag }) {
+function EditProfileComponent ({ register, errors, updateFlag }) {
   return (
     <Row>
       <Col md={6}>
@@ -100,12 +100,17 @@ function EditProfileComponent ({ register, errors, profileData, handleChange, co
       </Col>
 
       <Col md={6}>
-        <Form.Group className='form-group'>
-          <Form.Label className='light-font'>
-            User Type
-          </Form.Label>
-          <Form.Control type='text' name='sRole' value={profileData?.eUserType} disabled />
-        </Form.Group>
+        <CommonInput
+          type='text'
+          register={register}
+          errors={errors}
+          className={`form-control ${errors?.eUserType && 'error'}`}
+          name='eUserType'
+          label='User Type'
+          disabled={!updateFlag}
+          updateFlag={updateFlag}
+          placeholder='Enter the user type'
+        />
       </Col>
     </Row>
   )

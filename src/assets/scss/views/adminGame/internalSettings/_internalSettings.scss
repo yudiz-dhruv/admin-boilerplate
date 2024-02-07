@@ -5,207 +5,374 @@
         width: 100%;
         height: 1px;
         background-color: var(--secondary-300);
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.3rem;
     }
 
-    .settings {
-        .current-patient {
-            .patient-content {
-                display: flex;
-                justify-content: space-between;
-                line-height: 1.5rem;
-                column-gap: 8px;
-
-                .data-label {
-                    font-family: 'Helvetica-Bold';
-                    font-weight: 600;
-                    display: flex;
-                    justify-content: space-between;
-                    color: var(--secondary-500);
-                    margin: 0;
-                    flex-wrap: nowrap;
-                    letter-spacing: 0.5px;
-                }
-
-                .data-value {
-                    font-family: 'Helvetica-Bold';
-                    font-weight: 600;
-                    display: flex;
-                    justify-content: space-between;
-                    color: var(--text-hover);
-                    margin: 0;
-                    flex-wrap: nowrap;
-                    letter-spacing: 0.5px;
-                    word-break: break-all;
-
-                    &.capitalize {
-                        text-transform: capitalize;
-                    }
-                }
-            }
-        }
-
-        .data-title {
-            color: var(--primary-color) !important;
-            font-family: 'Helvetica-Bold';
-            font-weight: 600;
-            font-size: 17px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            width: fit-content;
-            position: relative;
-            padding: 4px;
-            border-radius: 99px;
-            background-color: var(--primary-color) !important;
-            border-radius: 50px;
-            margin-top: 0 !important;
-
-            * {
-                z-index: 2;
+    .game-global {
+        .games {
+            .line {
+                display: block;
+                content: '';
+                width: 100%;
+                height: 1px;
+                background-color: var(--secondary-300);
+                margin-bottom: 1.6rem;
             }
 
-            button {
-                background-color: transparent !important;
-                border: none !important;
-                color: var(--white-color);
-                transition: all 0.3s ease-in-out;
-                font-family: 'Helvetica-Bold';
-                padding: 5px 15px;
-                font-size: 12px;
-                letter-spacing: 0.8px;
-
-                &:hover {
-                    box-shadow: none !important;
-                    color: var(--white-color) !important;
-                }
-
-                &.checked {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: var(--white-color) !important;
-
-                    span {
-                        color: var(--primary-color) !important;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: color 0.3s ease-in-out;
-                    }
-                }
-            }
-        }
-
-        .slider-input {
-            .slider-label {
+            .game-title {
+                color: var(--primary-color);
                 font-family: 'Helvetica-Bold';
                 font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                font-size: 17px;
+            }
+
+            .antisuppresion-details-button-group {
+                text-align: left;
+                vertical-align: bottom;
                 display: flex;
-                justify-content: space-between;
-                color: var(--secondary-500);
-                margin: 0;
-                flex-wrap: nowrap;
-                letter-spacing: 0.5px;
-
-                span {
-                    display: flex;
-                    justify-content: end;
-                    flex-wrap: nowrap;
-
-                    &.value {
-                        font-family: 'Helvetica-Bold';
-                        font-weight: 600;
-                        font-size: 15.65px;
-                        color: var(--text-hover);
-                    }
-                }
-
-            }
-        }
-    }
-
-    .games {
-        .line {
-            display: block;
-            content: '';
-            width: 100%;
-            height: 1px;
-            background-color: var(--secondary-300);
-            margin-bottom: 1.6rem;
-        }
-
-        .game-title {
-            color: var(--primary-color);
-            font-family: 'Helvetica-Bold';
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-size: 17px;
-        }
-
-        .antisuppresion-details-button-group {
-            text-align: left;
-            vertical-align: bottom;
-            display: flex;
-            flex-wrap: wrap;
-            row-gap: 5px;
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            margin-top: 10px;
-
-            .form-content {
-                display: block;
+                flex-wrap: wrap;
+                row-gap: 5px;
                 width: 100%;
-            }
+                padding: 0;
+                margin: 0;
+                margin-top: 10px;
 
-            .skeleton-button {
-                box-sizing: border-box;
-                font-size: 1.25rem;
-                border-radius: 5px;
-                overflow: hidden;
-                position: relative;
-                z-index: 0;
-                margin: 2px 5px;
-                margin-top: 0;
-                background-color: var(--white-color);
+                .form-content {
+                    display: block;
+                    width: 100%;
 
-                span {
-
-                    .react-loading-skeleton {
-                        line-height: inherit !important;
-                    }
-                }
-            }
-
-            button {
-                box-sizing: border-box;
-                min-width: fit-content;
-                margin: 0 5px;
-                position: relative;
-                font-weight: 400;
-                letter-spacing: 1px;
-                transition: 0.3s ease-in-out;
-
-                &.btn-primary {
-                    svg {
-                        transition: 0.5s ease-in-out;
-                        transform: rotate(90deg);
-                        color: var(--secondary-100) !important;
+                    .subTitle {
+                        font-size: 10px;
+                        color: var(--secondary-400);
                     }
 
-                    &:hover {
-                        box-shadow: none !important;
+                    .ringRunner {
+                        margin-bottom: 15px;
 
-                        svg {
-                            color: var(--primary-color) !important;
+                        .tabs {
+                            display: flex;
+                            gap: 10px;
+                            width: fit-content;
+                            position: relative;
+                            padding: 4px;
+                            border-radius: 99px;
+                            background-color: var(--primary-color) !important;
+                            border-radius: 50px;
+                            margin-top: 0 !important;
+                            overflow: hidden;
+
+                            * {
+                                z-index: 2;
+                            }
+
+                            button {
+                                background-color: transparent !important;
+                                border: none !important;
+                                color: var(--white-color);
+                                transition: all 0.3s ease-in-out;
+                                font-family: 'Helvetica-Bold';
+                                padding: 5px 13px;
+                                font-size: 12px;
+                                letter-spacing: 0.8px;
+
+                                &:hover {
+                                    box-shadow: none !important;
+                                    color: var(--white-color) !important;
+                                }
+
+                                &.checked {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    background-color: var(--white-color) !important;
+
+                                    span {
+                                        color: var(--primary-color) !important;
+                                        font-weight: 600;
+                                        cursor: pointer;
+                                        transition: color 0.3s ease-in-out;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .tabs {
+                        display: flex;
+                        width: fit-content;
+                        position: relative;
+                        padding: 4px;
+                        gap: 8px;
+                        background-color: var(--primary-color) !important;
+                        border-radius: 99px;
+                        margin-top: 0 !important;
+                        overflow: hidden;
+
+                        * {
+                            z-index: 2;
+                        }
+
+                        button {
+                            background-color: transparent !important;
+                            border: none !important;
+                            color: var(--white-color);
+                            transition: all 0.3s ease-in-out;
+                            padding: 3px 8px;
+                            font-size: 18px;
+                            border-radius: 99px;
+                            margin: 0;
+
+                            span {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+
+                                svg {
+                                    transform: rotate(0deg);
+                                }
+                            }
+
+                            &:hover {
+                                svg {
+                                    box-shadow: none !important;
+                                    color: var(--white-color) !important;
+                                }
+                            }
+
+                            &.checked {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                background-color: var(--white-color) !important;
+
+                                span {
+
+                                    svg {
+                                        color: var(--primary-color) !important;
+                                        cursor: pointer;
+                                        transition: color 0.3s ease-in-out;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+
+                .skeleton-button {
+                    box-sizing: border-box;
+                    font-size: 1.25rem;
+                    border-radius: 5px;
+                    overflow: hidden;
+                    position: relative;
+                    z-index: 0;
+                    margin: 2px 5px;
+                    margin-top: 0;
+                    background-color: var(--white-color);
+
+                    span {
+
+                        .react-loading-skeleton {
+                            line-height: inherit !important;
+                        }
+                    }
+                }
+
+                button {
+                    box-sizing: border-box;
+                    min-width: fit-content;
+                    margin: 0 5px;
+                    position: relative;
+                    font-weight: 400;
+                    letter-spacing: 1px;
+                    transition: 0.3s ease-in-out;
+
+                    &.btn-primary {
+                        svg {
+                            transition: 0.5s ease-in-out;
+                            transform: rotate(90deg);
+                            color: var(--secondary-100) !important;
+                        }
+
+                        &:hover {
+                            box-shadow: none !important;
+
+                            svg {
+                                color: var(--primary-color) !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .global {
+        .wrapper {
+            height: 705px;
+            padding: 30px 10px;
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            .settings {
+
+                .horizontal-content,
+                .vertical-content {
+                    margin-top: 10px;
+                    box-shadow: 6px 6px 20px 0px rgba(156, 216, 193, 0.3803921569);
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                }
+
+                .monocular-mode {
+                    .content {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: start;
+
+                        .data-label {
+                            font-family: 'Helvetica-Bold';
+                            font-weight: 600;
+                            display: flex;
+                            justify-content: space-between;
+                            color: var(--secondary-500) !important;
+                            margin: 0;
+                            flex-wrap: nowrap;
+                            letter-spacing: 0.5px;
+                        }
+                    }
+                }
+
+                .current-patient {
+                    .patient-content {
+                        display: flex;
+                        justify-content: space-between;
+                        line-height: 1.5rem;
+                        column-gap: 8px;
+
+                        .data-label {
+                            font-family: 'Helvetica-Bold';
+                            font-weight: 600;
+                            display: flex;
+                            justify-content: space-between;
+                            color: var(--secondary-500);
+                            margin: 0;
+                            flex-wrap: nowrap;
+                            letter-spacing: 0.5px;
+                        }
+
+                        .data-value {
+                            font-family: 'Helvetica-Bold';
+                            font-weight: 600;
+                            display: flex;
+                            justify-content: space-between;
+                            color: var(--text-hover);
+                            margin: 0;
+                            flex-wrap: nowrap;
+                            letter-spacing: 0.5px;
+                            word-break: break-all;
+
+                            &.capitalize {
+                                text-transform: capitalize;
+                            }
+                        }
+                    }
+                }
+
+                .data-title {
+                    color: var(--primary-color) !important;
+                    font-family: 'Helvetica-Bold';
+                    font-weight: 600;
+                    font-size: 17px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.8px;
+                }
+
+                .tabs {
+                    display: flex;
+                    gap: 10px;
+                    width: fit-content;
+                    position: relative;
+                    padding: 4px;
+                    border-radius: 99px;
+                    background-color: var(--primary-color) !important;
+                    border-radius: 50px;
+                    margin-top: 0 !important;
+                    overflow: hidden;
+
+                    * {
+                        z-index: 2;
+                    }
+
+                    button {
+                        background-color: transparent !important;
+                        border: none !important;
+                        color: var(--white-color);
+                        transition: all 0.3s ease-in-out;
+                        font-family: 'Helvetica-Bold';
+                        padding: 5px 13px;
+                        font-size: 12px;
+                        letter-spacing: 0.8px;
+
+                        &:hover {
+                            box-shadow: none !important;
+                            color: var(--white-color) !important;
+                        }
+
+                        &.checked {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background-color: var(--white-color) !important;
+
+                            span {
+                                color: var(--primary-color) !important;
+                                font-weight: 600;
+                                cursor: pointer;
+                                transition: color 0.3s ease-in-out;
+                            }
+                        }
+                    }
+                }
+
+                .slider-input {
+                    .slider-label {
+                        font-family: 'Helvetica-Bold';
+                        font-weight: 600;
+                        display: flex;
+                        justify-content: space-between;
+                        color: var(--secondary-500);
+                        margin: 0;
+                        flex-wrap: nowrap;
+                        letter-spacing: 0.5px;
+
+                        span {
+                            display: flex;
+                            justify-content: end;
+                            flex-wrap: nowrap;
+
+                            &.value {
+                                font-family: 'Helvetica-Bold';
+                                font-weight: 600;
+                                font-size: 15.65px;
+                                color: var(--text-hover);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1200px) {
+    .game-settings {
+        .global {
+            .wrapper {
+                height: 580px;
+                padding: 30px 10px;
             }
         }
     }
@@ -224,6 +391,17 @@
     }
 }
 
+
+@media (max-height: 730px) {
+    .game-settings {
+        .global {
+            .wrapper {
+                height: 525px;
+                padding: 30px 10px;
+            }
+        }
+    }
+}
 
 #add-ticket {
     margin: 0 auto !important;
@@ -411,51 +589,61 @@
 
 body.dark {
     .game-settings {
-        .settings {
-            .current-patient {
-                .patient-content {
-                    .data-label {
+        .global {
+            .settings {
+                .current-patient {
+                    .patient-content {
+                        .data-label {
+                            color: var(--secondary-300);
+                        }
+                    }
+                }
+
+                .monocular-mode {
+                    .content {
+                        .data-label {
+                            color: var(--secondary-300) !important;
+                        }
+                    }
+                }
+
+                .data-title {
+                    color: var(--text-hover);
+
+                    svg {
                         color: var(--secondary-300);
                     }
                 }
-            }
 
-            .data-title {
-                color: var(--text-hover);
+                .tabs {
+                    background-color: #25846ec7 !important;
 
-                svg {
-                    color: var(--secondary-300);
+                    * {
+                        z-index: 2;
+                    }
+
+                    button {
+                        &.checked {
+                            background-color: var(--secondary-100) !important;
+
+                            span {
+                                color: var(--primary-color) !important;
+                            }
+                        }
+                    }
                 }
-            }
 
-            .tabs {
-                background-color: #25846ec7 !important;
-
-                * {
-                    z-index: 2;
-                }
-
-                button {
-                    &.checked {
-                        background-color: var(--secondary-100) !important;
+                .slider-input {
+                    .slider-label {
+                        color: var(--secondary-300);
 
                         span {
-                            color: var(--primary-color) !important;
+                            &.value {
+                                color: var(--text-hover);
+                            }
                         }
+
                     }
-                }
-            }
-
-            .slider-input {
-                .slider-label {
-                    color: var(--secondary-300);
-
-                    span {
-                        &.value {
-                            color: var(--text-hover);
-                        }
-                    }
-
                 }
             }
         }
@@ -464,15 +652,17 @@ body.dark {
             --highlight-color: var(--secondary-400);
         }
 
-        .games {
-            .game-title {
-                svg {
-                    color: var(--secondary-300);
+        .game-global {
+            .games {
+                .game-title {
+                    svg {
+                        color: var(--secondary-300);
+                    }
                 }
-            }
 
-            .wrapper {
-                box-shadow: 0px 0px 15px 2px rgba(117, 229, 190, 0.35) !important;
+                .wrapper {
+                    box-shadow: 0px 0px 15px 2px rgba(117, 229, 190, 0.35) !important;
+                }
             }
         }
     }

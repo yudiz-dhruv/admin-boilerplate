@@ -52,9 +52,7 @@
     .title-b {
       .title {
         font-size: 1.3rem;
-        // color: var(--primary-color);
-        text-shadow: 3px 3px 5px #404040a5;
-        color: #40c196;
+        color: var(--white-color);
         font-weight: $fw-700;
         font-family: "Helvetica-bold";
         text-transform: uppercase;
@@ -140,7 +138,7 @@ body.dark {
 
       .b-link {
         &:hover {
-          color: var(--primary-color-light);
+          color: var(--text-hover);
         }
       }
     }

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
 import Wrapper from 'shared/components/Wrap'
@@ -10,9 +10,10 @@ import Select from 'react-select'
 import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { useQuery } from 'react-query'
-import { getPatientById, getPatientDropdownList } from 'query/patient/patient.query'
-import { getDirtyFormValues, toaster } from 'helper/helper'
+import { useMutation, useQuery } from 'react-query'
+import { getPatientById, getPatientDropdownList, joinRoom } from 'query/patient/patient.query'
+import { getDirtyFormValues } from 'helper/helper'
+import { Zoom, toast } from 'react-toastify'
 
 const AdminGame = () => {
   const navigate = useNavigate()
@@ -47,6 +48,27 @@ const AdminGame = () => {
     }
   })
 
+  // JOINING THE ROOM
+  const { mutate: joinRoomMutate, isLoading } = useMutation('joinGameRoom', joinRoom, {
+    enabled: !!watch('ePatientName')?._id,
+    cacheTime: 0,
+    onSuccess: (data) => {
+      navigate(route?.adminGameSettings(patientDetails?._id), { state: { patientSettings: data?.data?.data, patientDetails } })
+    },
+    onError: () => {
+      toast.error('Oops! Something went wrong. Please try again later.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
+    }
+  })
+
   useEffect(() => {
     const isDirtyData = {
       ePatientName: watch('ePatientName')?._id,
@@ -58,8 +80,9 @@ const AdminGame = () => {
     }
   }, [dirtyFields, watch('ePatientName')])
 
-  async function onSubmit () {
-    patientDetails ? navigate(route?.adminGameSettings(patientDetails?._id), { state: patientDetails }) : toaster('Please fill the data', 'error')
+  function onSubmit () {
+    joinRoomMutate(patientDetails?._id)
+    // patientDetails ? navigate(route?.adminGameSettings(patientDetails?._id), { state: patientDetails }) : toaster('Please fill the data', 'error'); reset({})
   }
 
   useEffect(() => {
@@ -222,7 +245,7 @@ const AdminGame = () => {
                     <Row className='mt-2'>
                       <Col sm={12}>
                         <Button variant='primary' type='submit' className='me-2 next-button square' disabled={isDisabled === false}>
-                          Next
+                          Next {isLoading && <Spinner animation='border' size='sm' />}
                         </Button>
                       </Col>
                     </Row>

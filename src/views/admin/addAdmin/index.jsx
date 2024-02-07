@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { fileToDataUri, toaster } from 'helper/helper'
+import { fileToDataUri } from 'helper/helper'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
@@ -16,6 +16,8 @@ import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { addAdmin } from 'query/admin/admin.mutation'
 import { getGameDropdownList } from 'query/game/game.query'
 import { FormattedMessage } from 'react-intl'
+import makeAnimated from 'react-select/animated'
+import { Zoom, toast } from 'react-toastify'
 
 const AddAdmin = () => {
   const navigate = useNavigate()
@@ -34,7 +36,16 @@ const AddAdmin = () => {
   // ADD ADMIN
   const { mutate } = useMutation(addAdmin, {
     onSuccess: (res) => {
-      toaster('New Admin Added Successfully.', 'success')
+      toast.success('New Admin Added Successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
       navigate(route.admin)
       reset()
     }
@@ -199,7 +210,7 @@ const AddAdmin = () => {
                       />
                     </Col>
 
-                    <Col lg={6} md={12}>
+                    <Col lg={6} md={12} className='mt-lg-0 mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -311,7 +322,7 @@ const AddAdmin = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={6} className='mt-2'>
+                    <Col lg={6} md={12} className='mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -366,6 +377,7 @@ const AddAdmin = () => {
                               placeholder='Select Games...'
                               ref={ref}
                               options={eGameDropdown}
+                              components={makeAnimated()}
                               className={`react-select border-0 ${errors.aGamesName && 'error'}`}
                               classNamePrefix='select'
                               isSearchable={false}

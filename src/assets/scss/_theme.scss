@@ -380,3 +380,35 @@ body.dark {
     }
   }
 }
+
+.apexcharts-menu {
+  background: var(--boxes-color) !important;
+  border: none !important;
+  box-shadow: 0px 0px 10px rgba(27, 34, 99, 0.35) !important;
+}
+
+.apexcharts-tooltip {
+  color: #000000 !important;
+}
+
+.apexcharts-menu-item {
+  color: var(--primary-color)
+}
+
+body.dark {
+  .apexcharts-menu {
+    box-shadow: 0px 0px 10px 5px rgba(117, 229, 190, 0.4) !important;
+  }
+}
+
+#tab-tooltip {
+  .tooltip-inner {
+    position: relative;
+    top: -5px;
+  }
+
+  .tooltip-arrow {
+    position: relative;
+    top: 30px;
+  }
+}

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { toaster } from 'helper/helper'
 import { deleteAdmin, updateAdmin } from 'query/admin/admin.mutation'
 import { getAdminList } from 'query/admin/admin.query'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -12,6 +11,7 @@ import { AdminListColumn } from 'shared/constants/TableHeaders'
 import { appendParams, parseParams } from 'shared/utils'
 import AdminList from 'shared/components/AdminList'
 import AdminListFilters from 'shared/components/AdminListFilters'
+import { toast, Zoom } from 'react-toastify'
 
 const AdminManagement = () => {
     const location = useLocation()
@@ -56,10 +56,28 @@ const AdminManagement = () => {
     const { mutate: updateMutate } = useMutation(updateAdmin, {
         onSettled: (response, err) => {
             if (response) {
-                toaster('Admin Status Updated Successfully.', 'success')
+                toast.success('Admin Status Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 query.invalidateQueries('adminList')
             } else {
-                toaster(err.data.message, 'error')
+                toast.error(err.data.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
             }
         }
     })
@@ -69,10 +87,28 @@ const AdminManagement = () => {
         onSettled: (res, err) => {
             if (res) {
                 query.invalidateQueries('adminList')
-                toaster('Admin Deleted Successfully.', 'success')
+                toast.success('Admin Deleted Successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 setModal({ open: false, type: '' })
             } else {
-                toaster(err?.response?.data?.message, 'error')
+                toast.error(err?.response?.data?.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 setModal({ open: false, type: '' })
             }
         }

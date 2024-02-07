@@ -41,6 +41,12 @@
     border: 1px solid transparent;
     text-align: left;
 
+    .select__indicators {
+      .select__indicator {
+        cursor: pointer !important;
+      }
+    }
+
     // var(--secondary-500)
     &:hover {
       border-color: transparent;

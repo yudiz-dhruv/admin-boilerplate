@@ -7,7 +7,7 @@ import { route } from 'shared/constants/AllRoutes'
 import CustomModal from '../Modal'
 import { useMutation, useQueryClient } from 'react-query'
 import { updateGame } from 'query/game/game.mutation'
-import { toaster } from 'helper/helper'
+import { Zoom, toast } from 'react-toastify'
 
 const GameList = ({ key, index, game, onDelete }) => {
     const query = useQueryClient()
@@ -32,11 +32,29 @@ const GameList = ({ key, index, game, onDelete }) => {
     const { mutate: updateMutate } = useMutation(updateGame, {
         onSettled: (response, err) => {
             if (response) {
-                toaster('Game Status Updated Successfully.', 'success')
+                toast.success('Game Status Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 query.invalidateQueries('gameList')
                 setModal({ open: false, type: '' })
             } else {
-                toaster(err.data.message, 'error')
+                toast.error(err.data.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
             }
         }
     })

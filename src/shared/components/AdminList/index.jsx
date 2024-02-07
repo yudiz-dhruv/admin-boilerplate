@@ -28,8 +28,9 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
             <tr key={key}>
                 <td>{index + 1}</td>
                 <td><span className='single-line admin-name capitalize' onClick={() => navigate(route.viewAdmin(admin?._id))}>{admin?.sUserName || '-'}</span></td>
+                <td className='single-line'>{admin?.sMobile ? '+91-' + admin?.sMobile : '-'}</td>
                 <td className='single-line'>{admin?.sEmail || '-'}</td>
-                <td className='single-line'>{moment(admin?.dEndAt)?.format('DD MMM, YYYY') || '-'}</td>
+                <td className='single-line text-danger'>{moment(admin?.dEndAt)?.format('DD MMM, YYYY') || '-'}</td>
                 <td>
                     {admin.eStatus !== 'd' ? <Form.Check
                         type='switch'

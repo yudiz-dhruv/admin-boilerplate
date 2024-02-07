@@ -6,10 +6,10 @@ import { validationErrors } from 'shared/constants/ValidationErrors'
 import { PASSWORD } from 'shared/constants'
 import { useMutation } from 'react-query'
 import { changePassWord } from 'query/auth/auth.query'
-import { toaster } from 'helper/helper'
 import { useNavigate } from 'react-router-dom'
 import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
+import { Zoom, toast } from 'react-toastify'
 
 export default function ChangePassword () {
   const navigate = useNavigate()
@@ -37,14 +37,32 @@ export default function ChangePassword () {
 
   const { mutate, isLoading } = useMutation(changePassWord, {
     onSuccess: (response) => {
-      toaster(response?.data?.message)
+      toast.success(response?.data?.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
       localStorage.removeItem('token')
       localStorage.removeItem('type')
       navigate('/login')
     },
     onError: (err) => {
       navigate('/change-password')
-      toaster(err?.response?.data?.message, 'error')
+      toast.error(err?.response?.data?.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
     }
   })
 

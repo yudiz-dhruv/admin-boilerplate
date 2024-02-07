@@ -5,18 +5,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCube } from '@fortawesome/free-solid-svg-icons'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { FaPlay } from "react-icons/fa"
-import { eBubbleDistance, eHoopSize } from 'shared/constants/TableHeaders'
+import { eBubbleGameMode, eBubbleImageSize, eBubblePattern, eSpawnRate } from 'shared/constants/TableHeaders'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import Skeleton from 'react-loading-skeleton'
 import CommonInput from '../CommonInput'
+import { motion } from 'framer-motion'
 
-const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading }) => {
-    const tab_buttons = [
-        { key: 'bubble', label: 'Bubble' },
-    ]
-
-    const [tabButtons, setTabButtons] = useState(tab_buttons)
+const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted }) => {
+    const [tabButtons, setTabButtons] = useState([])
 
     useEffect(() => {
         if (!games) {
@@ -24,16 +21,19 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
         }
 
         const gameTabs = games?.filter(game => game?.eCategory === 'stereopsis')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
-        const modifiedTabs = [...tab_buttons, ...(gameTabs || [])]
+        console.log('gameTabs: ', gameTabs);
+        const modifiedTabs = [...(gameTabs || [])]
         setTabButtons(modifiedTabs)
     }, [games])
 
     const LABELS = {
         TITLE: 'Stereopsis',
-        BUBBLE_SIZE: 'Bubble Size',
-        BUBBLE_DISTANCE: 'Bubble Distance',
-        GABOR_PATCH: 'No. of Gabor Patch',
-        ARM_LENGTH: 'Arm Length'
+        GAME_DURATION: 'Game Duration',
+        GAME_MODE: 'Game Mode',
+        PATTERN: 'Pattern',
+        STIMULUS_SIZE: 'Stimulus Size',
+        SEPERATION: 'Seperation',
+        DISPARITY: 'Disparity'
     }
     return (
         <>
@@ -53,82 +53,37 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                     </div>
                 </>
                     : tabButtons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
+                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })} disabled={buttonToggle[tab.key] !== true && gameStarted}>
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
                     ))}
 
-                {buttonToggle?.bubble && (
-                    <div className='mt-3 form-content'>
+                {buttonToggle?.bubbles && (
+                    <motion.div className='mt-3 form-content' initial={{ y: 10, opacity: 0 }}
+                        animate={{ y: 0, opacity: buttonToggle?.bubbles ? 1 : 0 }}
+                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
                         <Wrapper>
                             <Row>
                                 <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.BUBBLE_SIZE}</Form.Label>
-                                        <Controller
-                                            name='eBubbleSize'
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    placeholder='Select bubble size'
-                                                    options={eHoopSize}
-                                                    className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    isSearchable={false}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionValue={(option) => option.value}
-                                                />
-                                            )}
-                                        />
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
-                                    </Form.Group>
-                                </Col>
-
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.BUBBLE_DISTANCE}</Form.Label>
-                                        <Controller
-                                            name='sBubbleDistance'
-                                            control={control}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    placeholder='Select bubble distance'
-                                                    options={eBubbleDistance}
-                                                    className={`react-select border-0 ${errors.sHoopSize && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    isSearchable={false}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionValue={(option) => option.value}
-                                                />
-                                            )}
-                                        />
-                                        {errors.sHoopSize && (<Form.Control.Feedback type='invalid'>{errors.sHoopSize.message}</Form.Control.Feedback>)}
-                                    </Form.Group>
-                                </Col>
-
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
                                     <CommonInput
+                                        label={LABELS?.GAME_DURATION}
                                         type='text'
                                         register={register}
                                         errors={errors}
-                                        className={`form-control ${errors?.sAge && 'error'}`}
-                                        name='nGaborPatch'
-                                        label={LABELS?.GABOR_PATCH}
-                                        placeholder='Enter no. of gabor patch in last level'
+                                        className={`form-control ${errors?.sGameDuration && 'error'}`}
+                                        name='sBubbleGameDuration'
+                                        placeholder='Game duration (i.e.: in minutes)'
                                         validation={{
                                             pattern: {
                                                 value: /^[0-9]+$/,
                                                 message: 'Only numbers are allowed'
                                             },
-                                            // max: {
-                                            //     value: 100,
-                                            //     message: 'Age should be less than 100 years.'
-                                            // },
+                                            max: {
+                                                value: 30,
+                                                message: 'Game duration must be less than 30 minutes.'
+                                            },
                                         }}
+                                        maxLength={2}
                                         onChange={(e) => {
                                             e.target.value =
                                                 e.target.value?.trim() &&
@@ -136,63 +91,144 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                         }}
                                     />
                                 </Col>
+                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.GAME_MODE}</Form.Label>
+                                        <Controller
+                                            name='sBubbleGameMode'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select bubble size'
+                                                    defaultValue={eBubbleGameMode[0]}
+                                                    options={eBubbleGameMode}
+                                                    className={`react-select border-0 ${errors.sBubbleGameMode && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
+                                                />
+                                            )}
+                                        />
+                                        {errors.sBubbleGameMode && (<Form.Control.Feedback type='invalid'>{errors.sBubbleGameMode.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
 
                                 <Col xxl={6} xl={12} lg={6} sm={12}>
                                     <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.ARM_LENGTH}</Form.Label>
-                                        <Row className='mt-2'>
-                                            <Col sm={6}>
-                                                <Controller
-                                                    name='sChildArmLength'
-                                                    control={control}
-                                                    render={({ field: { ref, value, onChange } }) => {
-                                                        return (
-                                                            <Form.Check
-                                                                className='form-check checkbox-wrap m-0'
-                                                                type='radio'
-                                                                ref={ref}
-                                                                id='child'
-                                                                name='armLength'
-                                                                value={value}
-                                                                onChange={(e) => {
-                                                                    onChange(e.target.checked)
-                                                                }}
-                                                                label='Child'
-                                                            />
-                                                        )
-                                                    }
-                                                    }
+                                        <Form.Label>{LABELS?.PATTERN}</Form.Label>
+                                        <Controller
+                                            name='sBubblePattern'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select bubble distance'
+                                                    options={eBubblePattern}
+                                                    defaultValue={eBubblePattern[0]}
+                                                    className={`react-select border-0 ${errors.sBubblePattern && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
                                                 />
-                                            </Col>
-                                            <Col sm={6}>
-                                                <Controller
-                                                    name='sAdultArmLength'
-                                                    control={control}
-                                                    render={({ field: { ref, value, onChange } }) => {
-                                                        return (
-                                                            <Form.Check
-                                                                className='form-check checkbox-wrap m-0'
-                                                                type='radio'
-                                                                id='adult'
-                                                                ref={ref}
-                                                                value={value}
-                                                                name='armLength'
-                                                                onChange={(e) => {
-                                                                    onChange(e.target.checked)
-                                                                }}
-                                                                label='Adult'
-                                                            />
-                                                        )
-                                                    }}
-                                                />
-                                            </Col>
-                                        </Row>
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
+                                            )}
+                                        />
+                                        {errors.sBubblePattern && (<Form.Control.Feedback type='invalid'>{errors.sBubblePattern.message}</Form.Control.Feedback>)}
                                     </Form.Group>
                                 </Col>
+
+                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
+                                        <Controller
+                                            name='nBubbleImageSize'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select bubble distance'
+                                                    options={eBubbleImageSize}
+                                                    defaultValue={eBubbleImageSize[0]}
+                                                    className={`react-select border-0 ${errors.nBubbleImageSize && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
+                                                />
+                                            )}
+                                        />
+                                        {errors.nBubbleImageSize && (<Form.Control.Feedback type='invalid'>{errors.nBubbleImageSize.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
+
+                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.SEPERATION}</Form.Label>
+                                        <Controller
+                                            name='sBubbleSeperation'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select bubble distance'
+                                                    options={eSpawnRate}
+                                                    defaultValue={eSpawnRate[0]}
+                                                    className={`react-select border-0 ${errors.sBubbleSeperation && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
+                                                />
+                                            )}
+                                        />
+                                        {errors.sBubbleSeperation && (<Form.Control.Feedback type='invalid'>{errors.sBubbleSeperation.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
+
+                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.DISPARITY}</Form.Label>
+                                        <Controller
+                                            name='sBubbleDisparity'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select bubble distance'
+                                                    options={eSpawnRate}
+                                                    defaultValue={eSpawnRate[0]}
+                                                    className={`react-select border-0 ${errors.sBubbleDisparity && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
+                                                />
+                                            )}
+                                        />
+                                        {errors.sBubbleDisparity && (<Form.Control.Feedback type='invalid'>{errors.sBubbleDisparity.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
+
+                                <Row className='mt-1'>
+                                    <Col sm={12}>
+                                        <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                                            Start Game
+                                        </Button>
+                                        <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                                            End Game
+                                        </Button>
+                                    </Col>
+                                </Row>
                             </Row>
                         </Wrapper>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </>

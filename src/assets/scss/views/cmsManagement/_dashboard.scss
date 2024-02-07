@@ -14,7 +14,7 @@
   }
 
   svg.dashboard-card-icon-4 {
-    background: linear-gradient(310deg, #ff0000, #ff81fc) !important;
+    background: linear-gradient(310deg, #bf106d, #ffbee2) !important;
   }
 
   svg.dashboard-card-icon-5 {
@@ -26,7 +26,7 @@
   }
 
   svg.dashboard-card-icon-7 {
-    background: linear-gradient(310deg, #740ad6, #c76fe7e7) !important;
+    background: linear-gradient(310deg, #5905a8, #d181eee7) !important;
   }
 
   svg.dashboard-card-icon-8 {
@@ -165,6 +165,14 @@
       letter-spacing: 1px;
       font-weight: 600;
       text-transform: uppercase;
+      position: relative;
+
+      .current-month {
+        font-size: 12px;
+        text-transform: capitalize;
+        font-family: 'Helvetica-Bold';
+        color: var(--secondary-400);
+      }
     }
   }
 }
@@ -182,11 +190,11 @@ body.dark {
     }
 
     svg.dashboard-card-icon-3 {
-      background: linear-gradient(310deg, #37cc8c, #005d28) !important;
+      background: linear-gradient(310deg, #37d18e, #055026) !important;
     }
 
     svg.dashboard-card-icon-4 {
-      background: linear-gradient(310deg, #ff81fc, #bc1212) !important;
+      background: linear-gradient(310deg, #f786c4, #770240) !important;
     }
 
     svg.dashboard-card-icon-5 {
@@ -194,11 +202,11 @@ body.dark {
     }
 
     svg.dashboard-card-icon-6 {
-      background: linear-gradient(310deg, #8e1212, #e63b3b) !important;
+      background: linear-gradient(310deg, #fd5151, #760909) !important;
     }
 
     svg.dashboard-card-icon-7 {
-      background: linear-gradient(310deg, #9525fe, #6f188fd8) !important;
+      background: linear-gradient(310deg, #a548fb, #5d1178d8) !important;
     }
 
     svg.dashboard-card-icon-8 {

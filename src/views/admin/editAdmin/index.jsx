@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
-import { getDirtyFormValues, toaster } from 'helper/helper'
+import { getDirtyFormValues } from 'helper/helper'
 import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,6 +19,7 @@ import { updateAdmin } from 'query/admin/admin.mutation'
 import { getGameDropdownList } from 'query/game/game.query'
 import { FormattedMessage } from 'react-intl'
 import { PASSWORD } from 'shared/constants'
+import { Zoom, toast } from 'react-toastify'
 
 const EditAdmin = () => {
   const navigate = useNavigate()
@@ -65,12 +66,30 @@ const EditAdmin = () => {
   const { mutate: updateMutate } = useMutation(updateAdmin, {
     onSettled: (response, err) => {
       if (response) {
-        toaster('Admin Updated Successfully.', 'success')
+        toast.success('Admin Updated Successfully!', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Zoom,
+        })
         navigate(route.admin)
 
         reset()
       } else {
-        toaster(err.data.message, 'error')
+        toast.error(err.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Zoom,
+        })
       }
     }
   })

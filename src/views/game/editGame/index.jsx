@@ -8,13 +8,14 @@ import { useMutation, useQuery } from 'react-query';
 import { getGameById } from 'query/game/game.query';
 import { eGameCategoryOption } from 'shared/constants/TableHeaders';
 import { updateGame } from 'query/game/game.mutation';
-import { fileToDataUri, getDirtyFormValues, toaster } from 'helper/helper';
+import { fileToDataUri, getDirtyFormValues } from 'helper/helper';
 import { route } from 'shared/constants/AllRoutes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import CommonInput from 'shared/components/CommonInput';
 import { validationErrors } from 'shared/constants/ValidationErrors';
 import Select from 'react-select'
+import { Zoom, toast } from 'react-toastify';
 
 const EditGame = () => {
     const navigate = useNavigate()
@@ -44,12 +45,30 @@ const EditGame = () => {
     const { mutate: updateMutate } = useMutation(updateGame, {
         onSettled: (response, err) => {
             if (response) {
-                toaster('Game Updated Successfully.', 'success')
+                toast.success('Game Updated Successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
                 navigate(route.game)
 
                 reset()
             } else {
-                toaster(err.data.message, 'error')
+                toast.error(err.data.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "light",
+                    transition: Zoom,
+                })
             }
         }
     })
@@ -60,11 +79,12 @@ const EditGame = () => {
             sUrl: watch('sUrl'),
             sDescription: watch('sDescription'),
             eCategory: watch('eCategory')?.value,
+            sVersion: watch('sVersion')
         }
 
         const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
         setPayload(payloadData)
-    }, [dirtyFields, watch('sName'), watch('sDescription'), watch('sUrl'), watch('eCategory')])
+    }, [dirtyFields, watch('sName'), watch('sDescription'), watch('sUrl'), watch('eCategory'), watch('sVersion')])
 
     async function onSubmit (data) {
         if (isButtonDisabled) {
@@ -280,6 +300,34 @@ const EditGame = () => {
 
                                                 <span className='card-error'>{assetFile?.previousFile ? '' : errors && errors?.sUrl && <Form.Control.Feedback type="invalid">{errors?.sUrl.message}</Form.Control.Feedback>}</span>
                                             </div>
+                                        </Col>
+
+                                        <Col xl={6} lg={6} className='mt-1'>
+                                            <CommonInput
+                                                type='text'
+                                                register={register}
+                                                errors={errors}
+                                                className={`form-control ${errors?.sVersion && 'error'}`}
+                                                name='sVersion'
+                                                label='Asset Version'
+                                                placeholder='Enter asset file version'
+                                                required
+                                                validation={{
+                                                    pattern: {
+                                                        value: /^(0|[1-9]\d?)\.(0|[1-9]\d?)\.(0|[1-9]\d?)$/,
+                                                        message: 'Add Valid Version Number'
+                                                    },
+                                                    required: {
+                                                        value: true,
+                                                        message: 'Asset file version is required'
+                                                    },
+                                                }}
+                                                onChange={(e) => {
+                                                    e.target.value =
+                                                        e.target.value?.trim() &&
+                                                        e.target.value.replace(/^[a-zA-z]+$/g, '')
+                                                }}
+                                            />
                                         </Col>
                                     </Row>
 

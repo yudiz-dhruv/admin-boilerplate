@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+import { motion } from 'framer-motion'
 
 const DominantEyeSettings = ({ buttonToggle, setButtonToggle }) => {
     const tabs = [
@@ -18,9 +19,13 @@ const DominantEyeSettings = ({ buttonToggle, setButtonToggle }) => {
 
             <div className='mt-2 tabs'>
                 {tabs?.map(tab => (
-                    <Button key={tab.key} type='button' className={`${buttonToggle[tab?.key] ? 'checked' : ''}`} onClick={() => setButtonToggle({ [tab?.key]: true })}>
-                        <span className='tab'>{tab?.label}</span>
-                    </Button>
+                    <motion.div key={tab.key}
+                        whileTap={{ scale: 0.9 }}
+                        className='tab-wrapper'>
+                        <Button key={tab.key} type='button' className={`${buttonToggle[tab?.key] ? 'checked' : ''}`} onClick={() => setButtonToggle({ [tab?.key]: true })}>
+                            <span className='tab'>{tab?.label}</span>
+                        </Button>
+                    </motion.div>
                 ))}
             </div>
         </>

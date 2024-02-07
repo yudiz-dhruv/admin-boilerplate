@@ -7,10 +7,10 @@ import { login } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { useMutation, useQuery } from 'react-query'
-import { toaster } from 'helper/helper'
 import { EMAIL } from 'shared/constants'
 import { profile } from 'query/profile/profile.query'
 import textLogo from 'assets/images/Yantra.Care.svg'
+import { Zoom, toast } from 'react-toastify'
 
 
 function Login () {
@@ -36,7 +36,16 @@ function Login () {
         localStorage.setItem('token', response?.headers?.authorization)
         setIsLoginSuccess(true)
       } else {
-        toaster(err?.response?.data?.message, 'error')
+        toast.error(err?.response?.data?.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Zoom,
+        })
 
         setIsLoginSuccess(false)
         reset({
@@ -51,12 +60,30 @@ function Login () {
     enabled: !!isLoginSuccess,
     select: (data) => data?.data?.data,
     onSuccess: (data) => {
-      toaster('Login Successfully', 'success')
+      toast.success('Login Successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
       localStorage.setItem('type', data?.eUserType)
       navigate(route.dashboard)
     },
     onError: (data) => {
-      toaster('Oops! Something went wrong.', 'error')
+      toast.error('Oops! Something went wrong.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
       localStorage.removeItem('token')
       reset({
         sEmail: '',

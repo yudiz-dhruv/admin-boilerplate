@@ -2,23 +2,20 @@
 import React, { useEffect, useState } from 'react'
 import Wrapper from '../Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGamepad } from '@fortawesome/free-solid-svg-icons'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { faGamepad, faHandsHolding, faShuffle, faVrCardboard } from '@fortawesome/free-solid-svg-icons'
+import { Button, Col, Form, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import Select from 'react-select'
-import { eBallSpeed, eHoopSize, eHoopieLevels, eOrientation, eRingRunnerLevels, eStimulusSizes } from 'shared/constants/TableHeaders'
+import { eBallSpeed, eGaborFrequency, eHoopSize, eHoopieStimulusSizes, ePowerUpDelay, ePowerUpDuration, eShipSpeed, eSpawnRate, eStimulusSizes, eTargetRadius } from 'shared/constants/TableHeaders'
 import CommonInput from '../CommonInput'
 import { FaPlay } from "react-icons/fa"
 import Skeleton from 'react-loading-skeleton'
+import { motion } from 'framer-motion'
+import { MdFormatAlignCenter } from "react-icons/md"
 
-const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading }) => {
-    const tab_buttons = [
-        { key: 'hoopie', label: 'Hoopie' },
-        { key: 'ringRunner', label: 'Ring Runner' },
-    ]
-
-    const [tabButtons, setTabButtons] = useState(tab_buttons)
-    const [techMode, setTechMode] = useState('y')
+const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setGameStarted }) => {
+    const [tabButtons, setTabButtons] = useState([])
+    const [tachMode, setTachMode] = useState('y')
 
     useEffect(() => {
         if (!games) {
@@ -26,26 +23,37 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
         }
 
         const gameTabs = games?.filter(game => game?.eCategory === 'antiSupression')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
-        const modifiedTabs = [...tab_buttons, ...(gameTabs || [])]
+        const modifiedTabs = [...(gameTabs || [])]
         setTabButtons(modifiedTabs)
     }, [games])
 
     const LABELS = {
         TITLE: 'Anti-Suppression',
-        LEVEL_SELECTION: 'Level Selection',
-        TECH_MODE: 'Tech Mode',
+        GAME_MODE: 'Game Mode',
+        TACH_MODE: 'Tachistoscopic Mode',
         HOOP_SIZE: 'Hoop Size',
         BALL_SPEED: 'Ball Speed',
         STIMULUS_SIZE: 'Stimulus Size',
-        SPACESHIP_SPEED: 'Spaceship Speed',
-        ACTIVE_DURATION: 'Active Duration',
+        SHIP_SPEED: 'Ship Speed',
+        POWERUP_DURATION: 'PowerUp Duration',
         GABOR_PATCH: 'No. of Gabor Patch',
-        ORIENTATION: 'Orientation'
+        ORIENTATION: 'Orientation',
+        TARGET_RADIUS: 'Target Radius',
+        SPAWN_RATE: 'Next Target Delay',
+        TEXT_POSITION: 'Text Position',
+        POWERUP_DELAY: 'Next PowerUp Delay',
+        OBSTACLE_DELAY: 'Next Obstacle Delay',
+        LOCAL_ORIENTATION: 'Local Orientation',
+        GLOBAL_ORIENTATION: 'Global Orientation',
+        GABOR_FREQUENCY: 'Gabor Frequency',
+        GAME_DURATION: 'Game Duration'
     }
 
     const handleConfirmStatus = (status, id) => {
-        status ? setTechMode('y') : setTechMode('n')
+        status ? setTachMode('y') : setTachMode('n')
     }
+
+    const renderTooltip = (text) => <Tooltip id='tab-tooltip'>{text}</Tooltip>
 
     return (
         <>
@@ -65,61 +73,134 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                     </div>
                 </>
                     : tabButtons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })}>
+                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })} disabled={buttonToggle[tab.key] !== true && gameStarted}>
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
                     ))}
 
                 {buttonToggle?.hoopie && (
-                    <div className='mt-3 form-content'>
+                    <motion.div className='mt-3 form-content' initial={{ y: 10, opacity: 0 }}
+                        animate={{ y: 0, opacity: buttonToggle?.hoopie ? 1 : 0 }}
+                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
                         <Wrapper>
                             <Row>
-                                <Col xxl={6} xl={8} lg={6} md={8} sm={8}>
+                                <Col xs={6}>
                                     <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.LEVEL_SELECTION}</Form.Label>
+                                        <Form.Label>{LABELS?.GAME_MODE}</Form.Label><br />
                                         <Controller
-                                            name='sLevelSelection'
+                                            name='sMode'
                                             control={control}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    placeholder='Select Game Level'
-                                                    options={eHoopieLevels}
-                                                    className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    isSearchable={false}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionValue={(option) => option.value}
-                                                />
+                                            render={({ field: { ref, onClick, value } }) => (
+                                                <>
+                                                    <div className='mt-2 tabs'>
+                                                        <OverlayTrigger
+                                                            placement='top'
+                                                            overlay={renderTooltip('Head')}
+                                                            // show={gameModeToggle.head === true}
+                                                            delay={{ show: 250, hide: 250 }}
+                                                        >
+                                                            <Button
+                                                                ref={ref}
+                                                                type='button'
+                                                                name='eHeadMode'
+                                                                className={`${gameModeToggle?.head ? 'checked' : ''}`}
+                                                                value={value}
+                                                                onClick={(e) => {
+                                                                    setGameModeToggle({ head: true })
+                                                                    onClick(e)
+                                                                }}
+                                                            >
+                                                                <span className='tab'><FontAwesomeIcon icon={faVrCardboard} /></span>
+                                                            </Button>
+                                                        </OverlayTrigger>
+
+                                                        <OverlayTrigger
+                                                            placement='top'
+                                                            overlay={renderTooltip('Hand')}
+                                                            // show={gameModeToggle.hand === true}
+                                                            delay={{ show: 250, hide: 250 }}
+                                                        >
+                                                            <Button
+                                                                ref={ref}
+                                                                type='button'
+                                                                name='eHandMode'
+                                                                className={`${gameModeToggle?.hand ? 'checked' : ''}`}
+                                                                value={value}
+                                                                onClick={(e) => {
+                                                                    setGameModeToggle({ hand: true })
+                                                                    onClick(e)
+                                                                }}
+                                                            >
+                                                                <span className='tab'><FontAwesomeIcon icon={faHandsHolding} /></span>
+                                                            </Button>
+                                                        </OverlayTrigger>
+                                                    </div>
+                                                </>
                                             )}
                                         />
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
+                                        {errors.sMode && (<Form.Control.Feedback type='invalid'>{errors.sMode.message}</Form.Control.Feedback>)}
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={4} lg={6} md={4} sm={4}>
+                                <Col xs={6}>
                                     <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.TECH_MODE}</Form.Label><br />
+                                        <Form.Label>{LABELS?.TACH_MODE}</Form.Label><br />
                                         <Controller
-                                            name='eTechMode'
+                                            name='bTachMode'
                                             control={control}
-                                            render={({ field }) => (
+                                            render={({ field: { ref, onChange, value } }) => (
                                                 <Form.Check
-                                                    {...field}
+                                                    ref={ref}
                                                     type='switch'
-                                                    name='eTechMode'
+                                                    name='bTachMode'
                                                     className='d-inline-block mt-2'
-                                                    checked={techMode === 'y'}
-                                                    onChange={(e) => handleConfirmStatus(e.target.checked)}
+                                                    checked={tachMode === 'y'}
+                                                    value={value}
+                                                    onChange={(e) => {
+                                                        handleConfirmStatus(e.target.checked)
+                                                        onChange(e)
+                                                    }}
                                                 />
                                             )}
                                         />
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
+                                        {errors.bTachMode && (<Form.Control.Feedback type='invalid'>{errors.bTachMode.message}</Form.Control.Feedback>)}
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                <Col sm={6}>
+                                    <CommonInput
+                                        label={LABELS?.GAME_DURATION}
+                                        type='text'
+                                        register={register}
+                                        errors={errors}
+                                        className={`form-control ${errors?.sHoopieGameDuration && 'error'}`}
+                                        name='sHoopieGameDuration'
+                                        placeholder='Game duration (i.e.: in minutes)'
+                                        validation={{
+                                            pattern: {
+                                                value: /^[0-9]+$/,
+                                                message: 'Only numbers are allowed'
+                                            },
+                                            max: {
+                                                value: 30,
+                                                message: 'Game duration must be less than 30 minutes.'
+                                            },
+                                            min: {
+                                                value: 1,
+                                                message: 'Game duration should be atleast 1 minute.'
+                                            }
+                                        }}
+                                        min={1}
+                                        maxLength={2}
+                                        onChange={(e) => {
+                                            e.target.value =
+                                                e.target.value?.trim() &&
+                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
+                                        }}
+                                    />
+                                </Col>
+
+                                <Col sm={6}>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.HOOP_SIZE}</Form.Label>
                                         <Controller
@@ -130,6 +211,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                     {...field}
                                                     placeholder='Select Hoop Size'
                                                     options={eHoopSize}
+                                                    defaultValue={eHoopSize[0]}
                                                     className={`react-select border-0 ${errors.sHoopSize && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
@@ -143,18 +225,44 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                <Col sm={6}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.TARGET_RADIUS}</Form.Label>
+                                        <Controller
+                                            name='nHoopieTargetRadius'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select target radius'
+                                                    options={eTargetRadius}
+                                                    defaultValue={eTargetRadius[0]}
+                                                    className={`react-select border-0 ${errors.nHoopieTargetRadius && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
+                                                />
+                                            )}
+                                        />
+                                        {errors.nHoopieTargetRadius && (<Form.Control.Feedback type='invalid'>{errors.nHoopieTargetRadius.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
+
+                                <Col sm={6}>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.BALL_SPEED}</Form.Label>
                                         <Controller
-                                            name='sBallSpeed'
+                                            name='nHoopieBallSpeed'
                                             control={control}
                                             render={({ field }) => (
                                                 <Select
                                                     {...field}
                                                     placeholder='Select Ball Speed'
                                                     options={eBallSpeed}
-                                                    className={`react-select border-0 ${errors.sBallSpeed && 'error'}`}
+                                                    defaultValue={eBallSpeed[0]}
+                                                    className={`react-select border-0 ${errors.nHoopieBallSpeed && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     isMulti={false}
@@ -163,180 +271,444 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                 />
                                             )}
                                         />
-                                        {errors.sBallSpeed && (<Form.Control.Feedback type='invalid'>{errors.sBallSpeed.message}</Form.Control.Feedback>)}
+                                        {errors.nHoopieBallSpeed && (<Form.Control.Feedback type='invalid'>{errors.nHoopieBallSpeed.message}</Form.Control.Feedback>)}
                                     </Form.Group>
                                 </Col>
+
+                                <Col sm={6}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.SPAWN_RATE}</Form.Label>
+                                        <Controller
+                                            name='sHoopieSpawnRate'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select spawn rate'
+                                                    options={eSpawnRate}
+                                                    defaultValue={eSpawnRate[0]}
+                                                    className={`react-select border-0 ${errors.sHoopieSpawnRate && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
+                                                />
+                                            )}
+                                        />
+                                        {errors.sHoopieSpawnRate && (<Form.Control.Feedback type='invalid'>{errors.sHoopieSpawnRate.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
+
+                                <Col sm={6}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
+                                        <Controller
+                                            name='nHoopieStimulusSize'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    placeholder='Select Stimulus Size'
+                                                    options={eHoopieStimulusSizes}
+                                                    defaultValue={eHoopieStimulusSizes[0]}
+                                                    className={`react-select border-0 ${errors.nHoopieStimulusSize && 'error'}`}
+                                                    classNamePrefix='select'
+                                                    isSearchable={false}
+                                                    isMulti={false}
+                                                    getOptionLabel={(option) => option.label}
+                                                    getOptionValue={(option) => option.value}
+                                                />
+                                            )}
+                                        />
+                                        {errors.nHoopieStimulusSize && (<Form.Control.Feedback type='invalid'>{errors.nHoopieStimulusSize.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
+
+                                <Col xs={6}>
+                                    <Form.Group className='form-group'>
+                                        <Form.Label>{LABELS?.TEXT_POSITION}</Form.Label><br />
+                                        <Controller
+                                            name='sTextPosition'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <>
+                                                    <div className='mt-2 tabs'>
+                                                        <OverlayTrigger
+                                                            placement='top'
+                                                            overlay={renderTooltip('Center')}
+                                                            // show={gameModeToggle.head === true}
+                                                            delay={{ show: 250, hide: 250 }}
+                                                        >
+                                                            <Button
+                                                                {...field}
+                                                                type='button'
+                                                                name='sTextCenter'
+                                                                className={`${textPositionToggle?.center ? 'checked' : ''}`}
+                                                                onClick={() => setTextPositionToggle({ center: true })}
+                                                            >
+                                                                <span className='tab'><MdFormatAlignCenter /></span>
+                                                            </Button>
+                                                        </OverlayTrigger>
+
+                                                        <OverlayTrigger
+                                                            placement='top'
+                                                            overlay={renderTooltip('Random')}
+                                                            // show={gameModeToggle.hand === true}
+                                                            delay={{ show: 250, hide: 250 }}
+                                                        >
+                                                            <Button
+                                                                {...field}
+                                                                type='button'
+                                                                name='sTextRandom'
+                                                                className={`${textPositionToggle?.random ? 'checked' : ''}`}
+                                                                onClick={() => setTextPositionToggle({ random: true })}
+                                                            >
+                                                                <span className='tab'><FontAwesomeIcon icon={faShuffle} /></span>
+                                                            </Button>
+                                                        </OverlayTrigger>
+                                                    </div>
+                                                </>
+                                            )}
+                                        />
+                                        {errors.sTextPosition && (<Form.Control.Feedback type='invalid'>{errors.sTextPosition.message}</Form.Control.Feedback>)}
+                                    </Form.Group>
+                                </Col>
+
+                                <Row className='mt-2'>
+                                    <Col sm={12}>
+                                        <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                                            Start Game
+                                        </Button>
+                                        <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                                            End Game
+                                        </Button>
+                                    </Col>
+                                </Row>
                             </Row>
                         </Wrapper>
-                    </div>
+                    </motion.div>
                 )}
 
-                {buttonToggle?.ringRunner && (
-                    <div className='mt-3 form-content'>
-                        <Wrapper>
-                            <Row>
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.LEVEL_SELECTION}</Form.Label>
-                                        <Controller
-                                            name='sLevelSelection'
-                                            control={control}
-                                            render={({ field: { onChange, value, ref } }) => (
-                                                <Select
-                                                    placeholder='Select Game Level'
-                                                    ref={ref}
-                                                    options={eRingRunnerLevels}
-                                                    className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    isSearchable={false}
-                                                    value={value}
-                                                    onChange={onChange}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionValue={(option) => option.value}
-                                                />
-                                            )}
+                {buttonToggle?.ringrunner && (
+                    <>
+                        <motion.div className='mt-3 form-content' initial={{ y: 10, opacity: 0 }}
+                            animate={{ y: 0, opacity: buttonToggle?.ringrunner ? 1 : 0 }}
+                            transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                            <Wrapper>
+                                <Row>
+                                    <Col xxl={6} xl={6} lg={6} sm={12}>
+                                        <CommonInput
+                                            label={LABELS?.GAME_DURATION}
+                                            type='text'
+                                            register={register}
+                                            errors={errors}
+                                            className={`form-control ${errors?.sRRGameDuration && 'error'}`}
+                                            name='sRRGameDuration'
+                                            placeholder='Game duration (i.e.: in minutes)'
+                                            validation={{
+                                                pattern: {
+                                                    value: /^[0-9]+$/,
+                                                    message: 'Only numbers are allowed'
+                                                },
+                                                max: {
+                                                    value: 30,
+                                                    message: 'Game duration must be less than 30 minutes.'
+                                                },
+                                                min: {
+                                                    value: 1,
+                                                    message: 'Game duration should be atleast 1 minute.'
+                                                }
+                                            }}
+                                            min={1}
+                                            maxLength={2}
+                                            onChange={(e) => {
+                                                e.target.value =
+                                                    e.target.value?.trim() &&
+                                                    e.target.value.replace(/^[a-zA-z]+$/g, '')
+                                            }}
                                         />
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
-                                    </Form.Group>
-                                </Col>
+                                    </Col>
+                                    <Col xxl={6} xl={6} lg={6} sm={12}>
+                                        <div className='ringRunner'>
+                                            <Form.Group className='form-group'>
+                                                <Form.Label>Game Mode</Form.Label>
+                                                <div className='tabs'>
+                                                    <motion.div
+                                                        whileTap={{ scale: 0.9 }}>
+                                                        <Button type='button' className={`${ringrunnerMode?.normal ? 'checked' : ''}`} onClick={() => setRingRunnerMode({ normal: true })}>
+                                                            <span className='tab'>Normal</span>
+                                                        </Button>
+                                                    </motion.div>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.STIMULUS_SIZE}</Form.Label>
-                                        <Controller
-                                            name='nStimulusSize'
-                                            control={control}
-                                            render={({ field: { onChange, value, ref } }) => (
-                                                <Select
-                                                    placeholder='Select size of stimulus'
-                                                    ref={ref}
-                                                    options={eStimulusSizes}
-                                                    className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    isSearchable={false}
-                                                    value={value}
-                                                    onChange={onChange}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionValue={(option) => option.value}
-                                                />
-                                            )}
-                                        />
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
-                                    </Form.Group>
-                                </Col>
+                                                    <motion.div
+                                                        whileTap={{ scale: 0.9 }}>
+                                                        <Button type='button' className={`${ringrunnerMode?.gabor ? 'checked' : ''}`} onClick={() => setRingRunnerMode({ gabor: true })}>
+                                                            <span className='tab'>Gabor</span>
+                                                        </Button>
+                                                    </motion.div>
+                                                </div>
+                                            </Form.Group>
+                                        </div>
+                                    </Col>
+                                </Row>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.SPACESHIP_SPEED}</Form.Label>
-                                        <Controller
-                                            name='nSpaceshipSpeed'
-                                            control={control}
-                                            render={({ field: { onChange, value, ref } }) => (
-                                                <Select
-                                                    placeholder='Select speed of spaceship'
-                                                    ref={ref}
-                                                    options={eHoopieLevels}
-                                                    className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    isSearchable={false}
-                                                    value={value}
-                                                    onChange={onChange}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionValue={(option) => option.value}
-                                                />
-                                            )}
-                                        />
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
-                                    </Form.Group>
-                                </Col>
+                                {ringrunnerMode?.normal &&
+                                    <motion.div initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: ringrunnerMode?.normal ? 1 : 0 }}
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                        <Wrapper>
+                                            <Row>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
+                                                        <Controller
+                                                            name='nRRStimulusSize'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select size of stimulus'
+                                                                    ref={ref}
+                                                                    defaultValue={eStimulusSizes[0]}
+                                                                    options={eStimulusSizes}
+                                                                    className={`react-select border-0 ${errors.nRRStimulusSize && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={onChange}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.nRRStimulusSize && (<Form.Control.Feedback type='invalid'>{errors.nRRStimulusSize.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <CommonInput
-                                        label={LABELS?.ACTIVE_DURATION}
-                                        type='text'
-                                        register={register}
-                                        errors={errors}
-                                        className={`form-control ${errors?.sAge && 'error'}`}
-                                        name='sActiveDuration'
-                                        placeholder='Power up active duration (i.e.: in seconds)'
-                                        validation={{
-                                            pattern: {
-                                                value: /^[0-9]+$/,
-                                                message: 'Only numbers are allowed'
-                                            },
-                                            max: {
-                                                value: 30,
-                                                message: 'Power up duration should be less than 30 seconds.'
-                                            },
-                                        }}
-                                        onChange={(e) => {
-                                            e.target.value =
-                                                e.target.value?.trim() &&
-                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
-                                        }}
-                                    />
-                                </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.SHIP_SPEED}</Form.Label>
+                                                        <Controller
+                                                            name='nShipSpeed'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select speed of ship'
+                                                                    ref={ref}
+                                                                    options={eShipSpeed}
+                                                                    defaultValue={eShipSpeed[0]}
+                                                                    className={`react-select border-0 ${errors.nShipSpeed && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={onChange}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.nShipSpeed && (<Form.Control.Feedback type='invalid'>{errors.nShipSpeed.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <CommonInput
-                                        type='text'
-                                        register={register}
-                                        errors={errors}
-                                        className={`form-control ${errors?.sAge && 'error'}`}
-                                        name='nGaborPatch'
-                                        label={LABELS?.GABOR_PATCH}
-                                        placeholder='Enter no. of gabor patch in last level'
-                                        validation={{
-                                            pattern: {
-                                                value: /^[0-9]+$/,
-                                                message: 'Only numbers are allowed'
-                                            },
-                                            // max: {
-                                            //     value: 100,
-                                            //     message: 'Age should be less than 100 years.'
-                                            // },
-                                        }}
-                                        onChange={(e) => {
-                                            e.target.value =
-                                                e.target.value?.trim() &&
-                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
-                                        }}
-                                    />
-                                </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.POWERUP_DURATION}</Form.Label>
+                                                        <Controller
+                                                            name='sPowerDuration'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select power up duration'
+                                                                    ref={ref}
+                                                                    options={ePowerUpDuration}
+                                                                    defaultValue={ePowerUpDuration[0]}
+                                                                    className={`react-select border-0 ${errors.sPowerDuration && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={onChange}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sPowerDuration && (<Form.Control.Feedback type='invalid'>{errors.sPowerDuration.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
-                                    <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.ORIENTATION}</Form.Label>
-                                        <Controller
-                                            name='eOrientation'
-                                            control={control}
-                                            render={({ field: { onChange, value, ref } }) => (
-                                                <Select
-                                                    placeholder='Select the orientation'
-                                                    ref={ref}
-                                                    options={eOrientation}
-                                                    className={`react-select border-0 ${errors.sLevelSelection && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    isSearchable={false}
-                                                    value={value}
-                                                    onChange={onChange}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label + ` (${option?.angle})`}
-                                                    getOptionValue={(option) => option.value}
-                                                />
-                                            )}
-                                        />
-                                        {errors.sLevelSelection && (<Form.Control.Feedback type='invalid'>{errors.sLevelSelection.message}</Form.Control.Feedback>)}
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Wrapper>
-                    </div>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.POWERUP_DELAY}</Form.Label>
+                                                        <Controller
+                                                            name='sPowerUpDelay'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select next power up delay'
+                                                                    ref={ref}
+                                                                    options={ePowerUpDelay}
+                                                                    defaultValue={ePowerUpDelay[0]}
+                                                                    className={`react-select border-0 ${errors.sPowerUpDelay && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={onChange}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sPowerUpDelay && (<Form.Control.Feedback type='invalid'>{errors.sPowerUpDelay.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
+
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.OBSTACLE_DELAY}</Form.Label>
+                                                        <Controller
+                                                            name='sObstacleDelay'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select next obstacle delay'
+                                                                    ref={ref}
+                                                                    options={ePowerUpDelay}
+                                                                    defaultValue={ePowerUpDelay[0]}
+                                                                    className={`react-select border-0 ${errors.sObstacleDelay && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={onChange}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sObstacleDelay && (<Form.Control.Feedback type='invalid'>{errors.sObstacleDelay.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                        </Wrapper>
+                                    </motion.div>
+                                }
+
+                                {ringrunnerMode?.gabor &&
+                                    <motion.div initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: ringrunnerMode?.gabor ? 1 : 0 }}
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                        <Wrapper>
+                                            <Row>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <CommonInput
+                                                        type='text'
+                                                        register={register}
+                                                        errors={errors}
+                                                        className={`form-control ${errors?.sLocalOrientation && 'error'}`}
+                                                        name='sLocalOrientation'
+                                                        label={LABELS?.LOCAL_ORIENTATION}
+                                                        placeholder='Enter local orientation in degree'
+                                                        defaultValue='0'
+                                                        validation={{
+                                                            pattern: {
+                                                                value: /^[0-9]+$/,
+                                                                message: 'Only numbers are allowed'
+                                                            },
+                                                            max: {
+                                                                value: 360,
+                                                                message: 'Orientation must be less than 360 degree.'
+                                                            }
+                                                        }}
+                                                        max={360}
+                                                        maxLength={3}
+                                                        onChange={(e) => {
+                                                            e.target.value =
+                                                                e.target.value?.trim() &&
+                                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
+                                                        }}
+                                                    />
+                                                </Col>
+
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <CommonInput
+                                                        type='text'
+                                                        register={register}
+                                                        errors={errors}
+                                                        className={`form-control ${errors?.sGlobalOrientation && 'error'}`}
+                                                        name='sGlobalOrientation'
+                                                        label={LABELS?.GLOBAL_ORIENTATION}
+                                                        placeholder='Enter global orientation in degree'
+                                                        defaultValue='0'
+                                                        validation={{
+                                                            pattern: {
+                                                                value: /^[0-9]+$/,
+                                                                message: 'Only numbers are allowed'
+                                                            },
+                                                            max: {
+                                                                value: 360,
+                                                                message: 'Orientation must be less than 360 degree.'
+                                                            }
+                                                        }}
+                                                        max={360}
+                                                        maxLength={3}
+                                                        onChange={(e) => {
+                                                            e.target.value =
+                                                                e.target.value?.trim() &&
+                                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
+                                                        }}
+                                                    />
+                                                </Col>
+
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.GABOR_FREQUENCY}</Form.Label>
+                                                        <Controller
+                                                            name='nGaborFrequency'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eGaborFrequency[0]}
+                                                                    options={eGaborFrequency}
+                                                                    className={`react-select border-0 ${errors.nGaborFrequency && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={onChange}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.nGaborFrequency && (<Form.Control.Feedback type='invalid'>{errors.nGaborFrequency.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                        </Wrapper>
+                                    </motion.div>
+                                }
+                                <Row className='mt-3'>
+                                    <Col sm={12}>
+                                        <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                                            Start Game
+                                        </Button>
+                                        <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                                            End Game
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Wrapper>
+                        </motion.div>
+                    </>
                 )}
-            </div>
+            </div >
         </>
     )
 }

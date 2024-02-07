@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
-import logo from './assets/images/YantraHealthcare.png'
+import { socket } from 'shared/socket'
 const AllRoutes = React.lazy(() => import('routes'))
 
 export const queryClient = new QueryClient({
@@ -48,8 +48,11 @@ function App() {
   const temp = localStorage.getItem('mode') === 'true'
 
   useEffect(() => {
-    localStorage.setItem('mode', temp)
+    socket.on("connect")
+  }, [])
 
+  useEffect(() => {
+    localStorage.setItem('mode', temp)
     document.body.classList.remove(!temp ? 'light' : 'dark')
     document.body.classList.add(temp ? 'light' : 'dark');
   }, [temp])

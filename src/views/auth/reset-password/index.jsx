@@ -7,10 +7,10 @@ import { validationErrors } from 'shared/constants/ValidationErrors'
 import { useMutation } from 'react-query'
 import { resetPassWord } from 'query/auth/auth.query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { toaster } from 'helper/helper'
 import { checkToken } from 'query/profile/profile.query'
 import NotFound from 'shared/components/404'
 import textLogo from 'assets/images/Yantra.Care.svg'
+import { Zoom, toast } from 'react-toastify'
 
 function ResetPassword () {
   const navigate = useNavigate()
@@ -68,7 +68,16 @@ function ResetPassword () {
   const { mutate, isLoading } = useMutation(resetPassWord, {
     onSuccess: (response) => {
       navigate('/login')
-      toaster(response?.data?.message)
+      toast.success(response?.data?.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Zoom,
+      })
     }
   })
 

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
-import { toaster } from 'helper/helper'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { route } from 'shared/constants/AllRoutes'
@@ -11,6 +10,7 @@ import CommonInput from 'shared/components/CommonInput'
 import Select from 'react-select'
 import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { addPatient } from 'query/patient/patient.mutation'
+import { Zoom, toast } from 'react-toastify'
 
 const AddPatient = () => {
     const navigate = useNavigate()
@@ -22,7 +22,16 @@ const AddPatient = () => {
     // ADD PATIENT
     const { mutate } = useMutation(addPatient, {
         onSuccess: (res) => {
-            toaster('New Patient Record Added Successfully.', 'success')
+            toast.error('New Patient Record Added Successfully!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "light",
+                transition: Zoom,
+            })
             navigate(route.patient)
             reset()
         }
