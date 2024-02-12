@@ -19,10 +19,10 @@ const ChangePassword = lazy(() => import('views/profile/changePassword'))
 const Dashboard = lazy(() => import('views/dashboard'))
 
 // ADMIN MANAGEMENT
-const AdminManagement = lazy(() => import('views/admin'))
-const AddAdmin = lazy(() => import('views/admin/addAdmin'))
-const ViewAdmin = lazy(() => import('views/admin/viewAdmin'))
-const EditAdmin = lazy(() => import('views/admin/editAdmin'))
+const DoctorManagement = lazy(() => import('views/doctor'))
+const AddDoctor = lazy(() => import('views/doctor/addDoctor'))
+const ViewDoctor = lazy(() => import('views/doctor/viewAdmin'))
+const EditDoctor = lazy(() => import('views/doctor/editDoctor'))
 
 // GAME MANAGEMENT
 const GameManagement = lazy(() => import('views/game'))
@@ -68,10 +68,10 @@ const RoutesDetails = [
 
       { path: route.dashboard, Component: Dashboard, exact: true },
 
-      { path: route.admin, Component: AdminManagement, exact: true },
-      { path: route.addAdmin, Component: AddAdmin, exact: true },
-      { path: route.viewAdmin(':id'), Component: ViewAdmin, exact: true },
-      { path: route.editAdmin(':id'), Component: EditAdmin, exact: true },
+      { path: route.admin, Component: DoctorManagement, exact: true },
+      { path: route.addAdmin, Component: AddDoctor, exact: true },
+      { path: route.viewAdmin(':id'), Component: ViewDoctor, exact: true },
+      { path: route.editAdmin(':id'), Component: EditDoctor, exact: true },
 
       { path: route.patient, Component: PatientManagement, exact: true },
       { path: route.addPatient, Component: AddPatient, exact: true },

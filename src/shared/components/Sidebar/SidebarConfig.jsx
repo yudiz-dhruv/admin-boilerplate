@@ -12,7 +12,7 @@ export const sidebarConfig = [
   {
     path: route.admin,
     icon: faUserDoctor,
-    title: 'Admin Management',
+    title: 'Doctor Management',
     role: ['superAdmin']
   },
   {

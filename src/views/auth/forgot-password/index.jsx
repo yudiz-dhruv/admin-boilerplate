@@ -8,7 +8,7 @@ import { forgotPassword } from 'query/auth/auth.query'
 import { EMAIL } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import textLogo from 'assets/images/Yantra.Care.svg'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
 
 function ForgotPassword () {
   const {
@@ -19,16 +19,7 @@ function ForgotPassword () {
 
   const { mutate, isLoading } = useMutation(forgotPassword, {
     onSuccess: (response) => {
-      toast.success('Reset Link send successfully. Please check you mail.', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Zoom,
-      })
+      ReactToastify('Reset Link send successfully. Please check you mail.', 'success')
     }
   })
 

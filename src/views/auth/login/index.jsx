@@ -10,7 +10,7 @@ import { useMutation, useQuery } from 'react-query'
 import { EMAIL } from 'shared/constants'
 import { profile } from 'query/profile/profile.query'
 import textLogo from 'assets/images/Yantra.Care.svg'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
 
 
 function Login () {
@@ -36,16 +36,7 @@ function Login () {
         localStorage.setItem('token', response?.headers?.authorization)
         setIsLoginSuccess(true)
       } else {
-        toast.error(err?.response?.data?.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "light",
-          transition: Zoom,
-        })
+        ReactToastify(err?.response?.data?.message, 'error')
 
         setIsLoginSuccess(false)
         reset({
@@ -60,30 +51,12 @@ function Login () {
     enabled: !!isLoginSuccess,
     select: (data) => data?.data?.data,
     onSuccess: (data) => {
-      toast.success('Login Successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Zoom,
-      })
+      ReactToastify('Login Successfully!', 'success')
       localStorage.setItem('type', data?.eUserType)
       navigate(route.dashboard)
     },
     onError: (data) => {
-      toast.error('Oops! Something went wrong.', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Zoom,
-      })
+      ReactToastify('Oops! Something went wrong.', 'error')
       localStorage.removeItem('token')
       reset({
         sEmail: '',

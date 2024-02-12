@@ -17,6 +17,14 @@
     position: relative;
     padding: 20px 13px 0;
 
+    .version {
+      color: var(--secondary-500);
+      font-family: 'Helvetica-bold';
+      position: absolute;
+      bottom: 10px;
+      right: 25px;
+    }
+
     ul {
       list-style-type: none;
 

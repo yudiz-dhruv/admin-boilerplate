@@ -40,9 +40,9 @@ export const fileToDataUri = (file) => {
           console.error('Error fetching or converting URL to Blob: ', error);
           resolve(null); // Handle the error as needed
         });
-    } else if (file instanceof Blob) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+      } else if (file instanceof Blob) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
         resolve(e.target.result);
       };
       reader.readAsDataURL(file);

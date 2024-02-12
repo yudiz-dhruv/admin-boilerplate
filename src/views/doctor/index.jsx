@@ -8,10 +8,9 @@ import CustomModal from 'shared/components/Modal'
 import TopBar from 'shared/components/Topbar'
 import { route } from 'shared/constants/AllRoutes'
 import { AdminListColumn } from 'shared/constants/TableHeaders'
-import { appendParams, parseParams } from 'shared/utils'
+import { ReactToastify, appendParams, parseParams } from 'shared/utils'
 import AdminList from 'shared/components/AdminList'
 import AdminListFilters from 'shared/components/AdminListFilters'
-import { toast, Zoom } from 'react-toastify'
 
 const AdminManagement = () => {
     const location = useLocation()
@@ -56,28 +55,10 @@ const AdminManagement = () => {
     const { mutate: updateMutate } = useMutation(updateAdmin, {
         onSettled: (response, err) => {
             if (response) {
-                toast.success('Admin Status Updated Successfully!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify('Admin Status Updated Successfully!', 'success')
                 query.invalidateQueries('adminList')
             } else {
-                toast.error(err.data.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify(err.data.message, 'error')
             }
         }
     })
@@ -87,28 +68,10 @@ const AdminManagement = () => {
         onSettled: (res, err) => {
             if (res) {
                 query.invalidateQueries('adminList')
-                toast.success('Admin Deleted Successfully!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify('Admin Deleted Successfully!', 'success')
                 setModal({ open: false, type: '' })
             } else {
-                toast.error(err?.response?.data?.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify(err?.response?.data?.message, 'error')
                 setModal({ open: false, type: '' })
             }
         }
@@ -177,7 +140,7 @@ const AdminManagement = () => {
             <TopBar
                 buttons={[
                     {
-                        text: 'Add New Admin',
+                        text: 'Add New Doctor',
                         icon: 'icon-add',
                         type: 'primary',
                         btnEvent: () => navigate(route.addAdmin)
@@ -231,7 +194,7 @@ const AdminManagement = () => {
                     <article>
                         <h5>
                             <div>
-                                Are you sure you want to Delete this Admin?
+                                Are you sure you want to Delete this Doctor?
                             </div>
                         </h5>
                     </article>

@@ -10,8 +10,7 @@ import PatientListFilters from 'shared/components/PatientListFilters'
 import TopBar from 'shared/components/Topbar'
 import { route } from 'shared/constants/AllRoutes'
 import { PatientListColumn } from 'shared/constants/TableHeaders'
-import { appendParams, parseParams } from 'shared/utils'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify, appendParams, parseParams } from 'shared/utils'
 
 const PatientManagement = () => {
     const location = useLocation()
@@ -53,28 +52,10 @@ const PatientManagement = () => {
     const { mutate: updateMutate } = useMutation(updatePatient, {
         onSettled: (response, err) => {
             if (response) {
-                toast.success('Patient Status Updated Successfully!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify('Patient Status Updated Successfully!', 'success')
                 query.invalidateQueries('patientList')
             } else {
-                toast.error(err.data.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify(err?.data?.message, 'error')
             }
         }
     })
@@ -84,28 +65,10 @@ const PatientManagement = () => {
         onSettled: (res, err) => {
             if (res) {
                 query.invalidateQueries('patientList')
-                toast.success('Patient Deleted Successfully!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify('Patient Deleted Successfully!', 'success')
                 setModal({ open: false, type: '' })
             } else {
-                toast.error(err?.response?.data?.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify(err?.response?.data?.message, 'error')
                 setModal({ open: false, type: '' })
             }
         }

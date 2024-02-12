@@ -10,7 +10,7 @@ import CommonInput from 'shared/components/CommonInput'
 import Select from 'react-select'
 import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { addPatient } from 'query/patient/patient.mutation'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
 
 const AddPatient = () => {
     const navigate = useNavigate()
@@ -22,16 +22,7 @@ const AddPatient = () => {
     // ADD PATIENT
     const { mutate } = useMutation(addPatient, {
         onSuccess: (res) => {
-            toast.error('New Patient Record Added Successfully!', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "light",
-                transition: Zoom,
-            })
+            ReactToastify('New Patient Record Added Successfully!', 'success')
             navigate(route.patient)
             reset()
         }

@@ -13,7 +13,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useMutation, useQuery } from 'react-query'
 import { getPatientById, getPatientDropdownList, joinRoom } from 'query/patient/patient.query'
 import { getDirtyFormValues } from 'helper/helper'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
 
 const AdminGame = () => {
   const navigate = useNavigate()
@@ -50,22 +50,11 @@ const AdminGame = () => {
 
   // JOINING THE ROOM
   const { mutate: joinRoomMutate, isLoading } = useMutation('joinGameRoom', joinRoom, {
-    enabled: !!watch('ePatientName')?._id,
-    cacheTime: 0,
     onSuccess: (data) => {
       navigate(route?.adminGameSettings(patientDetails?._id), { state: { patientSettings: data?.data?.data, patientDetails } })
     },
     onError: () => {
-      toast.error('Oops! Something went wrong. Please try again later.', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Zoom,
-      })
+      ReactToastify('Oops! Something went wrong. Please try again later.', 'error')
     }
   })
 
@@ -141,11 +130,6 @@ const AdminGame = () => {
                         label='Mobile'
                         disabled
                         placeholder='Enter mobile number'
-                        onChange={(e) => {
-                          e.target.value =
-                            e.target.value?.trim() &&
-                            e.target.value.replace(/^[a-zA-z]+$/g, '')
-                        }}
                       />
                     </Col>
 
@@ -159,11 +143,6 @@ const AdminGame = () => {
                         label='Age'
                         disabled
                         placeholder='Enter the patient age'
-                        onChange={(e) => {
-                          e.target.value =
-                            e.target.value?.trim() &&
-                            e.target.value.replace(/^[a-zA-z]+$/g, '')
-                        }}
                       />
                     </Col>
 
@@ -173,17 +152,14 @@ const AdminGame = () => {
                         <Controller
                           name='eDominantEye'
                           control={control}
-                          render={({ field: { onChange, value, ref } }) => (
+                          render={({ field }) => (
                             <Select
+                              {...field}
                               placeholder='Select Dominant Eye'
-                              ref={ref}
                               options={eDominantEyeOptions}
                               className={`react-select border-0 ${errors.eDominantEye && 'error'}`}
                               classNamePrefix='select'
-                              isSearchable={false}
-                              value={value}
                               isDisabled
-                              onChange={onChange}
                               getOptionLabel={(option) => option.label}
                               getOptionValue={(option) => option.value}
                             />
@@ -198,17 +174,14 @@ const AdminGame = () => {
                         <Controller
                           name='eAmblyopia'
                           control={control}
-                          render={({ field: { onChange, value, ref } }) => (
+                          render={({ field }) => (
                             <Select
+                              {...field}
                               placeholder="Select patient's Amblyopia status"
-                              ref={ref}
                               options={eIsPresent}
                               className={`react-select border-0 ${errors.eAmblyopia && 'error'}`}
                               classNamePrefix='select'
-                              isSearchable={false}
-                              value={value}
                               isDisabled
-                              onChange={onChange}
                               getOptionLabel={(option) => option.label}
                               getOptionValue={(option) => option.value}
                             />
@@ -223,17 +196,14 @@ const AdminGame = () => {
                         <Controller
                           name='eStrabismus'
                           control={control}
-                          render={({ field: { onChange, value, ref } }) => (
+                          render={({ field }) => (
                             <Select
+                              {...field}
                               placeholder="Select patient's Strabisums status"
-                              ref={ref}
                               options={eIsPresent}
                               className={`react-select border-0 ${errors.eStrabismus && 'error'}`}
                               classNamePrefix='select'
-                              isSearchable={false}
-                              value={value}
                               isDisabled
-                              onChange={onChange}
                               getOptionLabel={(option) => option.label}
                               getOptionValue={(option) => option.value}
                             />

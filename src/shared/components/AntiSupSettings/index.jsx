@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import { Slider } from '@mui/material'
 import { SLIDER_STYLE } from 'shared/constants'
 
-const AntiSupSettings = ({ control, settings, setSettings }) => {
+const AntiSupSettings = ({ control, settings, setSettings, defaultData, reset }) => {
     const LABELS = {
         TITLE: 'Anti Suppresion',
         CONTRAST_LEVEL: 'Contrast Level',

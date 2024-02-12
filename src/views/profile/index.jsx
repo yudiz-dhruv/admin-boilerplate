@@ -12,7 +12,7 @@ import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
 
 function EditProfile () {
   const navigate = useNavigate()
@@ -37,6 +37,7 @@ function EditProfile () {
     mode: 'all'
   })
 
+  // GET PROFILE DATA
   const { data } = useQuery('getProfile', profile, {
     select: (data) => data?.data?.data,
     onSuccess: (data) => {
@@ -53,18 +54,10 @@ function EditProfile () {
     }
   })
 
+  // UPDATE PROFILE DATA
   const { mutate, isLoading } = useMutation(UpdateProfile, {
     onSuccess: (response) => {
-      toast.success(response?.data?.message || 'Profile updated successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Zoom,
-      })
+      ReactToastify(response?.data?.message || 'Profile updated successfully!', 'success')
       query.invalidateQueries({ queryKey: ['profile'] })
       navigate('/dashboard')
     }

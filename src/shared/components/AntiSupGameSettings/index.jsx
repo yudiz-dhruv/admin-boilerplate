@@ -1,9 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import Wrapper from '../Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGamepad, faHandsHolding, faShuffle, faVrCardboard } from '@fortawesome/free-solid-svg-icons'
-import { Button, Col, Form, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
+import { Button, Col, Form, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import Select from 'react-select'
 import { eBallSpeed, eGaborFrequency, eHoopSize, eHoopieStimulusSizes, ePowerUpDelay, ePowerUpDuration, eShipSpeed, eSpawnRate, eStimulusSizes, eTargetRadius } from 'shared/constants/TableHeaders'
@@ -13,19 +12,15 @@ import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 import { MdFormatAlignCenter } from "react-icons/md"
 
-const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setGameStarted }) => {
+const AntiSupGameSettings = (props) => {
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setGameStarted, tachMode, setTachMode, data } = props
+
     const [tabButtons, setTabButtons] = useState([])
-    const [tachMode, setTachMode] = useState('y')
+    const [modal, setModal] = useState(false)
 
-    useEffect(() => {
-        if (!games) {
-            return;
-        }
-
-        const gameTabs = games?.filter(game => game?.eCategory === 'antiSupression')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
-        const modifiedTabs = [...(gameTabs || [])]
-        setTabButtons(modifiedTabs)
-    }, [games])
+    const HOOPIE_GAME_STRUCTURE = data?.find(item => item?.sName === 'hoopie')
+    const RING_RUNNER_NORMAL_GAME_STRUCTURE = data?.filter(item => item?.sName === 'ringRunner')?.find(mode => mode?.sMode === 'normal')
+    const RING_RUNNER_GABOR_GAME_STRUCTURE = data?.filter(item => item?.sName === 'ringRunner')?.find(mode => mode?.sMode === 'gabor')
 
     const LABELS = {
         TITLE: 'Anti-Suppression',
@@ -49,8 +44,31 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
         GAME_DURATION: 'Game Duration'
     }
 
+    useEffect(() => {
+        if (!games) {
+            return;
+        }
+
+        const gameTabs = games?.filter(game => game?.eCategory === 'antiSupression')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
+        const modifiedTabs = [...(gameTabs || [])]
+        setTabButtons(modifiedTabs)
+    }, [games])
+
     const handleConfirmStatus = (status, id) => {
         status ? setTachMode('y') : setTachMode('n')
+    }
+
+    const handleTabs = (e, tab) => {
+        e?.preventDefault()
+
+        setButtonToggle({ [tab.key]: true })
+        setModal({ open: true, type: tab?.key, data: tab })
+    }
+
+    const handleClose = (e) => {
+        e?.preventDefault()
+
+        setModal({ open: false, type: '', data: modal?.data })
     }
 
     const renderTooltip = (text) => <Tooltip id='tab-tooltip'>{text}</Tooltip>
@@ -73,26 +91,36 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                     </div>
                 </>
                     : tabButtons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })} disabled={buttonToggle[tab.key] !== true && gameStarted}>
+                        <Button
+                            key={index}
+                            className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'}
+                            variant={buttonToggle[tab.key] ? 'primary' : 'secondary'}
+                            onClick={(e) => handleTabs(e, tab)}
+                            disabled={buttonToggle[tab.key] !== true && gameStarted}
+                        >
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
                     ))}
 
-                {buttonToggle?.hoopie && (
-                    <motion.div className='mt-3 form-content' initial={{ y: 10, opacity: 0 }}
-                        animate={{ y: 0, opacity: buttonToggle?.hoopie ? 1 : 0 }}
-                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                        <Wrapper>
+            </div >
+
+            {buttonToggle?.hoopie && (
+                <Modal show={modal?.type === 'hoopie'} onHide={(e) => handleClose(e)} id='game-setting-modal' size='lg'>
+                    <Form className='step-one form-content' autoComplete='off'>
+                        <Modal.Header closeButton>
+                            <Modal.Title className='game-setting-modal-header'>{modal?.data?.label} Game Settings</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
                             <Row>
-                                <Col xs={6}>
+                                <Col lg={6} xs={6}>
                                     <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.GAME_MODE}</Form.Label><br />
+                                        <Form.Label>{LABELS?.GAME_MODE}</Form.Label>
                                         <Controller
                                             name='sMode'
                                             control={control}
                                             render={({ field: { ref, onClick, value } }) => (
                                                 <>
-                                                    <div className='mt-2 tabs'>
+                                                    <div className='tabs'>
                                                         <OverlayTrigger
                                                             placement='top'
                                                             overlay={renderTooltip('Head')}
@@ -103,10 +131,15 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                                 ref={ref}
                                                                 type='button'
                                                                 name='eHeadMode'
+                                                                // defaultValue={setGameModeToggle({ [HOOPIE_GAME_STRUCTURE?.sMode]: true })}
                                                                 className={`${gameModeToggle?.head ? 'checked' : ''}`}
                                                                 value={value}
                                                                 onClick={(e) => {
                                                                     setGameModeToggle({ head: true })
+
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
                                                                     onClick(e)
                                                                 }}
                                                             >
@@ -124,10 +157,15 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                                 ref={ref}
                                                                 type='button'
                                                                 name='eHandMode'
+                                                                // defaultValue={setGameModeToggle({ [HOOPIE_GAME_STRUCTURE?.sMode]: true })}
                                                                 className={`${gameModeToggle?.hand ? 'checked' : ''}`}
                                                                 value={value}
                                                                 onClick={(e) => {
                                                                     setGameModeToggle({ hand: true })
+
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
                                                                     onClick(e)
                                                                 }}
                                                             >
@@ -142,9 +180,9 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col xs={6}>
+                                <Col lg={6} xs={6}>
                                     <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.TACH_MODE}</Form.Label><br />
+                                        <Form.Label>{LABELS?.TACH_MODE}</Form.Label>
                                         <Controller
                                             name='bTachMode'
                                             control={control}
@@ -153,11 +191,15 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                     ref={ref}
                                                     type='switch'
                                                     name='bTachMode'
-                                                    className='d-inline-block mt-2'
+                                                    className='mt-2'
                                                     checked={tachMode === 'y'}
                                                     value={value}
                                                     onChange={(e) => {
                                                         handleConfirmStatus(e.target.checked)
+
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
                                                         onChange(e)
                                                     }}
                                                 />
@@ -167,7 +209,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col sm={6}>
+                                <Col lg={6} sm={6} className='mt-1'>
                                     <CommonInput
                                         label={LABELS?.GAME_DURATION}
                                         type='text'
@@ -175,6 +217,7 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                         errors={errors}
                                         className={`form-control ${errors?.sHoopieGameDuration && 'error'}`}
                                         name='sHoopieGameDuration'
+                                        defaultValue={HOOPIE_GAME_STRUCTURE?.nDuration}
                                         placeholder='Game duration (i.e.: in minutes)'
                                         validation={{
                                             pattern: {
@@ -196,26 +239,37 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                             e.target.value =
                                                 e.target.value?.trim() &&
                                                 e.target.value.replace(/^[a-zA-z]+$/g, '')
+
+                                            if (gameStarted) {
+                                                setGameStarted(false)
+                                            }
                                         }}
                                     />
                                 </Col>
 
-                                <Col sm={6}>
+                                <Col lg={6} sm={6} className='mt-1'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.HOOP_SIZE}</Form.Label>
                                         <Controller
                                             name='sHoopSize'
                                             control={control}
-                                            render={({ field }) => (
+                                            render={({ field: { ref, onChange, value } }) => (
                                                 <Select
-                                                    {...field}
+                                                    ref={ref}
                                                     placeholder='Select Hoop Size'
                                                     options={eHoopSize}
-                                                    defaultValue={eHoopSize[0]}
+                                                    defaultValue={eHoopSize?.find(size => size?.value === HOOPIE_GAME_STRUCTURE?.sBasketSize)}
                                                     className={`react-select border-0 ${errors.sHoopSize && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     isMulti={false}
+                                                    onChange={(e) => {
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                        onChange(e)
+                                                    }}
+                                                    value={value}
                                                     getOptionLabel={(option) => option.label}
                                                     getOptionValue={(option) => option.value}
                                                 />
@@ -225,21 +279,28 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col sm={6}>
+                                <Col lg={6} sm={6} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.TARGET_RADIUS}</Form.Label>
                                         <Controller
                                             name='nHoopieTargetRadius'
                                             control={control}
-                                            render={({ field }) => (
+                                            render={({ field: { ref, onChange, value } }) => (
                                                 <Select
-                                                    {...field}
+                                                    ref={ref}
                                                     placeholder='Select target radius'
                                                     options={eTargetRadius}
-                                                    defaultValue={eTargetRadius[0]}
+                                                    defaultValue={eTargetRadius?.find(radius => radius?.value === HOOPIE_GAME_STRUCTURE?.nTargetRadius)}
                                                     className={`react-select border-0 ${errors.nHoopieTargetRadius && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
+                                                    onChange={(e) => {
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                        onChange(e)
+                                                    }}
+                                                    value={value}
                                                     isMulti={false}
                                                     getOptionLabel={(option) => option.label}
                                                     getOptionValue={(option) => option.value}
@@ -250,21 +311,28 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col sm={6}>
+                                <Col lg={6} sm={6} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.BALL_SPEED}</Form.Label>
                                         <Controller
                                             name='nHoopieBallSpeed'
                                             control={control}
-                                            render={({ field }) => (
+                                            render={({ field: { ref, onChange, value } }) => (
                                                 <Select
-                                                    {...field}
+                                                    ref={ref}
                                                     placeholder='Select Ball Speed'
                                                     options={eBallSpeed}
-                                                    defaultValue={eBallSpeed[0]}
+                                                    defaultValue={eBallSpeed?.find(speed => speed?.value === HOOPIE_GAME_STRUCTURE?.nSpeed)}
                                                     className={`react-select border-0 ${errors.nHoopieBallSpeed && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
+                                                    onChange={(e) => {
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                        onChange(e)
+                                                    }}
+                                                    value={value}
                                                     isMulti={false}
                                                     getOptionLabel={(option) => option.label}
                                                     getOptionValue={(option) => option.value}
@@ -275,21 +343,28 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col sm={6}>
+                                <Col lg={6} sm={6} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.SPAWN_RATE}</Form.Label>
                                         <Controller
                                             name='sHoopieSpawnRate'
                                             control={control}
-                                            render={({ field }) => (
+                                            render={({ field: { ref, onChange, value } }) => (
                                                 <Select
-                                                    {...field}
+                                                    ref={ref}
                                                     placeholder='Select spawn rate'
                                                     options={eSpawnRate}
-                                                    defaultValue={eSpawnRate[0]}
+                                                    defaultValue={eSpawnRate?.find(rate => rate?.value === HOOPIE_GAME_STRUCTURE?.sSpawnRate)}
                                                     className={`react-select border-0 ${errors.sHoopieSpawnRate && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
+                                                    onChange={(e) => {
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                        onChange(e)
+                                                    }}
+                                                    value={value}
                                                     isMulti={false}
                                                     getOptionLabel={(option) => option.label}
                                                     getOptionValue={(option) => option.value}
@@ -300,21 +375,28 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col sm={6}>
+                                <Col lg={6} sm={6} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
                                         <Controller
                                             name='nHoopieStimulusSize'
                                             control={control}
-                                            render={({ field }) => (
+                                            render={({ field: { ref, onChange, value } }) => (
                                                 <Select
-                                                    {...field}
+                                                    ref={ref}
                                                     placeholder='Select Stimulus Size'
                                                     options={eHoopieStimulusSizes}
-                                                    defaultValue={eHoopieStimulusSizes[0]}
+                                                    defaultValue={eHoopieStimulusSizes?.find(size => size?.value === HOOPIE_GAME_STRUCTURE?.nStimulusSize)}
                                                     className={`react-select border-0 ${errors.nHoopieStimulusSize && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
+                                                    onChange={(e) => {
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                        onChange(e)
+                                                    }}
+                                                    value={value}
                                                     isMulti={false}
                                                     getOptionLabel={(option) => option.label}
                                                     getOptionValue={(option) => option.value}
@@ -325,15 +407,15 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                     </Form.Group>
                                 </Col>
 
-                                <Col xs={6}>
+                                <Col lg={6} xs={6} className='mt-2'>
                                     <Form.Group className='form-group'>
-                                        <Form.Label>{LABELS?.TEXT_POSITION}</Form.Label><br />
+                                        <Form.Label>{LABELS?.TEXT_POSITION}</Form.Label>
                                         <Controller
                                             name='sTextPosition'
                                             control={control}
                                             render={({ field }) => (
                                                 <>
-                                                    <div className='mt-2 tabs'>
+                                                    <div className='tabs'>
                                                         <OverlayTrigger
                                                             placement='top'
                                                             overlay={renderTooltip('Center')}
@@ -345,7 +427,12 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                                 type='button'
                                                                 name='sTextCenter'
                                                                 className={`${textPositionToggle?.center ? 'checked' : ''}`}
-                                                                onClick={() => setTextPositionToggle({ center: true })}
+                                                                onClick={() => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    setTextPositionToggle({ center: true })
+                                                                }}
                                                             >
                                                                 <span className='tab'><MdFormatAlignCenter /></span>
                                                             </Button>
@@ -362,7 +449,12 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                                                 type='button'
                                                                 name='sTextRandom'
                                                                 className={`${textPositionToggle?.random ? 'checked' : ''}`}
-                                                                onClick={() => setTextPositionToggle({ random: true })}
+                                                                onClick={() => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    setTextPositionToggle({ random: true })
+                                                                }}
                                                             >
                                                                 <span className='tab'><FontAwesomeIcon icon={faShuffle} /></span>
                                                             </Button>
@@ -374,341 +466,390 @@ const AntiSupGameSettings = ({ buttonToggle, setButtonToggle, control, errors, r
                                         {errors.sTextPosition && (<Form.Control.Feedback type='invalid'>{errors.sTextPosition.message}</Form.Control.Feedback>)}
                                     </Form.Group>
                                 </Col>
-
-                                <Row className='mt-2'>
-                                    <Col sm={12}>
-                                        <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
-                                            Start Game
-                                        </Button>
-                                        <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
-                                            End Game
-                                        </Button>
-                                    </Col>
-                                </Row>
                             </Row>
-                        </Wrapper>
-                    </motion.div>
-                )}
+                        </Modal.Body>
+                        <Modal.Footer className='mt-4'>
+                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                                Start Game
+                            </Button>
+                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                                End Game
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+            )}
 
-                {buttonToggle?.ringrunner && (
-                    <>
-                        <motion.div className='mt-3 form-content' initial={{ y: 10, opacity: 0 }}
-                            animate={{ y: 0, opacity: buttonToggle?.ringrunner ? 1 : 0 }}
-                            transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                            <Wrapper>
-                                <Row>
-                                    <Col xxl={6} xl={6} lg={6} sm={12}>
-                                        <CommonInput
-                                            label={LABELS?.GAME_DURATION}
-                                            type='text'
-                                            register={register}
-                                            errors={errors}
-                                            className={`form-control ${errors?.sRRGameDuration && 'error'}`}
-                                            name='sRRGameDuration'
-                                            placeholder='Game duration (i.e.: in minutes)'
-                                            validation={{
-                                                pattern: {
-                                                    value: /^[0-9]+$/,
-                                                    message: 'Only numbers are allowed'
-                                                },
-                                                max: {
-                                                    value: 30,
-                                                    message: 'Game duration must be less than 30 minutes.'
-                                                },
-                                                min: {
-                                                    value: 1,
-                                                    message: 'Game duration should be atleast 1 minute.'
-                                                }
-                                            }}
-                                            min={1}
-                                            maxLength={2}
-                                            onChange={(e) => {
-                                                e.target.value =
-                                                    e.target.value?.trim() &&
-                                                    e.target.value.replace(/^[a-zA-z]+$/g, '')
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col xxl={6} xl={6} lg={6} sm={12}>
-                                        <div className='ringRunner'>
-                                            <Form.Group className='form-group'>
-                                                <Form.Label>Game Mode</Form.Label>
-                                                <div className='tabs'>
-                                                    <motion.div
-                                                        whileTap={{ scale: 0.9 }}>
-                                                        <Button type='button' className={`${ringrunnerMode?.normal ? 'checked' : ''}`} onClick={() => setRingRunnerMode({ normal: true })}>
-                                                            <span className='tab'>Normal</span>
-                                                        </Button>
-                                                    </motion.div>
+            {buttonToggle?.ringrunner && (
+                <Modal show={modal?.type === 'ringrunner'} onHide={(e) => handleClose(e)} id='game-setting-modal' size='lg'>
+                    <Form className='step-one' autoComplete='off'>
+                        <Modal.Header closeButton>
+                            <Modal.Title className='game-setting-modal-header'>{modal?.data?.label} Game Settings</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Row>
+                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                    <CommonInput
+                                        label={LABELS?.GAME_DURATION}
+                                        type='text'
+                                        register={register}
+                                        errors={errors}
+                                        className={`form-control ${errors?.sRRGameDuration && 'error'}`}
+                                        name='sRRGameDuration'
+                                        placeholder='Game duration (i.e.: in minutes)'
+                                        validation={{
+                                            pattern: {
+                                                value: /^[0-9]+$/,
+                                                message: 'Only numbers are allowed'
+                                            },
+                                            max: {
+                                                value: 30,
+                                                message: 'Game duration must be less than 30 minutes.'
+                                            },
+                                            min: {
+                                                value: 1,
+                                                message: 'Game duration should be atleast 1 minute.'
+                                            }
+                                        }}
+                                        min={1}
+                                        defaultValue={RING_RUNNER_NORMAL_GAME_STRUCTURE?.nDuration}
+                                        maxLength={2}
+                                        onChange={(e) => {
+                                            e.target.value =
+                                                e.target.value?.trim() &&
+                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                                    <motion.div
-                                                        whileTap={{ scale: 0.9 }}>
-                                                        <Button type='button' className={`${ringrunnerMode?.gabor ? 'checked' : ''}`} onClick={() => setRingRunnerMode({ gabor: true })}>
-                                                            <span className='tab'>Gabor</span>
-                                                        </Button>
-                                                    </motion.div>
-                                                </div>
-                                            </Form.Group>
-                                        </div>
-                                    </Col>
-                                </Row>
+                                            if (gameStarted) {
+                                                setGameStarted(false)
+                                            }
+                                        }}
+                                    />
+                                </Col>
+                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                    <div className=''>
+                                        <Form.Group className='form-group ringRunner'>
+                                            <Form.Label>Game Mode</Form.Label>
+                                            <div className='tabs'>
+                                                <motion.div
+                                                    whileTap={{ scale: 0.9 }}>
+                                                    <Button type='button' className={`${ringrunnerMode?.normal ? 'checked' : ''}`} onClick={() => {
+                                                        setRingRunnerMode({ normal: true })
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                    }}>
+                                                        <span className='tab'>Normal</span>
+                                                    </Button>
+                                                </motion.div>
 
-                                {ringrunnerMode?.normal &&
-                                    <motion.div initial={{ y: 10, opacity: 0 }}
-                                        animate={{ y: 0, opacity: ringrunnerMode?.normal ? 1 : 0 }}
-                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                                        <Wrapper>
-                                            <Row>
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <Form.Group className='form-group'>
-                                                        <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
-                                                        <Controller
-                                                            name='nRRStimulusSize'
-                                                            control={control}
-                                                            render={({ field: { onChange, value, ref } }) => (
-                                                                <Select
-                                                                    placeholder='Select size of stimulus'
-                                                                    ref={ref}
-                                                                    defaultValue={eStimulusSizes[0]}
-                                                                    options={eStimulusSizes}
-                                                                    className={`react-select border-0 ${errors.nRRStimulusSize && 'error'}`}
-                                                                    classNamePrefix='select'
-                                                                    isSearchable={false}
-                                                                    value={value}
-                                                                    onChange={onChange}
-                                                                    isMulti={false}
-                                                                    getOptionLabel={(option) => option.label}
-                                                                    getOptionValue={(option) => option.value}
-                                                                />
-                                                            )}
-                                                        />
-                                                        {errors.nRRStimulusSize && (<Form.Control.Feedback type='invalid'>{errors.nRRStimulusSize.message}</Form.Control.Feedback>)}
-                                                    </Form.Group>
-                                                </Col>
+                                                <motion.div
+                                                    whileTap={{ scale: 0.9 }}>
+                                                    <Button type='button' className={`${ringrunnerMode?.gabor ? 'checked' : ''}`} onClick={() => {
+                                                        setRingRunnerMode({ gabor: true })
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                    }}>
+                                                        <span className='tab'>Gabor</span>
+                                                    </Button>
+                                                </motion.div>
+                                            </div>
+                                        </Form.Group>
+                                    </div>
+                                </Col>
+                            </Row>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <Form.Group className='form-group'>
-                                                        <Form.Label>{LABELS?.SHIP_SPEED}</Form.Label>
-                                                        <Controller
-                                                            name='nShipSpeed'
-                                                            control={control}
-                                                            render={({ field: { onChange, value, ref } }) => (
-                                                                <Select
-                                                                    placeholder='Select speed of ship'
-                                                                    ref={ref}
-                                                                    options={eShipSpeed}
-                                                                    defaultValue={eShipSpeed[0]}
-                                                                    className={`react-select border-0 ${errors.nShipSpeed && 'error'}`}
-                                                                    classNamePrefix='select'
-                                                                    isSearchable={false}
-                                                                    value={value}
-                                                                    onChange={onChange}
-                                                                    isMulti={false}
-                                                                    getOptionLabel={(option) => option.label}
-                                                                    getOptionValue={(option) => option.value}
-                                                                />
-                                                            )}
-                                                        />
-                                                        {errors.nShipSpeed && (<Form.Control.Feedback type='invalid'>{errors.nShipSpeed.message}</Form.Control.Feedback>)}
-                                                    </Form.Group>
-                                                </Col>
-
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <Form.Group className='form-group'>
-                                                        <Form.Label>{LABELS?.POWERUP_DURATION}</Form.Label>
-                                                        <Controller
-                                                            name='sPowerDuration'
-                                                            control={control}
-                                                            render={({ field: { onChange, value, ref } }) => (
-                                                                <Select
-                                                                    placeholder='Select power up duration'
-                                                                    ref={ref}
-                                                                    options={ePowerUpDuration}
-                                                                    defaultValue={ePowerUpDuration[0]}
-                                                                    className={`react-select border-0 ${errors.sPowerDuration && 'error'}`}
-                                                                    classNamePrefix='select'
-                                                                    isSearchable={false}
-                                                                    value={value}
-                                                                    onChange={onChange}
-                                                                    isMulti={false}
-                                                                    getOptionLabel={(option) => option.label}
-                                                                    getOptionValue={(option) => option.value}
-                                                                />
-                                                            )}
-                                                        />
-                                                        {errors.sPowerDuration && (<Form.Control.Feedback type='invalid'>{errors.sPowerDuration.message}</Form.Control.Feedback>)}
-                                                    </Form.Group>
-                                                </Col>
-
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <Form.Group className='form-group'>
-                                                        <Form.Label>{LABELS?.POWERUP_DELAY}</Form.Label>
-                                                        <Controller
-                                                            name='sPowerUpDelay'
-                                                            control={control}
-                                                            render={({ field: { onChange, value, ref } }) => (
-                                                                <Select
-                                                                    placeholder='Select next power up delay'
-                                                                    ref={ref}
-                                                                    options={ePowerUpDelay}
-                                                                    defaultValue={ePowerUpDelay[0]}
-                                                                    className={`react-select border-0 ${errors.sPowerUpDelay && 'error'}`}
-                                                                    classNamePrefix='select'
-                                                                    isSearchable={false}
-                                                                    value={value}
-                                                                    onChange={onChange}
-                                                                    isMulti={false}
-                                                                    getOptionLabel={(option) => option.label}
-                                                                    getOptionValue={(option) => option.value}
-                                                                />
-                                                            )}
-                                                        />
-                                                        {errors.sPowerUpDelay && (<Form.Control.Feedback type='invalid'>{errors.sPowerUpDelay.message}</Form.Control.Feedback>)}
-                                                    </Form.Group>
-                                                </Col>
-
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <Form.Group className='form-group'>
-                                                        <Form.Label>{LABELS?.OBSTACLE_DELAY}</Form.Label>
-                                                        <Controller
-                                                            name='sObstacleDelay'
-                                                            control={control}
-                                                            render={({ field: { onChange, value, ref } }) => (
-                                                                <Select
-                                                                    placeholder='Select next obstacle delay'
-                                                                    ref={ref}
-                                                                    options={ePowerUpDelay}
-                                                                    defaultValue={ePowerUpDelay[0]}
-                                                                    className={`react-select border-0 ${errors.sObstacleDelay && 'error'}`}
-                                                                    classNamePrefix='select'
-                                                                    isSearchable={false}
-                                                                    value={value}
-                                                                    onChange={onChange}
-                                                                    isMulti={false}
-                                                                    getOptionLabel={(option) => option.label}
-                                                                    getOptionValue={(option) => option.value}
-                                                                />
-                                                            )}
-                                                        />
-                                                        {errors.sObstacleDelay && (<Form.Control.Feedback type='invalid'>{errors.sObstacleDelay.message}</Form.Control.Feedback>)}
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                        </Wrapper>
-                                    </motion.div>
-                                }
-
-                                {ringrunnerMode?.gabor &&
-                                    <motion.div initial={{ y: 10, opacity: 0 }}
-                                        animate={{ y: 0, opacity: ringrunnerMode?.gabor ? 1 : 0 }}
-                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                                        <Wrapper>
-                                            <Row>
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <CommonInput
-                                                        type='text'
-                                                        register={register}
-                                                        errors={errors}
-                                                        className={`form-control ${errors?.sLocalOrientation && 'error'}`}
-                                                        name='sLocalOrientation'
-                                                        label={LABELS?.LOCAL_ORIENTATION}
-                                                        placeholder='Enter local orientation in degree'
-                                                        defaultValue='0'
-                                                        validation={{
-                                                            pattern: {
-                                                                value: /^[0-9]+$/,
-                                                                message: 'Only numbers are allowed'
-                                                            },
-                                                            max: {
-                                                                value: 360,
-                                                                message: 'Orientation must be less than 360 degree.'
-                                                            }
-                                                        }}
-                                                        max={360}
-                                                        maxLength={3}
-                                                        onChange={(e) => {
-                                                            e.target.value =
-                                                                e.target.value?.trim() &&
-                                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
-                                                        }}
+                            {ringrunnerMode?.normal &&
+                                <motion.div initial={{ y: 10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: ringrunnerMode?.normal ? 1 : 0 }}
+                                    transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                    <Wrapper>
+                                        <Row>
+                                            <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                <Form.Group className='form-group'>
+                                                    <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
+                                                    <Controller
+                                                        name='nRRStimulusSize'
+                                                        control={control}
+                                                        render={({ field: { onChange, value, ref } }) => (
+                                                            <Select
+                                                                placeholder='Select size of stimulus'
+                                                                ref={ref}
+                                                                defaultValue={eStimulusSizes?.find(size => size?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.nStimulusSize)}
+                                                                options={eStimulusSizes}
+                                                                className={`react-select border-0 ${errors.nRRStimulusSize && 'error'}`}
+                                                                classNamePrefix='select'
+                                                                isSearchable={false}
+                                                                value={value}
+                                                                onChange={(e) => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    onChange(e)
+                                                                }}
+                                                                isMulti={false}
+                                                                getOptionLabel={(option) => option.label}
+                                                                getOptionValue={(option) => option.value}
+                                                            />
+                                                        )}
                                                     />
-                                                </Col>
+                                                    {errors.nRRStimulusSize && (<Form.Control.Feedback type='invalid'>{errors.nRRStimulusSize.message}</Form.Control.Feedback>)}
+                                                </Form.Group>
+                                            </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <CommonInput
-                                                        type='text'
-                                                        register={register}
-                                                        errors={errors}
-                                                        className={`form-control ${errors?.sGlobalOrientation && 'error'}`}
-                                                        name='sGlobalOrientation'
-                                                        label={LABELS?.GLOBAL_ORIENTATION}
-                                                        placeholder='Enter global orientation in degree'
-                                                        defaultValue='0'
-                                                        validation={{
-                                                            pattern: {
-                                                                value: /^[0-9]+$/,
-                                                                message: 'Only numbers are allowed'
-                                                            },
-                                                            max: {
-                                                                value: 360,
-                                                                message: 'Orientation must be less than 360 degree.'
-                                                            }
-                                                        }}
-                                                        max={360}
-                                                        maxLength={3}
-                                                        onChange={(e) => {
-                                                            e.target.value =
-                                                                e.target.value?.trim() &&
-                                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
-                                                        }}
+                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-lg-0 mt-2'>
+                                                <Form.Group className='form-group'>
+                                                    <Form.Label>{LABELS?.SHIP_SPEED}</Form.Label>
+                                                    <Controller
+                                                        name='nShipSpeed'
+                                                        control={control}
+                                                        render={({ field: { onChange, value, ref } }) => (
+                                                            <Select
+                                                                placeholder='Select speed of ship'
+                                                                ref={ref}
+                                                                options={eShipSpeed}
+                                                                defaultValue={eShipSpeed?.find(shipeSpeed => shipeSpeed?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.nShipSpeed)}
+                                                                className={`react-select border-0 ${errors.nShipSpeed && 'error'}`}
+                                                                classNamePrefix='select'
+                                                                isSearchable={false}
+                                                                value={value}
+                                                                onChange={(e) => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    onChange(e)
+                                                                }}
+                                                                isMulti={false}
+                                                                getOptionLabel={(option) => option.label}
+                                                                getOptionValue={(option) => option.value}
+                                                            />
+                                                        )}
                                                     />
-                                                </Col>
+                                                    {errors.nShipSpeed && (<Form.Control.Feedback type='invalid'>{errors.nShipSpeed.message}</Form.Control.Feedback>)}
+                                                </Form.Group>
+                                            </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                    <Form.Group className='form-group'>
-                                                        <Form.Label>{LABELS?.GABOR_FREQUENCY}</Form.Label>
-                                                        <Controller
-                                                            name='nGaborFrequency'
-                                                            control={control}
-                                                            render={({ field: { onChange, value, ref } }) => (
-                                                                <Select
-                                                                    placeholder='Select gabor frequency'
-                                                                    ref={ref}
-                                                                    defaultValue={eGaborFrequency[0]}
-                                                                    options={eGaborFrequency}
-                                                                    className={`react-select border-0 ${errors.nGaborFrequency && 'error'}`}
-                                                                    classNamePrefix='select'
-                                                                    isSearchable={false}
-                                                                    value={value}
-                                                                    onChange={onChange}
-                                                                    isMulti={false}
-                                                                    getOptionLabel={(option) => option.label}
-                                                                    getOptionValue={(option) => option.value}
-                                                                />
-                                                            )}
-                                                        />
-                                                        {errors.nGaborFrequency && (<Form.Control.Feedback type='invalid'>{errors.nGaborFrequency.message}</Form.Control.Feedback>)}
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                        </Wrapper>
-                                    </motion.div>
-                                }
-                                <Row className='mt-3'>
-                                    <Col sm={12}>
-                                        <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
-                                            Start Game
-                                        </Button>
-                                        <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
-                                            End Game
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Wrapper>
-                        </motion.div>
-                    </>
-                )}
-            </div >
+                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Form.Group className='form-group'>
+                                                    <Form.Label>{LABELS?.POWERUP_DURATION}</Form.Label>
+                                                    <Controller
+                                                        name='sPowerDuration'
+                                                        control={control}
+                                                        render={({ field: { onChange, value, ref } }) => (
+                                                            <Select
+                                                                placeholder='Select power up duration'
+                                                                ref={ref}
+                                                                options={ePowerUpDuration}
+                                                                defaultValue={ePowerUpDuration?.find(duration => duration?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.sPowerDuration)}
+                                                                className={`react-select border-0 ${errors.sPowerDuration && 'error'}`}
+                                                                classNamePrefix='select'
+                                                                isSearchable={false}
+                                                                value={value}
+                                                                onChange={(e) => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    onChange(e)
+                                                                }}
+                                                                isMulti={false}
+                                                                getOptionLabel={(option) => option.label}
+                                                                getOptionValue={(option) => option.value}
+                                                            />
+                                                        )}
+                                                    />
+                                                    {errors.sPowerDuration && (<Form.Control.Feedback type='invalid'>{errors.sPowerDuration.message}</Form.Control.Feedback>)}
+                                                </Form.Group>
+                                            </Col>
+
+                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Form.Group className='form-group'>
+                                                    <Form.Label>{LABELS?.POWERUP_DELAY}</Form.Label>
+                                                    <Controller
+                                                        name='sPowerUpDelay'
+                                                        control={control}
+                                                        render={({ field: { onChange, value, ref } }) => (
+                                                            <Select
+                                                                placeholder='Select next power up delay'
+                                                                ref={ref}
+                                                                options={ePowerUpDelay}
+                                                                defaultValue={ePowerUpDelay?.find(duration => duration?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.sPowerUpSpawnRate)}
+                                                                className={`react-select border-0 ${errors.sPowerUpDelay && 'error'}`}
+                                                                classNamePrefix='select'
+                                                                isSearchable={false}
+                                                                value={value}
+                                                                onChange={(e) => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    onChange(e)
+                                                                }}
+                                                                isMulti={false}
+                                                                getOptionLabel={(option) => option.label}
+                                                                getOptionValue={(option) => option.value}
+                                                            />
+                                                        )}
+                                                    />
+                                                    {errors.sPowerUpDelay && (<Form.Control.Feedback type='invalid'>{errors.sPowerUpDelay.message}</Form.Control.Feedback>)}
+                                                </Form.Group>
+                                            </Col>
+
+                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Form.Group className='form-group'>
+                                                    <Form.Label>{LABELS?.OBSTACLE_DELAY}</Form.Label>
+                                                    <Controller
+                                                        name='sObstacleDelay'
+                                                        control={control}
+                                                        render={({ field: { onChange, value, ref } }) => (
+                                                            <Select
+                                                                placeholder='Select next obstacle delay'
+                                                                ref={ref}
+                                                                options={ePowerUpDelay}
+                                                                defaultValue={ePowerUpDelay?.find(duration => duration?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.sObstacleSpawnRate)}
+                                                                className={`react-select border-0 ${errors.sObstacleDelay && 'error'}`}
+                                                                classNamePrefix='select'
+                                                                isSearchable={false}
+                                                                value={value}
+                                                                onChange={(e) => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    onChange(e)
+                                                                }}
+                                                                isMulti={false}
+                                                                getOptionLabel={(option) => option.label}
+                                                                getOptionValue={(option) => option.value}
+                                                            />
+                                                        )}
+                                                    />
+                                                    {errors.sObstacleDelay && (<Form.Control.Feedback type='invalid'>{errors.sObstacleDelay.message}</Form.Control.Feedback>)}
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                    </Wrapper>
+                                </motion.div>
+                            }
+
+                            {ringrunnerMode?.gabor &&
+                                <motion.div initial={{ y: 10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: ringrunnerMode?.gabor ? 1 : 0 }}
+                                    transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                    <Wrapper>
+                                        <Row>
+                                            <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                <CommonInput
+                                                    type='text'
+                                                    register={register}
+                                                    errors={errors}
+                                                    className={`form-control ${errors?.sLocalOrientation && 'error'}`}
+                                                    name='sLocalOrientation'
+                                                    label={LABELS?.LOCAL_ORIENTATION}
+                                                    placeholder='Enter local orientation in degree'
+                                                    defaultValue={RING_RUNNER_GABOR_GAME_STRUCTURE?.nLocalOrientation}
+                                                    validation={{
+                                                        pattern: {
+                                                            value: /^[0-9]+$/,
+                                                            message: 'Only numbers are allowed'
+                                                        },
+                                                        max: {
+                                                            value: 360,
+                                                            message: 'Orientation must be less than 360 degree.'
+                                                        }
+                                                    }}
+                                                    max={360}
+                                                    maxLength={3}
+                                                    onChange={(e) => {
+                                                        e.target.value =
+                                                            e.target.value?.trim() &&
+                                                            e.target.value.replace(/^[a-zA-z]+$/g, '')
+
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                    }}
+                                                />
+                                            </Col>
+
+                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-lg-0 mt-2'>
+                                                <CommonInput
+                                                    type='text'
+                                                    register={register}
+                                                    errors={errors}
+                                                    className={`form-control ${errors?.sGlobalOrientation && 'error'}`}
+                                                    name='sGlobalOrientation'
+                                                    label={LABELS?.GLOBAL_ORIENTATION}
+                                                    placeholder='Enter global orientation in degree'
+                                                    defaultValue={RING_RUNNER_GABOR_GAME_STRUCTURE?.nGlobalOrientation}
+                                                    validation={{
+                                                        pattern: {
+                                                            value: /^[0-9]+$/,
+                                                            message: 'Only numbers are allowed'
+                                                        },
+                                                        max: {
+                                                            value: 360,
+                                                            message: 'Orientation must be less than 360 degree.'
+                                                        }
+                                                    }}
+                                                    max={360}
+                                                    maxLength={3}
+                                                    onChange={(e) => {
+                                                        e.target.value =
+                                                            e.target.value?.trim() &&
+                                                            e.target.value.replace(/^[a-zA-z]+$/g, '')
+
+                                                        if (gameStarted) {
+                                                            setGameStarted(false)
+                                                        }
+                                                    }}
+                                                />
+                                            </Col>
+
+                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Form.Group className='form-group'>
+                                                    <Form.Label>{LABELS?.GABOR_FREQUENCY}</Form.Label>
+                                                    <Controller
+                                                        name='nGaborFrequency'
+                                                        control={control}
+                                                        render={({ field: { onChange, value, ref } }) => (
+                                                            <Select
+                                                                placeholder='Select gabor frequency'
+                                                                ref={ref}
+                                                                defaultValue={eGaborFrequency?.find(frequency => frequency?.value === RING_RUNNER_GABOR_GAME_STRUCTURE?.nFrequency)}
+                                                                options={eGaborFrequency}
+                                                                className={`react-select border-0 ${errors.nGaborFrequency && 'error'}`}
+                                                                classNamePrefix='select'
+                                                                isSearchable={false}
+                                                                value={value}
+                                                                onChange={(e) => {
+                                                                    if (gameStarted) {
+                                                                        setGameStarted(false)
+                                                                    }
+                                                                    onChange(e)
+                                                                }}
+                                                                isMulti={false}
+                                                                getOptionLabel={(option) => option.label}
+                                                                getOptionValue={(option) => option.value}
+                                                            />
+                                                        )}
+                                                    />
+                                                    {errors.nGaborFrequency && (<Form.Control.Feedback type='invalid'>{errors.nGaborFrequency.message}</Form.Control.Feedback>)}
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                    </Wrapper>
+                                </motion.div>
+                            }
+                        </Modal.Body>
+                        <Modal.Footer className='mt-4'>
+                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                                Start Game
+                            </Button>
+                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                                End Game
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+            )}
         </>
     )
 }

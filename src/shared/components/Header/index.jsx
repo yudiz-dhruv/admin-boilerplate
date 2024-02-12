@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dropdown, Spinner } from 'react-bootstrap'
+import { Dropdown, Form, Spinner } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
@@ -9,9 +9,10 @@ import CustomModal from 'shared/components/Modal'
 import textLogo from 'assets/images/Yantra.Care.svg'
 import { profile } from 'query/profile/profile.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faUser } from '@fortawesome/free-solid-svg-icons'
 import { RxDotFilled } from "react-icons/rx"
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
+import { Controller, useForm } from 'react-hook-form'
 
 function Header ({ isOpen }) {
   const navigate = useNavigate()
@@ -19,6 +20,8 @@ function Header ({ isOpen }) {
   const [clickedLogOut, setClickedLogOut] = useState(false)
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
+
+  const { control } = useForm({ mode: 'all' })
 
   const temp = localStorage.getItem('mode') === 'true'
 
@@ -30,16 +33,7 @@ function Header ({ isOpen }) {
       localStorage.removeItem('token')
       localStorage.removeItem('type')
       navigate('/login')
-      toast.success(res?.data?.message, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Zoom,
-      })
+      ReactToastify(res?.data?.message, 'success')
     },
     onError: () => {
       localStorage.removeItem('token')
@@ -86,14 +80,28 @@ function Header ({ isOpen }) {
       <div className='header-right'>
         <div className='user-name'>{profileLoader ?
           <Spinner animation='border' size='sm' variant='default' />
-          : <span><span>{data?.sUserName}</span> {data?.eUserType === 'superAdmin' ? <span className='superadmin-label'><RxDotFilled /> Super Admin</span> : <span className='admin-label'><RxDotFilled /> Admin</span>}</span>}</div>
+          : <span>{data?.sUserName || 'Login Again'}</span>
+        }
+        </div>
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>
-            <div className='img d-flex align-items-center justify-content-center'>
-              {data?.eUserType === 'admin' ? data?.sAvatar === '' ? <FontAwesomeIcon icon={faUser} /> : <img src={data?.sAvatar} alt="" /> : <FontAwesomeIcon icon={faUser} />}
+            <div className='img'>
+              {data?.eUserType === 'admin' ?
+                (data?.sAvatar === ''
+                  ? <div className='d-flex align-items-center justify-content-between gap-2'>
+                    <FontAwesomeIcon icon={faAngleDown} size='xs' /> <span className='svg-content'><FontAwesomeIcon icon={faUser} /></span>
+                  </div>
+                  : <div className='d-flex align-items-center justify-content-between gap-2'>
+                    <FontAwesomeIcon icon={faAngleDown} size='xs' /> <img src={data?.sAvatar} alt="" />
+                  </div>)
+                : <div className='d-flex align-items-center justify-content-between gap-2'>
+                  <FontAwesomeIcon icon={faAngleDown} size='xs' /> <span className='svg-content'><FontAwesomeIcon icon={faUser} /></span>
+                </div>}
             </div>
           </Dropdown.Toggle>
           <Dropdown.Menu className='up-arrow'>
+            <Dropdown.Header>Manage Account</Dropdown.Header>
+            <Dropdown.Divider />
             <Dropdown.Item onClick={handleEditProfile}>
               <i className='icon-account'></i>
               <FormattedMessage id='myProfile' />
@@ -106,15 +114,35 @@ function Header ({ isOpen }) {
               <i className='icon-logout'></i>
               <FormattedMessage id='logout' />
             </Dropdown.Item>
+            <Dropdown.Divider />
+            <div className='theme-setting'>
+              <span>Light</span>
+              <Controller
+                name='bTachMode'
+                control={control}
+                render={({ field: { ref, onChange, value } }) => (
+                  <Form.Check
+                    ref={ref}
+                    type='switch'
+                    name='bTachMode'
+                    className='d-inline-block mt-2'
+                    checked={mode === false}
+                    value={value}
+                    onChange={(e) => {
+                      setMode(!mode)
+                      onChange(e)
+                    }}
+                  />
+                )}
+              />
+              <span>Dark</span>
+            </div>
           </Dropdown.Menu>
         </Dropdown>
         {/* <Button className='header-btn user-btn' >
           {mode ? <FontAwesomeIcon icon={faMoon} /> : <FontAwesomeIcon icon={faSun} />}
         </Button> */}
-        <label id="label" class="switch toggle">
-          <input type="checkbox" id="toggleMode" onClick={() => setMode(!mode)} />
-          <span class="slider round"></span>
-        </label>
+
       </div>
       <CustomModal
         open={show}

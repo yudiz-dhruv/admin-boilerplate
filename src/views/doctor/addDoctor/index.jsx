@@ -1,127 +1,76 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
-import { getDirtyFormValues } from 'helper/helper'
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
+import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import CommonInput from 'shared/components/CommonInput'
 import { validationErrors } from 'shared/constants/ValidationErrors'
+import { EMAIL, PASSWORD } from 'shared/constants'
 import { route } from 'shared/constants/AllRoutes'
 import Select from 'react-select'
-import DatePicker from 'react-datepicker'
-import { useMutation, useQuery } from 'react-query'
-import { getAdminById } from 'query/admin/admin.query'
-import makeAnimated from 'react-select/animated'
-import { updateAdmin } from 'query/admin/admin.mutation'
+import DatePicker from 'react-datepicker';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCamera } from '@fortawesome/free-solid-svg-icons'
+import { addAdmin } from 'query/admin/admin.mutation'
 import { getGameDropdownList } from 'query/game/game.query'
 import { FormattedMessage } from 'react-intl'
-import { PASSWORD } from 'shared/constants'
-import { Zoom, toast } from 'react-toastify'
+import makeAnimated from 'react-select/animated'
+import { ReactToastify } from 'shared/utils'
 
-const EditAdmin = () => {
+const AddAdmin = () => {
   const navigate = useNavigate()
-  const { id } = useParams()
 
-  const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch, getValues } = useForm({ mode: 'all' })
+  const { register, handleSubmit, formState: { errors }, control, reset, watch, getValues } = useForm({ mode: 'all' })
+  const fileInputRef = useRef(null)
 
-  const [payload, setPayload] = useState()
-  const [showNewPassword, setNewPassword] = useState(false)
   const [isButtonDisabled, setButtonDisabled] = useState(false)
+  const [showNewPassword, setNewPassword] = useState(false)
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
     select: (data) => data?.data?.data,
   })
 
-  // SPECIFIC ADMIN
-  const { data } = useQuery('adminDataById', () => getAdminById(id), {
-    enabled: !!id,
-    select: (data) => data?.data?.data,
-  })
-
-  useEffect(() => {
-    if (data && eGameDropdown?.length > 0) {
-      const temp = data ? [...data?.aGamesName] : []
-
-      const gameData = []
-      for (let key of eGameDropdown) {
-        if (temp?.filter(item => item === key?.sName)?.length > 0) {
-          gameData?.push(key)
-        }
-      }
-      reset({
-        ...data,
-        aGamesName: gameData,
-        dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
-        dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
-        sPassword: ''
-      })
-    }
-  }, [data, eGameDropdown, reset])
-
-  // EDIT ADMIN
-  const { mutate: updateMutate } = useMutation(updateAdmin, {
-    onSettled: (response, err) => {
-      if (response) {
-        toast.success('Admin Updated Successfully!', {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "light",
-          transition: Zoom,
-        })
-        navigate(route.admin)
-
-        reset()
-      } else {
-        toast.error(err.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "light",
-          transition: Zoom,
-        })
-      }
+  // ADD ADMIN
+  const { mutate, isLoading } = useMutation(addAdmin, {
+    onSuccess: (res) => {
+      ReactToastify('New Admin Added Successfully!', 'success')
+      navigate(route.admin)
+      reset()
     }
   })
-
-  useEffect(() => {
-    const isDirtyData = {
-      sUserName: watch('sUserName'),
-      sCompanyName: watch('sCompanyName'),
-      aGamesName: watch('aGamesName')?.map(item => item?.sName),
-      nPrice: +watch('nPrice'),
-      dStartAt: watch('dStartAt')?.toISOString(),
-      dEndAt: watch('dEndAt')?.toISOString(),
-      sAvatar: watch('sAvatar'),
-      sPassword: watch('sPassword'),
-      sMobile: watch('sMobile')
-    }
-
-    const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
-    setPayload(payloadData)
-  }, [dirtyFields, watch('sUserName'), watch('sCompanyName'), watch('aGamesName'), watch('nPrice'), watch('dStartAt'), watch('dEndAt'), watch('sAvatar'), watch('sPassword'), watch('sMobile')])
 
   async function onSubmit (data) {
+    const formData = new FormData()
+
     if (isButtonDisabled) {
       return;
     }
-
     setButtonDisabled(true)
-    updateMutate({ ...payload, id })
+
+    formData.append('sUserName', data?.sUserName || '')
+    formData.append('sEmail', data?.sEmail || '')
+    formData.append('aGamesName', data?.aGamesName?.map(item => item?.sName) || '')
+    formData.append('nPrice', +data?.nPrice || '')
+    formData.append('dStartAt', data?.dStartAt?.toISOString() || '')
+    formData.append('dEndAt', data?.dEndAt?.toISOString() || '')
+    formData.append('sCompanyName', data?.sCompanyName || '')
+    formData.append('sAvatar', data?.sAvatar || '')
+    formData.append('sPassword', data?.sPassword || '')
+    formData.append('sMobile', data?.sMobile || '')
+
+    mutate(formData)
 
     setTimeout(() => {
       setButtonDisabled(false)
     }, 5000)
+  }
+
+  const handleFileInputClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
   }
 
   const handleNewPasswordToggle = () => {
@@ -129,7 +78,7 @@ const EditAdmin = () => {
   }
 
   useEffect(() => {
-    document.title = 'Edit Admin | Yantra Healthcare'
+    document.title = 'Add Admin | Yantra Healthcare'
   }, [])
 
   return (
@@ -147,7 +96,8 @@ const EditAdmin = () => {
                           <div className='inputMSG'>
                             {watch('sAvatar') ? <>
                               <div className="document-preview-group">
-                                {watch('sAvatar') && (
+                                <div className='img-over' onClick={handleFileInputClick}>Change Profile</div>
+                                {(watch('sAvatar')) && (
                                   typeof (watch('sAvatar')) !== 'string'
                                     ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
                                     : <div className="document-preview"> <img src={watch('sAvatar')} alt='altImage' /> </div>)
@@ -155,6 +105,49 @@ const EditAdmin = () => {
                               </div>
                             </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
                           </div>
+                          <Controller
+                            name={`sAvatar`}
+                            control={control}
+                            rules={{
+                              required: "Please add admin profile",
+                              validate: {
+                                fileType: (value) => {
+                                  if (value && typeof (watch(`sAvatar`)) !== 'string') {
+                                    const allowedFormats = ['jpeg', 'png', 'jpg', 'JPEG', 'PNG', 'JPG'];
+                                    const fileExtension = value.name.split('.').pop().toLowerCase();
+
+                                    if (!allowedFormats.includes(fileExtension)) {
+                                      return "Unsupported image format";
+                                    }
+
+                                    const maxSize = 1 * 1000 * 1000; // 1MB in bytes
+                                    if (value.size >= maxSize) {
+                                      return "Image size must be less than 1MB";
+                                    }
+                                  }
+                                  return true;
+                                },
+                              }
+                            }}
+                            render={({ field: { onChange, value, ref } }) => {
+                              return <>
+                                <Form.Control
+                                  ref={(e) => {
+                                    ref(e);
+                                    fileInputRef.current = e;
+                                  }}
+                                  type='file'
+                                  name={`sAvatar`}
+                                  accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
+                                  errors={errors}
+                                  className={errors?.sAvatar && 'error'}
+                                  onChange={(e) => {
+                                    onChange(e.target.files[0])
+                                  }}
+                                />
+                              </>
+                            }}
+                          />
                         </div>
 
                         <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
@@ -170,16 +163,15 @@ const EditAdmin = () => {
                         errors={errors}
                         className={`form-control ${errors?.sUserName && 'error'}`}
                         name='sUserName'
-                        defaultValue={data?.sUserName}
                         label='Name'
                         placeholder='Enter the name'
                         required
-                        maxLength={50}
                         onChange={(e) => {
                           e.target.value =
                             e.target.value?.trim() &&
                             e.target.value.replace(/^[0-9]+$/g, '')
                         }}
+                        maxLength={50}
                         validation={{
                           required: {
                             value: true,
@@ -201,7 +193,7 @@ const EditAdmin = () => {
                       />
                     </Col>
 
-                    <Col lg={6} md={12}>
+                    <Col lg={6} md={12} className='mt-lg-0 mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -209,7 +201,6 @@ const EditAdmin = () => {
                         className={`form-control ${errors?.sCompanyName && 'error'}`}
                         name='sCompanyName'
                         label='Company Name'
-                        maxLength={20}
                         placeholder='Enter the company name'
                         required
                         onChange={(e) => {
@@ -217,6 +208,7 @@ const EditAdmin = () => {
                             e.target.value?.trim() &&
                             e.target.value.replace(/^[0-9]+$/g, '')
                         }}
+                        maxLength={20}
                         validation={{
                           required: {
                             value: true,
@@ -248,7 +240,20 @@ const EditAdmin = () => {
                         label='Email ID'
                         placeholder='Enter the email address'
                         required
-                        disabled
+                        validation={{
+                          pattern: {
+                            value: EMAIL,
+                            message: 'Provide a valid email address.'
+                          },
+                          required: {
+                            value: true,
+                            message: validationErrors?.emailRequired
+                          },
+                          maxLength: {
+                            value: 45,
+                            message: 'Email address must be less than 45 char long.'
+                          }
+                        }}
                       />
                     </Col>
 
@@ -300,7 +305,7 @@ const EditAdmin = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={6} className='mt-2'>
+                    <Col lg={6} md={12} className='mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -347,7 +352,7 @@ const EditAdmin = () => {
                           rules={{
                             required: {
                               value: true,
-                              message: 'Game name(s) are required'
+                              message: 'Game name(s) are required.'
                             }
                           }}
                           render={({ field: { onChange, value, ref } }) => (
@@ -355,11 +360,11 @@ const EditAdmin = () => {
                               placeholder='Select Games...'
                               ref={ref}
                               options={eGameDropdown}
+                              components={makeAnimated()}
                               className={`react-select border-0 ${errors.aGamesName && 'error'}`}
                               classNamePrefix='select'
-                              isSearchable={true}
+                              isSearchable={false}
                               value={value}
-                              components={makeAnimated()}
                               onChange={onChange}
                               isMulti={true}
                               getOptionLabel={(option) => option.sName}
@@ -482,8 +487,8 @@ const EditAdmin = () => {
 
                     <Row className='mt-4'>
                       <Col sm={12}>
-                        <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
-                          Update Admin
+                        <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
+                          Add Doctor {isLoading && <Spinner animation='border' size='sm' />}
                         </Button>
                         <Button variant='secondary' className='square' onClick={() => navigate(route.admin)}>
                           Cancel
@@ -501,4 +506,4 @@ const EditAdmin = () => {
   )
 }
 
-export default EditAdmin
+export default AddAdmin

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { useMutation } from 'react-query'
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -8,13 +8,12 @@ import CommonInput from 'shared/components/CommonInput'
 import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import { fileToDataUri } from 'helper/helper'
 import { addGame } from 'query/game/game.mutation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { eGameCategoryOption } from 'shared/constants/TableHeaders'
 import Select from 'react-select'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
 
 const AddGame = () => {
     const navigate = useNavigate()
@@ -25,54 +24,34 @@ const AddGame = () => {
     const [isButtonDisabled, setButtonDisabled] = useState(false)
 
     // ADD GAME
-    const { mutate } = useMutation(addGame, {
+    const { mutate, isLoading } = useMutation(addGame, {
         onSuccess: (res) => {
-            toast.success('New Game Added Successfully!', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "light",
-                transition: Zoom,
-            })
+            ReactToastify('New Game Added Successfully!', 'success')
             navigate(route.game)
             reset()
+        },
+        onError: (err) => {
+            ReactToastify('Oops! Something went wrong. Please try again later.', 'error')
         }
     })
 
     async function onSubmit (data) {
+        const formData = new FormData()
+
         if (isButtonDisabled) {
             return;
         }
 
         setButtonDisabled(true)
 
-        let addData = {
-            sName: data?.sName || '',
-            sDescription: data?.sDescription || '',
-            sUrl: '',
-            sAvatar: '',
-            eCategory: data?.eCategory?.value,
-            sVersion: data?.sVersion
-        }
+        formData.append('sName', data?.sName || '')
+        formData.append('sDescription', data?.sDescription || '')
+        formData.append('sUrl', await data?.sUrl || '')
+        formData.append('sAvatar', await data?.sAvatar || '')
+        formData.append('eCategory', data?.eCategory?.value || '')
+        formData.append('sVersion', data?.sVersion || '')
 
-        const sAvatarFile = data?.sAvatar
-
-        if (sAvatarFile) {
-            const dataAvatar = await fileToDataUri(sAvatarFile);
-            addData.sAvatar = dataAvatar;
-        }
-
-        const sBundleFile = data?.sUrl
-
-        if (sBundleFile) {
-            const dataUri = await fileToDataUri(sBundleFile);
-            addData.sUrl = dataUri;
-        }
-
-        mutate(addData)
+        mutate(formData)
 
         setTimeout(() => {
             setButtonDisabled(false)
@@ -125,7 +104,7 @@ const AddGame = () => {
                                                                         const fileExtension = value.name.split('.').pop().toLowerCase();
 
                                                                         if (!allowedFormats.includes(fileExtension)) {
-                                                                            return "Unsupported file format";
+                                                                            return "Unsupported image format";
                                                                         }
 
                                                                         const maxSize = 1 * 1000 * 1000; // 1MB in bytes
@@ -359,7 +338,7 @@ const AddGame = () => {
                                     <Row className='mt-3'>
                                         <Col sm={12}>
                                             <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
-                                                Add Game
+                                                Add Game {isLoading && <Spinner animation='border' size='sm' />}
                                             </Button>
                                             <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
                                                 Cancel

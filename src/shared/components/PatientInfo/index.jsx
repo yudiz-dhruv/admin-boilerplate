@@ -26,6 +26,10 @@ const PatientInfo = ({ data }) => {
                         <span className='data-label'>Strabismus</span>
                         <span className='data-value capitalize'>{data?.eStrabismus}</span>
                     </div>
+                    <div className='patient-content'>
+                        <span className='data-label'>Status</span>
+                        <span className='data-value capitalize'>-</span>
+                    </div>
                 </div>
             </div>
         </>

@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { motion } from 'framer-motion'
 
-const DominantEyeSettings = ({ buttonToggle, setButtonToggle }) => {
+const DominantEyeSettings = ({ buttonToggle, setButtonToggle, defaultData, reset }) => {
     const tabs = [
         { key: 'left', label: 'Left' },
         { key: 'right', label: 'Right' },
         { key: 'none', label: 'None' },
     ]
+
+    useEffect(() => {
+        setButtonToggle({ [defaultData?.oSetting?.eDominantEye]: true })
+    }, [defaultData, setButtonToggle])
 
     return (
         <>

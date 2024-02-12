@@ -1,15 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Form } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 
-const MonocularModeSettings = ({ control, errors }) => {
+const MonocularModeSettings = ({ control, errors, defaultData, reset }) => {
     const [monocularMode, setMonocularMode] = useState('y')
 
     const handleMonocularMode = (status, id) => {
         status ? setMonocularMode('y') : setMonocularMode('n')
     }
+
+    useEffect(() => {
+        reset({
+            bMonocularMode: defaultData?.oSetting?.bMonocularMode
+        })
+    }, [defaultData, reset])
     return (
         <>
             <h3 className='data-title'><FontAwesomeIcon icon={faEye} color='var(--secondary-500)' size='sm' /> Monocular Mode</h3>

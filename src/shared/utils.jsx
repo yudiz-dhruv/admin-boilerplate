@@ -1,3 +1,5 @@
+import { Bounce, toast } from "react-toastify"
+
 /* eslint-disable no-restricted-globals */
 export const range = (start, end) => {
   const length = end - start + 1
@@ -69,5 +71,36 @@ export const ordinalSuffix = num => {
     return `rd`
   } else {
     return `th`
+  }
+}
+
+export const ReactToastify = (msg, type) => {
+  switch (type) {
+    case 'success':
+      toast.success(msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      })
+      break;
+    case 'error':
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      })
+      break;
+    default:
+      break;
   }
 }

@@ -12,7 +12,7 @@ import { route } from 'shared/constants/AllRoutes'
 import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
-import { Zoom, toast } from 'react-toastify'
+import { ReactToastify } from 'shared/utils'
 
 const EditPatient = () => {
     const location = useLocation()
@@ -46,30 +46,12 @@ const EditPatient = () => {
     const { mutate: updateMutate } = useMutation(updatePatient, {
         onSettled: (response, err) => {
             if (response) {
-                toast.success('Patient Record Updated Successfully!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify('Patient Record Updated Successfully!', 'success')
                 navigate(route.patient)
 
                 reset()
             } else {
-                toast.error(err.data.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify(err?.data?.message, 'error')
             }
         }
     })

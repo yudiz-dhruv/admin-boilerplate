@@ -93,7 +93,7 @@ export const ePowerUpDuration = [
 ]
 
 export const ePowerUpDelay = [
-    { label: 'Very Low', value: 'very low' },
+    { label: 'Very Low', value: 'veryLow' },
     { label: 'Low', value: 'low' },
     { label: 'Medium', value: 'medium' },
     { label: 'High', value: 'high' },
@@ -141,11 +141,11 @@ export const eTargetSpeed = [
 ]
 
 export const eButtonCount = [
-    { label: 'Very Less', value: 'very less' },
+    { label: 'Very Less', value: 'veryLess' },
     { label: 'Less', value: 'less' },
     { label: 'Normal', value: 'normal' },
     { label: 'High', value: 'high' },
-    { label: 'Very High', value: 'very high' }
+    { label: 'Very High', value: 'veryHigh' }
 ]
 
 export const eHorizontalBiasOption = [
@@ -171,9 +171,9 @@ export const eHeadlockType = [
 ]
 
 export const eTurboGameType = [
-    { label: 'Hit All', value: 'hit-all' },
-    { label: 'Avoid Selected', value: 'avoid-selected' },
-    { label: 'Hit Selected', value: 'hit selected' }
+    { label: 'Hit All', value: 'hitAll' },
+    { label: 'Avoid Selected', value: 'avoidSelected' },
+    { label: 'Hit Selected', value: 'hitSelected' }
 ]
 
 export const eTurboHammerType = [
@@ -194,7 +194,7 @@ export const eHoopieLevels = [
 ]
 
 export const eHoopSize = [
-    { label: 'Very Low', value: 'very low' },
+    { label: 'Very Low', value: 'veryLow' },
     { label: 'Low', value: 'low' },
     { label: 'Medium', value: 'medium' },
     { label: 'High', value: 'high' },

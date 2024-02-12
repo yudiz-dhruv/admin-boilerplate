@@ -42,122 +42,6 @@
                 .form-content {
                     display: block;
                     width: 100%;
-
-                    .subTitle {
-                        font-size: 10px;
-                        color: var(--secondary-400);
-                    }
-
-                    .ringRunner {
-                        margin-bottom: 15px;
-
-                        .tabs {
-                            display: flex;
-                            gap: 10px;
-                            width: fit-content;
-                            position: relative;
-                            padding: 4px;
-                            border-radius: 99px;
-                            background-color: var(--primary-color) !important;
-                            border-radius: 50px;
-                            margin-top: 0 !important;
-                            overflow: hidden;
-
-                            * {
-                                z-index: 2;
-                            }
-
-                            button {
-                                background-color: transparent !important;
-                                border: none !important;
-                                color: var(--white-color);
-                                transition: all 0.3s ease-in-out;
-                                font-family: 'Helvetica-Bold';
-                                padding: 5px 13px;
-                                font-size: 12px;
-                                letter-spacing: 0.8px;
-
-                                &:hover {
-                                    box-shadow: none !important;
-                                    color: var(--white-color) !important;
-                                }
-
-                                &.checked {
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    background-color: var(--white-color) !important;
-
-                                    span {
-                                        color: var(--primary-color) !important;
-                                        font-weight: 600;
-                                        cursor: pointer;
-                                        transition: color 0.3s ease-in-out;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    .tabs {
-                        display: flex;
-                        width: fit-content;
-                        position: relative;
-                        padding: 4px;
-                        gap: 8px;
-                        background-color: var(--primary-color) !important;
-                        border-radius: 99px;
-                        margin-top: 0 !important;
-                        overflow: hidden;
-
-                        * {
-                            z-index: 2;
-                        }
-
-                        button {
-                            background-color: transparent !important;
-                            border: none !important;
-                            color: var(--white-color);
-                            transition: all 0.3s ease-in-out;
-                            padding: 3px 8px;
-                            font-size: 18px;
-                            border-radius: 99px;
-                            margin: 0;
-
-                            span {
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-
-                                svg {
-                                    transform: rotate(0deg);
-                                }
-                            }
-
-                            &:hover {
-                                svg {
-                                    box-shadow: none !important;
-                                    color: var(--white-color) !important;
-                                }
-                            }
-
-                            &.checked {
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                background-color: var(--white-color) !important;
-
-                                span {
-
-                                    svg {
-                                        color: var(--primary-color) !important;
-                                        cursor: pointer;
-                                        transition: color 0.3s ease-in-out;
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
 
                 .skeleton-button {
@@ -364,6 +248,174 @@
                 }
             }
         }
+    }
+}
+
+
+#game-setting-modal {
+    .modal-header {
+        padding: 20px 35px;
+
+        .game-setting-modal-header {
+            width: 100%;
+            color: var(--primary-color);
+            font-family: 'Helvetica-Bold';
+            letter-spacing: 1px;
+            font-size: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .game-setting-modal-header::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 1px;
+            background-color: var(--secondary-200);
+            position: relative;
+        }
+    }
+
+    .modal-body {
+        padding-top: 0;
+        padding-bottom: 10px;
+
+        .form-group {
+            text-align: start;
+            margin: 0;
+
+            .form-label {
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .subTitle {
+                font-size: 10px;
+                color: var(--secondary-400);
+                position: relative;
+                top: 3px;
+                left: 3px;
+            }
+
+            &.ringRunner {
+                margin-bottom: 15px;
+
+                .tabs {
+                    display: flex;
+                    gap: 10px;
+                    width: fit-content;
+                    position: relative;
+                    padding: 4px;
+                    border-radius: 99px;
+                    background-color: var(--primary-color) !important;
+                    border-radius: 50px;
+                    margin-top: 0 !important;
+                    overflow: hidden;
+
+                    * {
+                        z-index: 2;
+                    }
+
+                    button {
+                        background-color: transparent !important;
+                        border: none !important;
+                        color: var(--white-color);
+                        transition: all 0.3s ease-in-out;
+                        font-family: 'Helvetica-Bold';
+                        padding: 5px 13px;
+                        font-size: 12px;
+                        letter-spacing: 0.8px;
+
+                        &:hover {
+                            box-shadow: none !important;
+                            color: var(--white-color) !important;
+                        }
+
+                        &.checked {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background-color: var(--white-color) !important;
+
+                            span {
+                                color: var(--primary-color) !important;
+                                font-weight: 600;
+                                cursor: pointer;
+                                transition: color 0.3s ease-in-out;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .tabs {
+                display: flex;
+                width: fit-content;
+                position: relative;
+                padding: 4px;
+                gap: 8px;
+                background-color: var(--primary-color) !important;
+                border-radius: 99px;
+                margin-top: 0 !important;
+                overflow: hidden;
+
+                * {
+                    z-index: 2;
+                }
+
+                button {
+                    background-color: transparent !important;
+                    border: none !important;
+                    color: var(--white-color);
+                    transition: all 0.3s ease-in-out;
+                    padding: 3px 8px;
+                    font-size: 18px;
+                    border-radius: 99px;
+                    margin: 0;
+
+                    span {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        svg {
+                            transform: rotate(0deg);
+                        }
+                    }
+
+                    &:hover {
+                        svg {
+                            box-shadow: none !important;
+                            color: var(--white-color) !important;
+                        }
+                    }
+
+                    &.checked {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background-color: var(--white-color) !important;
+
+                        span {
+
+                            svg {
+                                color: var(--primary-color) !important;
+                                cursor: pointer;
+                                transition: color 0.3s ease-in-out;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        position: relative;
+        bottom: 20px;
+        padding-right: 30px;
     }
 }
 
@@ -663,6 +715,14 @@ body.dark {
                 .wrapper {
                     box-shadow: 0px 0px 15px 2px rgba(117, 229, 190, 0.35) !important;
                 }
+            }
+        }
+    }
+
+    #game-setting-modal {
+        .modal-body {
+            .wrapper {
+                box-shadow: 0px 0px 15px 2px rgba(117, 229, 190, 0.35) !important;
             }
         }
     }

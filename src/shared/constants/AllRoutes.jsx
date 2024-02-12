@@ -8,10 +8,10 @@ export const route = {
   dashboard: '/dashboard',
   // pageNotFound: '/404',
 
-  admin: '/admin-management',
-  addAdmin: '/admin-management/add',
-  viewAdmin: (id) => `/admin-management/view/${id}`,
-  editAdmin: (id) => `/admin-management/edit/${id}`,
+  admin: '/doctor-management',
+  addAdmin: '/doctor-management/add',
+  viewAdmin: (id) => `/doctor-management/view/${id}`,
+  editAdmin: (id) => `/doctor-management/edit/${id}`,
 
   game: '/game-management',
   addGame: '/game-management/add',

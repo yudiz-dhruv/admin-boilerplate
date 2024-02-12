@@ -1,3 +1,7 @@
+.tooltip {
+    --bs-tooltip-opacity: 1;
+}
+
 .tooltip-arrow::before {
     border-top-color: var(--primary-color) !important;
 }

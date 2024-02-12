@@ -107,8 +107,7 @@ function EditProfileComponent ({ register, errors, updateFlag }) {
           className={`form-control ${errors?.eUserType && 'error'}`}
           name='eUserType'
           label='User Type'
-          disabled={!updateFlag}
-          updateFlag={updateFlag}
+          disabled
           placeholder='Enter the user type'
         />
       </Col>

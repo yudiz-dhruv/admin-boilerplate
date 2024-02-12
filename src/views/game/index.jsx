@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { appendParams, parseParams } from 'shared/utils'
+import { ReactToastify, appendParams, parseParams } from 'shared/utils'
 import TopBar from 'shared/components/Topbar'
 import { route } from 'shared/constants/AllRoutes'
 import DataTable from 'shared/components/DataTable'
@@ -11,7 +11,6 @@ import { getGameList } from 'query/game/game.query'
 import GameList from 'shared/components/GameList'
 import { deleteGame } from 'query/game/game.mutation'
 import GamelistFilters from 'shared/components/GameListFilters'
-import { Zoom, toast } from 'react-toastify'
 
 const GameManagement = () => {
   const location = useLocation()
@@ -58,28 +57,10 @@ const GameManagement = () => {
     onSettled: (res, err) => {
       if (res) {
         query.invalidateQueries('gameList')
-        toast.success('Game Deleted Successfully!', {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "light",
-          transition: Zoom,
-        })
+        ReactToastify('Game Deleted Successfully!', 'success')
         setModal({ open: false, type: '' })
       } else {
-        toast.error(err?.response?.data?.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "light",
-          transition: Zoom,
-        })
+        ReactToastify(err?.response?.data?.message, 'error')
         setModal({ open: false, type: '' })
       }
     }
@@ -162,7 +143,7 @@ const GameManagement = () => {
           header={{
             left: {
               rows: true,
-              component: true
+              component: true,
             },
             right: {
               search: true,

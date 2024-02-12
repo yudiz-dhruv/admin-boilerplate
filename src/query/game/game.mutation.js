@@ -5,7 +5,7 @@ export async function addGame (data) {
 }
 
 export async function updateGame (data) {
-    return await axios.put(`/game/edit/${data?.id}`, data)
+    return await axios.put(`/game/edit/${data?.id}`, data?.formData)
 }
 
 export async function deleteGame(id) {

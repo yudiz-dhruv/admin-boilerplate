@@ -28,6 +28,7 @@ function SideBar ({ isOpen, setIsOpen }) {
         <Button onClick={() => setIsOpen(!isOpen)} variant='link' className='open-btn square lh-1 p-1'>
           <i className='icon-sidebar'></i>
         </Button>
+        {isOpen ? <span className='version'>version: <span className='version-value'>0.0.1</span></span> : ''}
       </div>
     </div>
   )

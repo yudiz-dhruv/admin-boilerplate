@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Col, Form, Row, Spinner } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import Wrapper from 'shared/components/Wrap';
 import { useForm, Controller } from 'react-hook-form'
@@ -8,23 +8,22 @@ import { useMutation, useQuery } from 'react-query';
 import { getGameById } from 'query/game/game.query';
 import { eGameCategoryOption } from 'shared/constants/TableHeaders';
 import { updateGame } from 'query/game/game.mutation';
-import { fileToDataUri, getDirtyFormValues } from 'helper/helper';
 import { route } from 'shared/constants/AllRoutes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import CommonInput from 'shared/components/CommonInput';
 import { validationErrors } from 'shared/constants/ValidationErrors';
 import Select from 'react-select'
-import { Zoom, toast } from 'react-toastify';
+import { ReactToastify } from 'shared/utils';
 
 const EditGame = () => {
     const navigate = useNavigate()
     const { id } = useParams()
+    const fileInputRef = useRef(null)
 
-    const { register, handleSubmit, formState: { errors, isDirty, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
+    const { register, handleSubmit, formState: { errors, isDirty }, control, reset, watch } = useForm({ mode: 'all' })
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
-    const [payload, setPayload] = useState()
     const [assetFile, setAssetFile] = useState()
 
     // SPECIFIC GAME
@@ -42,64 +41,46 @@ const EditGame = () => {
     }, [data])
 
     // EDIT GAME
-    const { mutate: updateMutate } = useMutation(updateGame, {
+    const { mutate: updateMutate, isLoading } = useMutation(updateGame, {
         onSettled: (response, err) => {
             if (response) {
-                toast.success('Game Updated Successfully!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify('Game Updated Successfully!', 'success')
                 navigate(route.game)
 
                 reset()
             } else {
-                toast.error(err.data.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "light",
-                    transition: Zoom,
-                })
+                ReactToastify(err.data.message || 'Oops! Something went wrong. Please try again later.', 'error')
             }
         }
     })
-
-    useEffect(() => {
-        const isDirtyData = {
-            sName: watch('sName'),
-            sUrl: watch('sUrl'),
-            sDescription: watch('sDescription'),
-            eCategory: watch('eCategory')?.value,
-            sVersion: watch('sVersion')
-        }
-
-        const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
-        setPayload(payloadData)
-    }, [dirtyFields, watch('sName'), watch('sDescription'), watch('sUrl'), watch('eCategory'), watch('sVersion')])
 
     async function onSubmit (data) {
         if (isButtonDisabled) {
             return;
         }
 
+        const formData = new FormData()
+
+        formData.append('sAvatar', data?.sAvatar)
+        formData.append('sName', data?.sName)
+        formData.append('sUrl', data?.sUrl)
+        formData.append('sDescription', data?.sDescription)
+        formData.append('eCategory', data?.eCategory?.value)
+        formData.append('sVersion', data?.sVersion)
+
         setButtonDisabled(true)
 
-        const sBundleFile = data?.sUrl ? data?.sUrl : assetFile?.previousFile;
-
-        updateMutate({ ...payload, sUrl: sBundleFile && await fileToDataUri(sBundleFile), id })
+        updateMutate({ formData, id })
 
         setTimeout(() => {
             setButtonDisabled(false)
         }, 5000)
+    }
+
+    const handleFileInputClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click()
+        }
     }
 
     useEffect(() => {
@@ -119,8 +100,9 @@ const EditGame = () => {
                                             <div className='fileinput'>
                                                 <div className='inputtypefile'>
                                                     <div className='inputMSG'>
-                                                        {!errors?.sAvatar && watch('sAvatar') ? <>
+                                                        {watch('sAvatar') ? <>
                                                             <div className="document-preview-group">
+                                                                <div className='img-over' onClick={handleFileInputClick}>Change Game Logo</div>
                                                                 {watch('sAvatar') && (
                                                                     typeof (watch('sAvatar')) !== 'string'
                                                                         ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
@@ -129,6 +111,49 @@ const EditGame = () => {
                                                             </div>
                                                         </> : <span><FontAwesomeIcon icon={faCamera} /></span>}
                                                     </div>
+                                                    <Controller
+                                                        name={`sAvatar`}
+                                                        control={control}
+                                                        rules={{
+                                                            required: "Please upload game logo",
+                                                            validate: {
+                                                                fileType: (value) => {
+                                                                    if (value && typeof (watch(`sAvatar`)) !== 'string') {
+                                                                        const allowedFormats = ['jpeg', 'png', 'jpg', 'JPEG', 'PNG', 'JPG'];
+                                                                        const fileExtension = value.name.split('.').pop().toLowerCase();
+
+                                                                        if (!allowedFormats.includes(fileExtension)) {
+                                                                            return "Unsupported image format";
+                                                                        }
+
+                                                                        const maxSize = 1 * 1000 * 1000; // 1MB in bytes
+                                                                        if (value.size >= maxSize) {
+                                                                            return "Image size must be less than 1MB";
+                                                                        }
+                                                                    }
+                                                                    return true;
+                                                                },
+                                                            }
+                                                        }}
+                                                        render={({ field: { onChange, value, ref } }) => {
+                                                            return <>
+                                                                <Form.Control
+                                                                    ref={(e) => {
+                                                                        ref(e);
+                                                                        fileInputRef.current = e;
+                                                                    }}
+                                                                    type='file'
+                                                                    name={`sAvatar`}
+                                                                    accept='.jpg,.jpeg,.png,.JPEG,.JPG,.PNG'
+                                                                    errors={errors}
+                                                                    className={errors?.sAvatar && 'error'}
+                                                                    onChange={(e) => {
+                                                                        onChange(e.target.files[0])
+                                                                    }}
+                                                                />
+                                                            </>
+                                                        }}
+                                                    />
                                                 </div>
 
                                                 <span className='card-error'>{errors && errors?.sAvatar && <Form.Control.Feedback type="invalid">{errors?.sAvatar.message}</Form.Control.Feedback>}</span>
@@ -258,9 +283,14 @@ const EditGame = () => {
                                                                 fileType: (value) => {
                                                                     if (value && typeof (watch(`sUrl`)) !== 'string') {
                                                                         const allowedFormats = ['bundle', 'BUNDLE'];
-                                                                        const fileExtension = value.name?.split('.').pop().toLowerCase();
+                                                                        // const fileExtension = value.name.split('.').pop().toLowerCase();
+                                                                        let fileExtension = '';
 
-                                                                        if (!allowedFormats.includes(fileExtension)) {
+                                                                        if (value.name.includes('.')) {
+                                                                            fileExtension = value.name.split('.').pop().toLowerCase();
+                                                                        }
+
+                                                                        if (fileExtension && !allowedFormats.includes(fileExtension)) {
                                                                             return "Unsupported file format";
                                                                         }
 
@@ -334,7 +364,7 @@ const EditGame = () => {
                                     <Row className='mt-3'>
                                         <Col sm={12}>
                                             <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
-                                                Update Game
+                                                Update Game {isLoading && <Spinner animation='border' size='sm' />}
                                             </Button>
                                             <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
                                                 Cancel

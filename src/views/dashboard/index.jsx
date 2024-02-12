@@ -181,14 +181,14 @@ function Dashboard () {
                 </Col>
               </>}
           </Row>
-          <Row>
+          {/* <Row>
             <Col xxl={6} xl={6} lg={12} className='active-user mt-3'>
               <Wrapper>
                 <h3>Revenue</h3>
                 <ReactApexChart options={GRAPH_OPTIONS?.options} series={GRAPH_OPTIONS.series} type="bar" height={350} />
               </Wrapper>
             </Col>
-          </Row>
+          </Row> */}
         </>
       )}
     </div>

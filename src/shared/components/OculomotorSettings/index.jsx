@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Wrapper from '../Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import Select from 'react-select'
 import { eButtonCount, eButtonSize, eHorizontalBiasOption, eTargetSpawnType, eTargetSpeed, eTargetStayDurationOption, eTurboGameType, eTurboHammerType, eVerticallBiasOption } from 'shared/constants/TableHeaders'
@@ -12,19 +12,14 @@ import CommonInput from '../CommonInput'
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 
-const OculomotorSettings = ({ buttonToggle, setButtonToggle, control, errors, watch, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, setGameStarted }) => {
+const OculomotorSettings = (props) => {
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, setGameStarted, headLockMode, setHeadLockMode, data } = props
+
     const [tabButtons, setTabButtons] = useState([])
-    const [techMode, setTechMode] = useState('n')
+    const [modal, setModal] = useState(false)
 
-    useEffect(() => {
-        if (!games) {
-            return;
-        }
-
-        const gameTabs = games?.filter(game => game?.eCategory === 'oculomotor')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
-        const modifiedTabs = [...(gameTabs || [])]
-        setTabButtons(modifiedTabs)
-    }, [games])
+    const TURBO_NORMAL_GAME_STRUCTURE = data?.filter(item => item?.sName === 'turbo')?.find(mode => mode?.sMode === 'turbo')
+    const TURBO_HAMMER_GAME_STRUCTURE = data?.filter(item => item?.sName === 'turbo')?.find(mode => mode?.sMode === 'hammer')
 
     const LABELS = {
         TITLE: 'Oculomotor',
@@ -44,8 +39,31 @@ const OculomotorSettings = ({ buttonToggle, setButtonToggle, control, errors, wa
         TARGET_SPEED: 'Target Speed',
     }
 
+    useEffect(() => {
+        if (!games) {
+            return;
+        }
+
+        const gameTabs = games?.filter(game => game?.eCategory === 'oculomotor')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
+        const modifiedTabs = [...(gameTabs || [])]
+        setTabButtons(modifiedTabs)
+    }, [games])
+
     const handleConfirmStatus = (status, id) => {
-        status ? setTechMode('y') : setTechMode('n')
+        status ? setHeadLockMode('y') : setHeadLockMode('n')
+    }
+
+    const handleTabs = (e, tab) => {
+        e?.preventDefault()
+
+        setButtonToggle({ [tab.key]: true })
+        setModal({ open: true, type: tab?.key, data: tab })
+    }
+
+    const handleClose = (e) => {
+        e?.preventDefault()
+
+        setModal({ open: false, type: '', data: modal?.data })
     }
     return (
         <>
@@ -65,483 +83,567 @@ const OculomotorSettings = ({ buttonToggle, setButtonToggle, control, errors, wa
                     </div>
                 </>
                     : tabButtons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={() => setButtonToggle({ [tab.key]: true })} disabled={buttonToggle[tab.key] !== true && gameStarted}>
+                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
                     ))
                 }
 
                 {buttonToggle?.turbo && (
-                    <motion.div className='mt-3 form-content' initial={{ y: 10, opacity: 0 }}
-                        animate={{ y: 0, opacity: buttonToggle?.turbo ? 1 : 0 }}
-                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                        <Wrapper>
-                            <Row>
-                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                    <CommonInput
-                                        label={LABELS?.GAME_DURATION}
-                                        type='text'
-                                        register={register}
-                                        errors={errors}
-                                        className={`form-control ${errors?.nTurboGameDuration && 'error'}`}
-                                        name='nTurboGameDuration'
-                                        placeholder='Game duration (i.e.: in minutes)'
-                                        validation={{
-                                            pattern: {
-                                                value: /^[0-9]+$/,
-                                                message: 'Only numbers are allowed'
-                                            },
-                                            max: {
-                                                value: 30,
-                                                message: 'Game duration must be less than 30 minutes.'
-                                            },
-                                            min: {
-                                                value: 1,
-                                                message: 'Game duration should be atleast 1 minute.'
-                                            }
-                                        }}
-                                        min={1}
-                                        maxLength={2}
-                                        onChange={(e) => {
-                                            e.target.value =
-                                                e.target.value?.trim() &&
-                                                e.target.value.replace(/^[a-zA-z]+$/g, '')
-                                        }}
-                                    />
-                                </Col>
-                                <Col xxl={6} xl={6} lg={6} sm={12}>
-                                    <div className='ringRunner'>
-                                        <Form.Group className='form-group'>
-                                            <Form.Label>Game Mode</Form.Label>
+                    <Modal show={modal?.type === 'turbo'} onHide={(e) => handleClose(e)} id='game-setting-modal' size='lg'>
+                        <Form className='step-one form-content' autoComplete='off'>
+                            <Modal.Header closeButton>
+                                <Modal.Title className='game-setting-modal-header'>{modal?.data?.label} Game Settings</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Row>
+                                    <Col xxl={6} xl={6} lg={6} sm={12}>
+                                        <CommonInput
+                                            label={LABELS?.GAME_DURATION}
+                                            type='text'
+                                            register={register}
+                                            errors={errors}
+                                            className={`form-control ${errors?.nTurboGameDuration && 'error'}`}
+                                            name='nTurboGameDuration'
+                                            defaultValue={TURBO_NORMAL_GAME_STRUCTURE?.nDuration}
+                                            placeholder='Game duration (i.e.: in minutes)'
+                                            validation={{
+                                                pattern: {
+                                                    value: /^[0-9]+$/,
+                                                    message: 'Only numbers are allowed'
+                                                },
+                                                max: {
+                                                    value: 30,
+                                                    message: 'Game duration must be less than 30 minutes.'
+                                                },
+                                                min: {
+                                                    value: 1,
+                                                    message: 'Game duration should be atleast 1 minute.'
+                                                }
+                                            }}
+                                            min={1}
+                                            maxLength={2}
+                                            onChange={(e) => {
+                                                e.target.value =
+                                                    e.target.value?.trim() &&
+                                                    e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                            <div className='tabs'>
-                                                <motion.div
-                                                    whileTap={{ scale: 0.9 }}>
-                                                    <Button type='button' className={`${turboGameMode?.turbo ? 'checked' : ''}`} onClick={() => setTurboGameMode({ turbo: true })}>
-                                                        <span className='tab'>Turbo</span>
-                                                    </Button>
-                                                </motion.div>
+                                                if (gameStarted) {
+                                                    setGameStarted(false)
+                                                }
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col xxl={6} xl={6} lg={6} sm={12}>
+                                        <div className=''>
+                                            <Form.Group className='form-group ringRunner'>
+                                                <Form.Label>Game Mode</Form.Label>
 
-                                                <motion.div
-                                                    whileTap={{ scale: 0.9 }}>
-                                                    <Button type='button' className={`${turboGameMode?.hammer ? 'checked' : ''}`} onClick={() => setTurboGameMode({ hammer: true })}>
-                                                        <span className='tab'>Hammer</span>
-                                                    </Button>
-                                                </motion.div>
-                                            </div>
-                                        </Form.Group>
-                                    </div>
-                                </Col>
-                            </Row>
+                                                <div className='tabs'>
+                                                    <motion.div
+                                                        whileTap={{ scale: 0.9 }}>
+                                                        <Button type='button' className={`${turboGameMode?.turbo ? 'checked' : ''}`} onClick={() => {
+                                                            setTurboGameMode({ turbo: true })
+                                                            if (gameStarted) {
+                                                                setGameStarted(false)
+                                                            }
+                                                        }}>
+                                                            <span className='tab'>Turbo</span>
+                                                        </Button>
+                                                    </motion.div>
 
-                            {turboGameMode?.turbo && <>
-                                <motion.div initial={{ y: 10, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                                    <Wrapper>
-                                        <Row>
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.BUTTON_SIZE}</Form.Label>
-                                                    <Controller
-                                                        name='sTurboButtonSize'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select button size'
-                                                                ref={ref}
-                                                                defaultValue={eButtonSize[0]}
-                                                                options={eButtonSize}
-                                                                className={`react-select border-0 ${errors.sTurboButtonSize && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sTurboButtonSize && (<Form.Control.Feedback type='invalid'>{errors.sTurboButtonSize.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                    <motion.div
+                                                        whileTap={{ scale: 0.9 }}>
+                                                        <Button type='button' className={`${turboGameMode?.hammer ? 'checked' : ''}`} onClick={() => {
+                                                            setTurboGameMode({ hammer: true })
+                                                            if (gameStarted) {
+                                                                setGameStarted(false)
+                                                            }
+                                                        }}>
+                                                            <span className='tab'>Hammer</span>
+                                                        </Button>
+                                                    </motion.div>
+                                                </div>
+                                            </Form.Group>
+                                        </div>
+                                    </Col>
+                                </Row>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.BUTTON_COUNT}</Form.Label>
-                                                    <Controller
-                                                        name='sTurboButtonCount'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select button counts'
-                                                                ref={ref}
-                                                                defaultValue={eButtonCount[0]}
-                                                                options={eButtonCount}
-                                                                className={`react-select border-0 ${errors.sTurboButtonCount && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sTurboButtonCount && (<Form.Control.Feedback type='invalid'>{errors.sTurboButtonCount.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                {turboGameMode?.turbo && <>
+                                    <motion.div initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                        <Wrapper>
+                                            <Row>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.BUTTON_SIZE}</Form.Label>
+                                                        <Controller
+                                                            name='sTurboButtonSize'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select button size'
+                                                                    ref={ref}
+                                                                    defaultValue={eButtonSize?.find(size => size?.value === TURBO_NORMAL_GAME_STRUCTURE?.sButtonSize)}
+                                                                    options={eButtonSize}
+                                                                    className={`react-select border-0 ${errors.sTurboButtonSize && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sTurboButtonSize && (<Form.Control.Feedback type='invalid'>{errors.sTurboButtonSize.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.HORIZONTAL_BIAS}</Form.Label>
-                                                    <Controller
-                                                        name='sHorizontalBias'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select horizontal bias'
-                                                                ref={ref}
-                                                                defaultValue={eHorizontalBiasOption[0]}
-                                                                options={eHorizontalBiasOption}
-                                                                className={`react-select border-0 ${errors.sHorizontalBias && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sHorizontalBias && (<Form.Control.Feedback type='invalid'>{errors.sHorizontalBias.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.BUTTON_COUNT}</Form.Label>
+                                                        <Controller
+                                                            name='sTurboButtonCount'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select button counts'
+                                                                    ref={ref}
+                                                                    defaultValue={eButtonCount?.find(count => count?.value === TURBO_NORMAL_GAME_STRUCTURE?.sButtonCount)}
+                                                                    options={eButtonCount}
+                                                                    className={`react-select border-0 ${errors.sTurboButtonCount && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sTurboButtonCount && (<Form.Control.Feedback type='invalid'>{errors.sTurboButtonCount.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.VERTICAL_BIAS}</Form.Label>
-                                                    <Controller
-                                                        name='sVerticalBias'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select vertical bias'
-                                                                ref={ref}
-                                                                defaultValue={eVerticallBiasOption[0]}
-                                                                options={eVerticallBiasOption}
-                                                                className={`react-select border-0 ${errors.sVerticalBias && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sVerticalBias && (<Form.Control.Feedback type='invalid'>{errors.sVerticalBias.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.HORIZONTAL_BIAS}</Form.Label>
+                                                        <Controller
+                                                            name='sHorizontalBias'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select horizontal bias'
+                                                                    ref={ref}
+                                                                    defaultValue={eHorizontalBiasOption?.find(bias => bias?.value === TURBO_NORMAL_GAME_STRUCTURE?.eHorizontalBias)}
+                                                                    options={eHorizontalBiasOption}
+                                                                    className={`react-select border-0 ${errors.sHorizontalBias && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sHorizontalBias && (<Form.Control.Feedback type='invalid'>{errors.sHorizontalBias.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.TARGET_STAY_DURATION}</Form.Label>
-                                                    <Controller
-                                                        name='sTurboTargetStayDuration'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select target stay duration'
-                                                                ref={ref}
-                                                                defaultValue={eTargetStayDurationOption[0]}
-                                                                options={eTargetStayDurationOption}
-                                                                className={`react-select border-0 ${errors.sTurboTargetStayDuration && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sTurboTargetStayDuration && (<Form.Control.Feedback type='invalid'>{errors.sTurboTargetStayDuration.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.VERTICAL_BIAS}</Form.Label>
+                                                        <Controller
+                                                            name='sVerticalBias'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select vertical bias'
+                                                                    ref={ref}
+                                                                    defaultValue={eVerticallBiasOption?.find(bias => bias?.value === TURBO_NORMAL_GAME_STRUCTURE?.eVerticalBias)}
+                                                                    options={eVerticallBiasOption}
+                                                                    className={`react-select border-0 ${errors.sVerticalBias && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sVerticalBias && (<Form.Control.Feedback type='invalid'>{errors.sVerticalBias.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.NEXT_TARGET_DELAY}</Form.Label>
-                                                    <Controller
-                                                        name='sTurboNextTargetDelay'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eTargetStayDurationOption[0]}
-                                                                options={eTargetStayDurationOption}
-                                                                className={`react-select border-0 ${errors.sTurboNextTargetDelay && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sTurboNextTargetDelay && (<Form.Control.Feedback type='invalid'>{errors.sTurboNextTargetDelay.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.TARGET_STAY_DURATION}</Form.Label>
+                                                        <Controller
+                                                            name='sTurboTargetStayDuration'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select target stay duration'
+                                                                    ref={ref}
+                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_NORMAL_GAME_STRUCTURE?.eTargetStayDuration)}
+                                                                    options={eTargetStayDurationOption}
+                                                                    className={`react-select border-0 ${errors.sTurboTargetStayDuration && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.TARGET_SPREAD}</Form.Label>
-                                                    <Controller
-                                                        name='sTurboTargetSpread'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eButtonSize[0]}
-                                                                options={eButtonSize}
-                                                                className={`react-select border-0 ${errors.sTurboTargetSpread && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sTurboTargetSpread && (<Form.Control.Feedback type='invalid'>{errors.sTurboTargetSpread.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sTurboTargetStayDuration && (<Form.Control.Feedback type='invalid'>{errors.sTurboTargetStayDuration.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.HEADLOCK}</Form.Label><br />
-                                                    <Controller
-                                                        name='bHeadlock'
-                                                        control={control}
-                                                        render={({ field: { ref, onChange, value } }) => (
-                                                            <Form.Check
-                                                                ref={ref}
-                                                                type='switch'
-                                                                name='bHeadlock'
-                                                                className='d-inline-block mt-2'
-                                                                checked={techMode === 'y'}
-                                                                value={value}
-                                                                onChange={(e) => {
-                                                                    handleConfirmStatus(e.target.checked)
-                                                                    onChange(e)
-                                                                }}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.bHeadlock && (<Form.Control.Feedback type='invalid'>{errors.bHeadlock.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
-                                        </Row>
-                                    </Wrapper>
-                                </motion.div>
-                            </>}
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.NEXT_TARGET_DELAY}</Form.Label>
+                                                        <Controller
+                                                            name='sTurboNextTargetDelay'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_NORMAL_GAME_STRUCTURE?.sNextTargetDelay)}
+                                                                    options={eTargetStayDurationOption}
+                                                                    className={`react-select border-0 ${errors.sTurboNextTargetDelay && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sTurboNextTargetDelay && (<Form.Control.Feedback type='invalid'>{errors.sTurboNextTargetDelay.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                            {turboGameMode?.hammer && <>
-                                <motion.div initial={{ y: 10, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ duration: 0.5, ease: 'easeInOut' }}>
-                                    <Wrapper>
-                                        <Row>
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.TARGET_STAY_DURATION}</Form.Label>
-                                                    <Controller
-                                                        name='nHammerTargetStayDuration'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eTargetStayDurationOption[0]}
-                                                                options={eTargetStayDurationOption}
-                                                                className={`react-select border-0 ${errors.nHammerTargetStayDuration && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.nHammerTargetStayDuration && (<Form.Control.Feedback type='invalid'>{errors.nHammerTargetStayDuration.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.TARGET_SPREAD}</Form.Label>
+                                                        <Controller
+                                                            name='sTurboTargetSpread'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eButtonSize?.find(size => size?.value === TURBO_NORMAL_GAME_STRUCTURE?.sTargetSpread)}
+                                                                    options={eButtonSize}
+                                                                    className={`react-select border-0 ${errors.sTurboTargetSpread && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sTurboTargetSpread && (<Form.Control.Feedback type='invalid'>{errors.sTurboTargetSpread.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.GAME_TYPE}</Form.Label>
-                                                    <Controller
-                                                        name='sHammerGameType'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eTurboGameType[0]}
-                                                                options={eTurboGameType}
-                                                                className={`react-select border-0 ${errors.sHammerGameType && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sHammerGameType && (<Form.Control.Feedback type='invalid'>{errors.sHammerGameType.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.HEADLOCK}</Form.Label>
+                                                        <Controller
+                                                            name='bHeadlock'
+                                                            control={control}
+                                                            render={({ field: { ref, onChange, value } }) => (
+                                                                <Form.Check
+                                                                    ref={ref}
+                                                                    type='switch'
+                                                                    name='bHeadlock'
+                                                                    className='d-inline-block mt-2'
+                                                                    checked={headLockMode === 'y'}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        handleConfirmStatus(e.target.checked)
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.bHeadlock && (<Form.Control.Feedback type='invalid'>{errors.bHeadlock.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                        </Wrapper>
+                                    </motion.div>
+                                </>}
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.HAMMER_TYPE}</Form.Label>
-                                                    <Controller
-                                                        name='sHammerType'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eTurboHammerType[0]}
-                                                                options={eTurboHammerType}
-                                                                className={`react-select border-0 ${errors.sHammerType && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sHammerType && (<Form.Control.Feedback type='invalid'>{errors.sHammerType.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                {turboGameMode?.hammer && <>
+                                    <motion.div initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                        <Wrapper>
+                                            <Row>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.TARGET_STAY_DURATION}</Form.Label>
+                                                        <Controller
+                                                            name='nHammerTargetStayDuration'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_HAMMER_GAME_STRUCTURE?.eTargetStayDuration)}
+                                                                    options={eTargetStayDurationOption}
+                                                                    className={`react-select border-0 ${errors.nHammerTargetStayDuration && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.nHammerTargetStayDuration && (<Form.Control.Feedback type='invalid'>{errors.nHammerTargetStayDuration.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.TARGET_SPAWN_TYPE}</Form.Label>
-                                                    <Controller
-                                                        name='sTargetSpawnType'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eTargetSpawnType[0]}
-                                                                options={eTargetSpawnType}
-                                                                className={`react-select border-0 ${errors.sTargetSpawnType && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sTargetSpawnType && (<Form.Control.Feedback type='invalid'>{errors.sTargetSpawnType.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.GAME_TYPE}</Form.Label>
+                                                        <Controller
+                                                            name='sHammerGameType'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eTurboGameType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eGameType)}
+                                                                    options={eTurboGameType}
+                                                                    className={`react-select border-0 ${errors.sHammerGameType && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sHammerGameType && (<Form.Control.Feedback type='invalid'>{errors.sHammerGameType.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.TARGET_COLOR_TYPE}</Form.Label>
-                                                    <Controller
-                                                        name='sTargetColorType'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eTurboHammerType[0]}
-                                                                options={eTurboHammerType}
-                                                                className={`react-select border-0 ${errors.sTargetColorType && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sTargetColorType && (<Form.Control.Feedback type='invalid'>{errors.sTargetColorType.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.HAMMER_TYPE}</Form.Label>
+                                                        <Controller
+                                                            name='sHammerType'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eTurboHammerType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eHammerType)}
+                                                                    options={eTurboHammerType}
+                                                                    className={`react-select border-0 ${errors.sHammerType && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sHammerType && (<Form.Control.Feedback type='invalid'>{errors.sHammerType.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
-                                                <Form.Group className='form-group'>
-                                                    <Form.Label>{LABELS?.TARGET_SPEED}</Form.Label>
-                                                    <Controller
-                                                        name='sHammerTargetSpeed'
-                                                        control={control}
-                                                        render={({ field: { onChange, value, ref } }) => (
-                                                            <Select
-                                                                placeholder='Select gabor frequency'
-                                                                ref={ref}
-                                                                defaultValue={eTargetSpeed[0]}
-                                                                options={eTargetSpeed}
-                                                                className={`react-select border-0 ${errors.sHammerTargetSpeed && 'error'}`}
-                                                                classNamePrefix='select'
-                                                                isSearchable={false}
-                                                                value={value}
-                                                                onChange={onChange}
-                                                                isMulti={false}
-                                                                getOptionLabel={(option) => option.label}
-                                                                getOptionValue={(option) => option.value}
-                                                            />
-                                                        )}
-                                                    />
-                                                    {errors.sHammerTargetSpeed && (<Form.Control.Feedback type='invalid'>{errors.sHammerTargetSpeed.message}</Form.Control.Feedback>)}
-                                                </Form.Group>
-                                            </Col>
-                                        </Row>
-                                    </Wrapper>
-                                </motion.div>
-                            </>}
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.TARGET_SPAWN_TYPE}</Form.Label>
+                                                        <Controller
+                                                            name='sTargetSpawnType'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eTargetSpawnType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eMobSpawnType)}
+                                                                    options={eTargetSpawnType}
+                                                                    className={`react-select border-0 ${errors.sTargetSpawnType && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sTargetSpawnType && (<Form.Control.Feedback type='invalid'>{errors.sTargetSpawnType.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
 
-                            <Row className='mt-3'>
-                                <Col sm={12}>
-                                    <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
-                                        Start Game
-                                    </Button>
-                                    <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
-                                        End Game
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </Wrapper>
-                    </motion.div>
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.TARGET_COLOR_TYPE}</Form.Label>
+                                                        <Controller
+                                                            name='sTargetColorType'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eTurboHammerType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eMobColorType)}
+                                                                    options={eTurboHammerType}
+                                                                    className={`react-select border-0 ${errors.sTargetColorType && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sTargetColorType && (<Form.Control.Feedback type='invalid'>{errors.sTargetColorType.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
+
+                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                    <Form.Group className='form-group'>
+                                                        <Form.Label>{LABELS?.TARGET_SPEED}</Form.Label>
+                                                        <Controller
+                                                            name='sHammerTargetSpeed'
+                                                            control={control}
+                                                            render={({ field: { onChange, value, ref } }) => (
+                                                                <Select
+                                                                    placeholder='Select gabor frequency'
+                                                                    ref={ref}
+                                                                    defaultValue={eTargetSpeed?.find(speed => speed?.value === TURBO_HAMMER_GAME_STRUCTURE?.sTargetSpeed)}
+                                                                    options={eTargetSpeed}
+                                                                    className={`react-select border-0 ${errors.sHammerTargetSpeed && 'error'}`}
+                                                                    classNamePrefix='select'
+                                                                    isSearchable={false}
+                                                                    value={value}
+                                                                    onChange={(e) => {
+                                                                        if (gameStarted) {
+                                                                            setGameStarted(false)
+                                                                        }
+                                                                        onChange(e)
+                                                                    }}
+                                                                    isMulti={false}
+                                                                    getOptionLabel={(option) => option.label}
+                                                                    getOptionValue={(option) => option.value}
+                                                                />
+                                                            )}
+                                                        />
+                                                        {errors.sHammerTargetSpeed && (<Form.Control.Feedback type='invalid'>{errors.sHammerTargetSpeed.message}</Form.Control.Feedback>)}
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                        </Wrapper>
+                                    </motion.div>
+                                </>}
+                            </Modal.Body>
+                            <Modal.Footer className='mt-4'>
+                                <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                                    Start Game
+                                </Button>
+                                <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                                    End Game
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
+                    </Modal>
                 )}
             </div>
         </>

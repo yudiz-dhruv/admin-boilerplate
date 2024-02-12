@@ -5,7 +5,7 @@ export async function addAdmin (data) {
 }
 
 export async function updateAdmin (data) {
-    return axios.put(`/sub-admin/edit/${data?.id}`, data)
+    return axios.put(`/sub-admin/edit/${data?.id}`, data?.formData)
 }
 
 export async function deleteAdmin (id) {

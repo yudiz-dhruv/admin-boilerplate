@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import { useForm, Controller } from 'react-hook-form'
@@ -10,8 +10,7 @@ import OculomotorSettings from 'shared/components/OculomotorSettings'
 import StereopsisSettings from 'shared/components/StereopsisSettings'
 import { useQuery } from 'react-query'
 import { useLocation } from 'react-router-dom'
-import { parseParams } from 'shared/utils'
-import { getGameDropdownList, getGameList } from 'query/game/game.query'
+import { getGameDropdownList } from 'query/game/game.query'
 import CommonInput from 'shared/components/CommonInput'
 import Select from 'react-select'
 import Datetime from 'react-datetime'
@@ -22,35 +21,19 @@ import { socket } from 'shared/socket'
 import VergenceSettings from 'shared/components/VergenceSettings'
 import TorsionSettings from 'shared/components/TorsionSettings'
 import MonocularModeSettings from 'shared/components/MonocularModeSettings'
+import { eBallSpeed, eBubbleGameMode, eBubbleImageSize, eBubblePattern, eButtonCount, eButtonSize, eGaborFrequency, eHoopSize, eHoopieStimulusSizes, eHorizontalBiasOption, ePowerUpDelay, ePowerUpDuration, eShipSpeed, eSpawnRate, eStimulusSizes, eTargetRadius, eTargetSpawnType, eTargetSpeed, eTargetStayDurationOption, eTurboGameType, eTurboHammerType, eVerticallBiasOption } from 'shared/constants/TableHeaders'
 
 const InternalGameSettings = () => {
   const location = useLocation()
-  console.log('location: ', location);
-  const params = useRef(parseParams(location.search))
 
-  function getRequestParams (e) {
-    const data = e ? parseParams(e) : params.current
-    return {
-      pageNumber: +data?.pageNumber?.[0] || 1,
-      nStart: (+data?.pageNumber?.[0] - 1) || 0,
-      search: data?.search || '',
-      nLimit: data?.nLimit || 10,
-      eStatus: data.eStatus || 'y',
-      eCategory: data?.eCategory || '',
-      sort: data.sort || '',
-      orderBy: +data.orderBy === 1 ? 'ASC' : 'DESC',
-      totalElements: +data?.totalElements || 0
-    }
-  }
-
-  const [requestParams] = useState(getRequestParams())
-
-  const { register, formState: { errors, dirtyFields }, control, watch, handleSubmit } = useForm({ mode: 'all' })
+  const { register, formState: { errors, isDirty, dirtyFields }, control, watch, handleSubmit, reset } = useForm({ mode: 'all' })
 
   const [modal, setModal] = useState(false)
   const screenWidth = useMediaQuery('(max-width: 1200px)')
   const [tabletMode, setTabletMode] = useState(false)
   const [gameStarted, setGameStarted] = useState(false)
+  const [tachMode, setTachMode] = useState('y')
+  const [headLockMode, setHeadLockMode] = useState('n')
 
   const [buttonToggle, setButtonToggle] = useState({
     hoopie: false,
@@ -114,13 +97,8 @@ const InternalGameSettings = () => {
     hammer: false,
   })
 
-  // List
-  const { isLoading, data } = useQuery(['gameList', requestParams], () => getGameList(requestParams), {
-    select: (data) => data.data.data?.game,
-  })
-
   // DROPDOWN GAME LIST
-  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
+  const { data: eGameDropdown, isLoading } = useQuery('dropdownGame', getGameDropdownList, {
     select: (data) => data?.data?.data,
   })
 
@@ -133,91 +111,91 @@ const InternalGameSettings = () => {
 
       const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
 
-      if (payloadData.nConstrast || payloadData.nOcclusion) {
-        socket.emit('ping', {
-          '_id': {
-            oid: ''
-          },
-          eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
-          oVergence: {
-            oHorizontal: {
-              sLeftEye: watch('nHorizontalLeft') || 0,
-              sRightEye: watch('nHorizontalRight') || 0,
-            },
-            oVertical: {
-              sLeftEye: watch('nVerticalLeft') || 0,
-              sRightEye: watch('nVerticalRight') || 0,
-            }
-          },
-          oTorsion: {
-            sLeftEye: watch('nTorsionLeft') || 0,
-            sRightEye: watch('nTorsionRight') || 0,
-          },
-          bMonocularMode: watch('bMonocularMode') || true,
-          oVisions: {
-            nContrast: watch('nContrast') || 0,
-            nOcclusion: watch('nOcclusion') || 0,
-            nBlur: watch('nBlur') || 0
-          },
-          aGameStructure: [
-            {
-              sName: 'hoopie',
-              nDuration: watch('sHoopieGameDuration') || 1,
-              sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
-              bTachMode: watch('bTachMode') || true,
-              nSpeed: watch('nHoopieBallSpeed')?.value || 1,
-              nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
-              sSpawnRate: watch('sHoopieSpawnRate')?.value || 'high',
-              nStimulusSize: watch('nHoopieStimulusSize')?.value || 0.5,
-              sBasketSize: watch('sHoopSize')?.value || 'max',
-              sTextPosition: Object.keys(textPositionToggle).find(key => textPositionToggle[key] === true) || 'center'
-            },
-            {
-              sName: 'ringRunner',
-              nDuration: watch('sRRGameDuration') || 1,
-              sMode: Object.keys(ringrunnerMode).find(key => ringrunnerMode[key] === true) || 'normal',
-              nStimulusSize: watch('nRRStimulusSize')?.value || '-0.3',
-              nShipSpeed: watch('nShipSpeed')?.value || 1,
-              sPowerDuration: watch('sPowerDuration')?.value || 'low',
-              sPowerUpSpawnRate: watch('sPowerUpDelay')?.value || 'very low',
-              sObstacleSpawnRate: watch('sObstacleDelay')?.value || 'very low',
-            },
-            {
-              sName: 'turbo',
-              nDuration: watch('nTurboGameDuration') || 1,
-              sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'hammer' && 'hammer',
-              eTargetStayDuration: watch('nHammerTargetStayDuration') || 'low',
-              eGameType: watch('sHammerGameType')?.value || 'hit All',
-              eHammerType: watch('sHammerType')?.value || 'single',
-              eMobSpawnType: watch('sTargetSpawnType')?.value || 'single',
-              eMobColorType: watch('sTargetColorType')?.value || 'single',
-              sTargetSpeed: watch('sHammerTargetSpeed')?.value || 'slow'
-            },
-            {
-              sName: 'turbo',
-              nDuration: watch('nTurboGameDuration') || 1,
-              sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'turbo' && 'turbo',
-              sButtonSize: watch('sTurboButtonSize')?.value || 'small',
-              sButtonCount: watch('sTurboButtonCount')?.value || 'very less',
-              eTargetStayDuration: watch('sTurboTargetStayDuration')?.value || 'low',
-              eHorizontalBias: watch('sHorizontalBias')?.value || 'left',
-              eVerticalBias: watch('sVerticalBias')?.value || 'top',
-              sNextTargetDelay: watch('sTurboNextTargetDelay')?.value || 'low',
-              sTargetSpread: watch('sTurboTargetSpread')?.value || 'small',
-              bHeadlock: watch('bHeadlock') || false
-            },
-            {
-              sName: 'bubbleBurst',
-              nDuration: watch('sBubbleGameDuration') || 1,
-              sMode: watch('sBubbleGameMode')?.value || 'series',
-              sPattern: watch('sBubblePattern')?.value || 'duplet',
-              nImageSize: watch('nBubbleImageSize')?.value || 1,
-              sSepration: watch('sBubbleSeperation')?.value || 'very low',
-              sDisparity: watch('sBubbleDisparity')?.value || 'max'
-            }
-          ]
-        }, (e, data) => console.log('response data', e, data))
-      }
+      // if (payloadData.nConstrast || payloadData.nOcclusion) {
+      //   socket.emit('ping', {
+      //     '_id': {
+      //       oid: ''
+      //     },
+      //     eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
+      //     oVergence: {
+      //       oHorizontal: {
+      //         sLeftEye: watch('nHorizontalLeft') || 0,
+      //         sRightEye: watch('nHorizontalRight') || 0,
+      //       },
+      //       oVertical: {
+      //         sLeftEye: watch('nVerticalLeft') || 0,
+      //         sRightEye: watch('nVerticalRight') || 0,
+      //       }
+      //     },
+      //     oTorsion: {
+      //       sLeftEye: watch('nTorsionLeft') || 0,
+      //       sRightEye: watch('nTorsionRight') || 0,
+      //     },
+      //     bMonocularMode: watch('bMonocularMode') || true,
+      //     oVisions: {
+      //       nContrast: watch('nContrast') || 0,
+      //       nOcclusion: watch('nOcclusion') || 0,
+      //       nBlur: watch('nBlur') || 0
+      //     },
+      //     aGameStructure: [
+      //       {
+      //         sName: 'hoopie',
+      //         nDuration: watch('sHoopieGameDuration') || 1,
+      //         sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
+      //         bTachMode: watch('bTachMode') || true,
+      //         nSpeed: watch('nHoopieBallSpeed')?.value || 1,
+      //         nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
+      //         sSpawnRate: watch('sHoopieSpawnRate')?.value || 'high',
+      //         nStimulusSize: watch('nHoopieStimulusSize')?.value || 0.5,
+      //         sBasketSize: watch('sHoopSize')?.value || 'max',
+      //         sTextPosition: Object.keys(textPositionToggle).find(key => textPositionToggle[key] === true) || 'center'
+      //       },
+      //       {
+      //         sName: 'ringRunner',
+      //         nDuration: watch('sRRGameDuration') || 1,
+      //         sMode: Object.keys(ringrunnerMode).find(key => ringrunnerMode[key] === true) || 'normal',
+      //         nStimulusSize: watch('nRRStimulusSize')?.value || '-0.3',
+      //         nShipSpeed: watch('nShipSpeed')?.value || 1,
+      //         sPowerDuration: watch('sPowerDuration')?.value || 'low',
+      //         sPowerUpSpawnRate: watch('sPowerUpDelay')?.value || 'very low',
+      //         sObstacleSpawnRate: watch('sObstacleDelay')?.value || 'very low',
+      //       },
+      //       {
+      //         sName: 'turbo',
+      //         nDuration: watch('nTurboGameDuration') || 1,
+      //         sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'hammer' && 'hammer',
+      //         eTargetStayDuration: watch('nHammerTargetStayDuration') || 'low',
+      //         eGameType: watch('sHammerGameType')?.value || 'hit All',
+      //         eHammerType: watch('sHammerType')?.value || 'single',
+      //         eMobSpawnType: watch('sTargetSpawnType')?.value || 'single',
+      //         eMobColorType: watch('sTargetColorType')?.value || 'single',
+      //         sTargetSpeed: watch('sHammerTargetSpeed')?.value || 'slow'
+      //       },
+      //       {
+      //         sName: 'turbo',
+      //         nDuration: watch('nTurboGameDuration') || 1,
+      //         sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'turbo' && 'turbo',
+      //         sButtonSize: watch('sTurboButtonSize')?.value || 'small',
+      //         sButtonCount: watch('sTurboButtonCount')?.value || 'very less',
+      //         eTargetStayDuration: watch('sTurboTargetStayDuration')?.value || 'low',
+      //         eHorizontalBias: watch('sHorizontalBias')?.value || 'left',
+      //         eVerticalBias: watch('sVerticalBias')?.value || 'top',
+      //         sNextTargetDelay: watch('sTurboNextTargetDelay')?.value || 'low',
+      //         sTargetSpread: watch('sTurboTargetSpread')?.value || 'small',
+      //         bHeadlock: watch('bHeadlock') || false
+      //       },
+      //       {
+      //         sName: 'bubbleBurst',
+      //         nDuration: watch('sBubbleGameDuration') || 1,
+      //         sMode: watch('sBubbleGameMode')?.value || 'series',
+      //         sPattern: watch('sBubblePattern')?.value || 'duplet',
+      //         nImageSize: watch('nBubbleImageSize')?.value || 1,
+      //         sSepration: watch('sBubbleSeperation')?.value || 'very low',
+      //         sDisparity: watch('sBubbleDisparity')?.value || 'max'
+      //       }
+      //     ]
+      //   }, (e, data) => console.log('response data', e, data))
+      // }
     }
 
     socket.on('ping', (payload, e) => {
@@ -254,7 +232,6 @@ const InternalGameSettings = () => {
     }
   }, [screenWidth])
 
-  console.log('watch :>> ', watch('sBubbleSeperation'));
   return (
     <>
       <Form className='step-one' autoComplete='off'>
@@ -279,6 +256,8 @@ const InternalGameSettings = () => {
                                 <MonocularModeSettings
                                   control={control}
                                   errors={errors}
+                                  reset={reset}
+                                  defaultData={location?.state?.patientSettings}
                                 />
                               </div>
                             </Col>
@@ -287,7 +266,10 @@ const InternalGameSettings = () => {
                               <div className='mt-4 mx-3'>
                                 <DominantEyeSettings
                                   buttonToggle={dominantEyeButton}
-                                  setButtonToggle={setDominantEyeButton} />
+                                  setButtonToggle={setDominantEyeButton}
+                                  reset={reset}
+                                  defaultData={location?.state?.patientSettings}
+                                />
                               </div>
                             </Col>
 
@@ -297,6 +279,8 @@ const InternalGameSettings = () => {
                                   control={control}
                                   settings={antiSupSettings}
                                   setSettings={setAntiSupSettings}
+                                  reset={reset}
+                                  defaultData={location?.state?.patientSettings}
                                 />
                               </div>
                             </Col>
@@ -346,11 +330,13 @@ const InternalGameSettings = () => {
                               register={register}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
-                              games={data}
-                              watch={watch}
+                              games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
                               setGameStarted={setGameStarted}
+                              tachMode={tachMode}
+                              setTachMode={setTachMode}
+                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                             />
                           </div>
 
@@ -358,16 +344,18 @@ const InternalGameSettings = () => {
                             <OculomotorSettings
                               control={control}
                               errors={errors}
-                              watch={watch}
                               register={register}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
                               turboGameMode={turboGameMode}
                               setTurboGameMode={setTurboGameMode}
-                              games={data}
+                              games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
                               setGameStarted={setGameStarted}
+                              headLockMode={headLockMode}
+                              setHeadLockMode={setHeadLockMode}
+                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                             />
                           </div>
 
@@ -378,10 +366,11 @@ const InternalGameSettings = () => {
                               control={control}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
-                              games={data}
+                              games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
                               setGameStarted={setGameStarted}
+                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                             />
                           </div>
 
@@ -406,20 +395,22 @@ const InternalGameSettings = () => {
                             <AntiSupGameSettings
                               control={control}
                               errors={errors}
-                              watch={watch}
-                              register={register}
-                              buttonToggle={buttonToggle}
-                              setButtonToggle={setButtonToggle}
                               gameModeToggle={gameModeToggle}
                               setGameModeToggle={setGameModeToggle}
                               textPositionToggle={textPositionToggle}
                               setTextPositionToggle={setTextPositionToggle}
                               ringrunnerMode={ringrunnerMode}
                               setRingRunnerMode={setRingRunnerMode}
-                              games={data}
+                              register={register}
+                              buttonToggle={buttonToggle}
+                              setButtonToggle={setButtonToggle}
+                              games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
                               setGameStarted={setGameStarted}
+                              tachMode={tachMode}
+                              setTachMode={setTachMode}
+                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                             />
                           </div>
 
@@ -427,16 +418,18 @@ const InternalGameSettings = () => {
                             <OculomotorSettings
                               control={control}
                               errors={errors}
-                              watch={watch}
                               register={register}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
                               turboGameMode={turboGameMode}
                               setTurboGameMode={setTurboGameMode}
-                              games={data}
+                              games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
                               setGameStarted={setGameStarted}
+                              headLockMode={headLockMode}
+                              setHeadLockMode={setHeadLockMode}
+                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                             />
                           </div>
 
@@ -447,10 +440,11 @@ const InternalGameSettings = () => {
                               control={control}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
-                              games={data}
+                              games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
                               setGameStarted={setGameStarted}
+                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                             />
                           </div>
 
@@ -480,13 +474,18 @@ const InternalGameSettings = () => {
                             <MonocularModeSettings
                               control={control}
                               errors={errors}
+                              reset={reset}
+                              defaultData={location?.state?.patientSettings}
                             />
                           </div>
 
                           <div className='mt-3 mx-3'>
                             <DominantEyeSettings
                               buttonToggle={dominantEyeButton}
-                              setButtonToggle={setDominantEyeButton} />
+                              setButtonToggle={setDominantEyeButton}
+                              reset={reset}
+                              defaultData={location?.state?.patientSettings}
+                            />
                           </div>
 
                           <div className='mt-4 mx-3'>
@@ -494,6 +493,8 @@ const InternalGameSettings = () => {
                               control={control}
                               settings={antiSupSettings}
                               setSettings={setAntiSupSettings}
+                              reset={reset}
+                              defaultData={location?.state?.patientSettings}
                             />
                           </div>
 
