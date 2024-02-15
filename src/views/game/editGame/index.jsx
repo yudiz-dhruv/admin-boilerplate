@@ -19,6 +19,7 @@ import { ReactToastify } from 'shared/utils';
 const EditGame = () => {
     const navigate = useNavigate()
     const { id } = useParams()
+
     const fileInputRef = useRef(null)
 
     const { register, handleSubmit, formState: { errors, isDirty }, control, reset, watch } = useForm({ mode: 'all' })
@@ -54,7 +55,7 @@ const EditGame = () => {
         }
     })
 
-    async function onSubmit (data) {
+    const onSubmit = (data) => {
         if (isButtonDisabled) {
             return;
         }
@@ -77,11 +78,7 @@ const EditGame = () => {
         }, 5000)
     }
 
-    const handleFileInputClick = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click()
-        }
-    }
+    const handleFileInputClick = () => (fileInputRef.current) && fileInputRef.current.click()
 
     useEffect(() => {
         document.title = 'Edit Game | Yantra Healthcare'
@@ -293,11 +290,6 @@ const EditGame = () => {
                                                                         if (fileExtension && !allowedFormats.includes(fileExtension)) {
                                                                             return "Unsupported file format";
                                                                         }
-
-                                                                        // const maxSize = 1 * 1000 * 1000; // 1MB in bytes
-                                                                        // if (value.size >= maxSize) {
-                                                                        //     return "File size must be less than 1MB";
-                                                                        // }
                                                                     }
                                                                     return true;
                                                                 },

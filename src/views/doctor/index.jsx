@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { deleteAdmin, updateAdmin } from 'query/admin/admin.mutation'
 import { getAdminList } from 'query/admin/admin.query'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -77,7 +77,7 @@ const AdminManagement = () => {
         }
     })
 
-    function handleSort (field) {
+    const handleSort = useCallback((field) => {
         let selectedFilter
         const filter = columns.map((data) => {
             if (data.internalName === field.internalName) {
@@ -101,9 +101,9 @@ const AdminManagement = () => {
             sort: selectedFilter.type !== 0 ? selectedFilter.internalName : '',
             orderBy: selectedFilter.type
         })
-    }
+    }, [columns, requestParams, setColumns, setRequestParams])
 
-    async function handleHeaderEvent (name, value) {
+    const handleHeaderEvent = useCallback((name, value) => {
         switch (name) {
             case 'rows':
                 setRequestParams({ ...requestParams, nLimit: Number(value), pageNumber: 1 })
@@ -116,20 +116,15 @@ const AdminManagement = () => {
             default:
                 break
         }
-    }
+    }, [requestParams, setRequestParams])
 
-    function handlePageEvent (page) {
+    const handlePageEvent = useCallback((page) => {
         setRequestParams({ ...requestParams, pageNumber: page, nStart: page - 1 })
         appendParams({ pageNumber: page, nStart: page - 1 })
-    }
+    }, [requestParams, setRequestParams])
 
-    const handleConfirmDelete = (id) => {
-        mutate(id)
-    }
-
-    const onDelete = (id) => {
-        setModal({ open: true, type: 'delete', id: id })
-    }
+    const handleConfirmDelete = useCallback((id) => mutate(id), [mutate])
+    const onDelete = useCallback((id) => setModal({ open: true, type: 'delete', id }), [])
 
     useEffect(() => {
         document.title = 'Admin Management | Yantra Healthcare'

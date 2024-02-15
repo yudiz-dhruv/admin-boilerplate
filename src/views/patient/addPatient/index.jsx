@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { route } from 'shared/constants/AllRoutes'
@@ -28,7 +28,7 @@ const AddPatient = () => {
         }
     })
 
-    async function onSubmit (data) {
+    const onSubmit = useCallback((data) => {
         if (isButtonDisabled) {
             return;
         }
@@ -56,7 +56,7 @@ const AddPatient = () => {
         setTimeout(() => {
             setButtonDisabled(false)
         }, 5000)
-    }
+    }, [isButtonDisabled, setButtonDisabled, mutate])
 
     useEffect(() => {
         document.title = 'Add Patient | Yantra Healthcare'

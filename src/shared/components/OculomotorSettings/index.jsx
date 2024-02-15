@@ -18,8 +18,8 @@ const OculomotorSettings = (props) => {
     const [tabButtons, setTabButtons] = useState([])
     const [modal, setModal] = useState(false)
 
-    const TURBO_NORMAL_GAME_STRUCTURE = data?.filter(item => item?.sName === 'turbo')?.find(mode => mode?.sMode === 'turbo')
-    const TURBO_HAMMER_GAME_STRUCTURE = data?.filter(item => item?.sName === 'turbo')?.find(mode => mode?.sMode === 'hammer')
+    const TURBO_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'turbo' && item?.sMode === 'turbo')
+    const TURBO_HAMMER_GAME_STRUCTURE = data?.find(item => item?.sName === 'turbo' && item?.sMode === 'hammer')
 
     const LABELS = {
         TITLE: 'Oculomotor',

@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form } from 'react-bootstrap'
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { FormattedMessage } from 'react-intl'
 import CommonSpinner from '../CommonSpinner'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/free-solid-svg-icons'
+import { faCircleInfo, faIndianRupee, faPen } from '@fortawesome/free-solid-svg-icons'
 
 function CommonInput ({
   type,
@@ -33,7 +33,10 @@ function CommonInput ({
   max,
   minLength,
   maxLength,
-  onPaste
+  onPaste,
+  price,
+  hasTooltip,
+  tooltipMsg
 }) {
   const splitName = name.split('.')
 
@@ -55,6 +58,7 @@ function CommonInput ({
   }
 
   const setRegister = register(name, applyValidation())
+  const renderTooltip = (text) => <Tooltip id='tab-tooltip'>{text}</Tooltip>
 
   return (
     <Form.Group className='form-group w-100'>
@@ -64,6 +68,18 @@ function CommonInput ({
             {label && <FormattedMessage id={label} />}
             {label && required && <span className='inputStar'>*</span>}
           </span>
+          {hasTooltip &&
+            <span className='tooltip-icon'>
+              <OverlayTrigger
+                placement='top'
+                overlay={renderTooltip(tooltipMsg)}
+                // show={gameModeToggle.head === true}
+                delay={{ show: 250, hide: 250 }}
+              >
+                <FontAwesomeIcon icon={faCircleInfo} />
+              </OverlayTrigger>
+            </span>
+          }
         </Form.Label>
       )}
 
@@ -104,6 +120,7 @@ function CommonInput ({
                   setRegister.onChange(e)
                 }}
               />
+              {price && <FontAwesomeIcon icon={faIndianRupee} />}
               {updateFlag && <FontAwesomeIcon icon={faPen} />}
               {isLoading && <CommonSpinner />}
             </div>

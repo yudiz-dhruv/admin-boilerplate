@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
@@ -69,10 +69,10 @@ const AdminGame = () => {
     }
   }, [dirtyFields, watch('ePatientName')])
 
-  function onSubmit () {
+  const onSubmit = useCallback(() => {
     joinRoomMutate(patientDetails?._id)
     // patientDetails ? navigate(route?.adminGameSettings(patientDetails?._id), { state: patientDetails }) : toaster('Please fill the data', 'error'); reset({})
-  }
+  }, [joinRoomMutate, patientDetails])
 
   useEffect(() => {
     document.title = 'Game Management | Yantra Healthcare'
@@ -90,8 +90,8 @@ const AdminGame = () => {
                     <Col lg={6} md={12}>
                       <Form.Group className='form-group'>
                         <Form.Label> Patient Name </Form.Label>
-                        <Row className='patient-name'>
-                          <Col xl={9} lg={8} md={9} xs={9}>
+                        <div className='patient-name'>
+                          <div className='input-field'>
                             <Controller
                               name='ePatientName'
                               control={control}
@@ -110,13 +110,13 @@ const AdminGame = () => {
                                 />
                               )}
                             />
-                          </Col>
-                          <Col xl={3} lg={4} md={3} xs={3}>
+                          </div>
+                          <div>
                             <Button variant='primary' type='button' className='me-2 add-patient' onClick={() => navigate(route?.addPatient)}>
-                              <FontAwesomeIcon icon={faPlus} /> Add
+                              <FontAwesomeIcon icon={faPlus} /> Add New Patient
                             </Button>
-                          </Col>
-                        </Row>
+                          </div>
+                        </div>
                       </Form.Group>
                     </Col>
 

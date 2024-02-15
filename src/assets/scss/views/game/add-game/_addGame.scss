@@ -239,6 +239,19 @@
                 }
             }
         }
+
+        .profile-input {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            svg {
+                z-index: 1;
+                margin-left: -20px;
+                font-size: 14px;
+                color: var(--primary-color);
+            }
+        }
     }
 }
 

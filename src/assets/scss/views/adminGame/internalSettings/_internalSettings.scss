@@ -160,6 +160,24 @@
                             &.capitalize {
                                 text-transform: capitalize;
                             }
+
+                            .not-connected {
+                                border: none;
+                                border-radius: 99px;
+                                padding: 0px 10px;
+                                font-size: 9.5px;
+                                background-color: var(--secondary-300);
+                                color: var(--text-color);
+                            }
+
+                            .connected {
+                                border: none;
+                                border-radius: 99px;
+                                padding: 0px 10px;
+                                font-size: 9.5px;
+                                background-color: var(--text-hover);
+                                color: var(--white-color);
+                            }
                         }
                     }
                 }
@@ -647,6 +665,13 @@ body.dark {
                     .patient-content {
                         .data-label {
                             color: var(--secondary-300);
+                        }
+
+                        .data-value {
+                            .not-connected {
+                                background-color: var(--secondary-500);
+                                color: var(--text-color);
+                            }
                         }
                     }
                 }

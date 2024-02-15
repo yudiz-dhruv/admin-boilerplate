@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ReactToastify, appendParams, parseParams } from 'shared/utils'
@@ -66,7 +66,7 @@ const GameManagement = () => {
     }
   })
 
-  function handleSort (field) {
+  const handleSort = (field) => {
     let selectedFilter
     const filter = columns.map((data) => {
       if (data.internalName === field.internalName) {
@@ -92,7 +92,7 @@ const GameManagement = () => {
     })
   }
 
-  async function handleHeaderEvent (name, value) {
+  const handleHeaderEvent = (name, value) => {
     switch (name) {
       case 'rows':
         setRequestParams({ ...requestParams, nLimit: Number(value), pageNumber: 1 })
@@ -107,18 +107,13 @@ const GameManagement = () => {
     }
   }
 
-  function handlePageEvent (page) {
+  const handlePageEvent = useCallback((page) => {
     setRequestParams({ ...requestParams, pageNumber: page, nStart: page - 1 })
     appendParams({ pageNumber: page, nStart: page - 1 })
-  }
+  }, [requestParams, setRequestParams])
 
-  const handleConfirmDelete = (id) => {
-    mutate(id)
-  }
-
-  const onDelete = (id) => {
-    setModal({ open: true, type: 'delete', id: id })
-  }
+  const handleConfirmDelete = useCallback((id) => mutate(id), [mutate])
+  const onDelete = useCallback((id) => setModal({ open: true, type: 'delete', id: id }), [setModal])
 
   useEffect(() => {
     document.title = 'Game Management | Yantra Healthcare'

@@ -8,6 +8,7 @@ import { GRAPH_OPTIONS } from 'shared/constants'
 import { useQuery } from 'react-query'
 import { getSuperAdminStats } from 'query/dashboard/dashboard.query'
 import { motion } from 'framer-motion';
+import { socket } from 'shared/socket'
 
 function Dashboard () {
   const [statsData, setStatsData] = useState({})
@@ -38,6 +39,9 @@ function Dashboard () {
 
   useEffect(() => {
     document.title = 'Dashboard'
+
+    socket.connect()
+    console.warn('Socket Connected Successfuly.')
   }, [])
 
   return (

@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
-import { socket } from 'shared/socket'
 const AllRoutes = React.lazy(() => import('routes'))
 
 export const queryClient = new QueryClient({
@@ -44,18 +43,26 @@ export const queryClient = new QueryClient({
   })
 })
 
+
+
 function App() {
-  const temp = localStorage.getItem('mode') === 'true'
+  // const temp = localStorage.getItem('mode') === 'true'
 
   useEffect(() => {
-    socket.on("connect")
+    // window.onunhandledrejection = (ex, e) => {
+    //   console.log(`Unhandled Error:`, ex, e)
+    // };
+
+    // window.onerror = (ex, e) => {
+    //   console.log(`Uncaught Error:`, ex, e)
+    // }
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('mode', temp)
-    document.body.classList.remove(!temp ? 'light' : 'dark')
-    document.body.classList.add(temp ? 'light' : 'dark');
-  }, [temp])
+  // useEffect(() => {
+  //   localStorage.setItem('mode', temp)
+  //   document.body.classList.remove(!temp ? 'light' : 'dark')
+  //   document.body.classList.add(temp ? 'light' : 'dark');
+  // }, [temp])
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={

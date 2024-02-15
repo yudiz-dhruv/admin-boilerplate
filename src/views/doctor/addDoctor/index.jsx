@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
@@ -18,7 +18,7 @@ import { FormattedMessage } from 'react-intl'
 import makeAnimated from 'react-select/animated'
 import { ReactToastify } from 'shared/utils'
 
-const AddAdmin = () => {
+const AddDoctor = () => {
   const navigate = useNavigate()
 
   const { register, handleSubmit, formState: { errors }, control, reset, watch, getValues } = useForm({ mode: 'all' })
@@ -28,9 +28,7 @@ const AddAdmin = () => {
   const [showNewPassword, setNewPassword] = useState(false)
 
   // DROPDOWN GAME LIST
-  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
-    select: (data) => data?.data?.data,
-  })
+  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
 
   // ADD ADMIN
   const { mutate, isLoading } = useMutation(addAdmin, {
@@ -41,7 +39,7 @@ const AddAdmin = () => {
     }
   })
 
-  async function onSubmit (data) {
+  const onSubmit = useCallback((data) => {
     const formData = new FormData()
 
     if (isButtonDisabled) {
@@ -65,17 +63,10 @@ const AddAdmin = () => {
     setTimeout(() => {
       setButtonDisabled(false)
     }, 5000)
-  }
+  }, [isButtonDisabled, mutate, setButtonDisabled])
 
-  const handleFileInputClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click()
-    }
-  }
-
-  const handleNewPasswordToggle = () => {
-    setNewPassword(!showNewPassword)
-  }
+  const handleFileInputClick = useCallback(() => (fileInputRef.current) && fileInputRef.current.click(), [])
+  const handleNewPasswordToggle = useCallback(() => setNewPassword(!showNewPassword), [showNewPassword, setNewPassword])
 
   useEffect(() => {
     document.title = 'Add Admin | Yantra Healthcare'
@@ -260,8 +251,10 @@ const AddAdmin = () => {
                     <Col lg={6} md={12} className='mt-2'>
                       <Form.Group className='form-group'>
                         <Form.Label>
-                          <FormattedMessage id='Password' />
-                          <span className='inputStar'>*</span>
+                          <span>
+                            <FormattedMessage id='Password' />
+                            <span className='inputStar'>*</span>
+                          </span>
                         </Form.Label>
                         <InputGroup>
                           <Controller
@@ -387,6 +380,9 @@ const AddAdmin = () => {
                         errors={errors}
                         className={`form-control ${errors?.nPrice && 'error'}`}
                         name='nPrice'
+                        price={true}
+                        hasTooltip={true}
+                        tooltipMsg='Price must be INR base.'
                         label='Package Price'
                         placeholder='Enter the package price'
                         required
@@ -506,4 +502,4 @@ const AddAdmin = () => {
   )
 }
 
-export default AddAdmin
+export default AddDoctor

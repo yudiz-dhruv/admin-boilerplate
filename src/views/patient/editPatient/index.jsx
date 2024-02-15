@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { getDirtyFormValues } from 'helper/helper'
 import { updatePatient } from 'query/patient/patient.mutation'
 import { getPatientById } from 'query/patient/patient.query'
@@ -70,7 +70,7 @@ const EditPatient = () => {
         setPayload(payloadData)
     }, [dirtyFields, watch('sUserName'), watch('sMobile'), watch('sAge'), watch('eDominantEye'), watch('eAmblyopia'), watch('eStrabismus')])
 
-    async function onSubmit (data) {
+    const onSubmit = useCallback((data) => {
         if (isButtonDisabled) {
             return;
         }
@@ -82,7 +82,7 @@ const EditPatient = () => {
         setTimeout(() => {
             setButtonDisabled(false)
         }, 5000)
-    }
+    }, [isButtonDisabled, setButtonDisabled, updateMutate])
 
     useEffect(() => {
         document.title = 'Edit Patient | Yantra Healthcare'

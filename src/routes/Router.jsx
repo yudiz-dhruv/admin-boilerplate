@@ -21,7 +21,7 @@ const Dashboard = lazy(() => import('views/dashboard'))
 // ADMIN MANAGEMENT
 const DoctorManagement = lazy(() => import('views/doctor'))
 const AddDoctor = lazy(() => import('views/doctor/addDoctor'))
-const ViewDoctor = lazy(() => import('views/doctor/viewAdmin'))
+const ViewDoctor = lazy(() => import('views/doctor/viewDoctor'))
 const EditDoctor = lazy(() => import('views/doctor/editDoctor'))
 
 // GAME MANAGEMENT

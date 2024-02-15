@@ -11,3 +11,4 @@ export const socket = io(process.env.REACT_APP_SOCKET_ENDPOINT, {
     // transports: ["websocket", "polling"],
     // upgrade: true,
 })
+

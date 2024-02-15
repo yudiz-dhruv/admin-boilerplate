@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Dropdown, Form, Spinner } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
 import { logout } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
@@ -10,23 +10,24 @@ import textLogo from 'assets/images/Yantra.Care.svg'
 import { profile } from 'query/profile/profile.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faUser } from '@fortawesome/free-solid-svg-icons'
-import { RxDotFilled } from "react-icons/rx"
 import { ReactToastify } from 'shared/utils'
 import { Controller, useForm } from 'react-hook-form'
+import { socket } from 'shared/socket'
 
-function Header ({ isOpen }) {
+function Header () {
   const navigate = useNavigate()
   const query = useQueryClient()
+  const location = useLocation()
+
+  // const { control } = useForm({ mode: 'all' })
+
+  // const temp = localStorage.getItem('mode') === 'true'
+
+  // const [mode, setMode] = useState(temp)
   const [clickedLogOut, setClickedLogOut] = useState(false)
   const [show, setShow] = useState(false)
-  const handleClose = () => setShow(false)
 
-  const { control } = useForm({ mode: 'all' })
-
-  const temp = localStorage.getItem('mode') === 'true'
-
-  const [mode, setMode] = useState(temp)
-
+  // LOGOUT QUERY
   const { isLoading, isFetching } = useQuery('logoutUser', logout, {
     enabled: clickedLogOut,
     onSuccess: (res) => {
@@ -34,6 +35,17 @@ function Header ({ isOpen }) {
       localStorage.removeItem('type')
       navigate('/login')
       ReactToastify(res?.data?.message, 'success')
+
+      socket.emit(location?.state?.patientSettings?._id, {
+        sEventName: 'reqEndGame',
+        oData: {
+          eState: 'finished'
+        }
+      }, (response) => {
+        console.warn('Socket Disconnecting and Leaveing Room.', response)
+        socket.disconnect()
+      })
+      console.warn('Socket disconnected successfully.');
     },
     onError: () => {
       localStorage.removeItem('token')
@@ -42,39 +54,31 @@ function Header ({ isOpen }) {
     }
   })
 
-  const { isLoading: profileLoader, data } = useQuery('profile', () => profile(), {
-    select: (data) => data?.data?.data,
-  })
+  // PROFILE DATA
+  const { isLoading: profileLoader, data } = useQuery('profile', () => profile(), { select: (data) => data?.data?.data, })
 
-  const handleLogout = () => setShow(!show)
+  const handleClose = useCallback(() => setShow(false), [setShow])
+  const handleLogout = useCallback(() => setShow(!show), [show, setShow])
+  const handleEditProfile = useCallback(() => navigate(route.editProfile), [navigate])
+  const handleChangePass = useCallback(() => navigate(route.changePassword), [navigate])
 
-  const handleConfirmLogout = () => {
+  const handleConfirmLogout = useCallback(() => {
     setClickedLogOut(true)
     query.invalidateQueries('logoutUser')
-  }
+  }, [query, setClickedLogOut])
 
-  function handleEditProfile () {
-    navigate(route.editProfile)
-  }
+  // useEffect(() => {
+  //   localStorage.setItem('mode', mode)
 
-  function handleChangePass () {
-    navigate(route.changePassword)
-  }
-
-  useEffect(() => {
-    localStorage.setItem('mode', mode)
-
-    document.body.classList.remove(!mode ? 'light' : 'dark')
-    document.body.classList.add(mode ? 'light' : 'dark');
-  }, [mode])
+  //   document.body.classList.remove(!mode ? 'light' : 'dark')
+  //   document.body.classList.add(mode ? 'light' : 'dark');
+  // }, [mode])
 
   return (
     <header className='header'>
       <div className='header-left'>
         <Link className='logo' to={route.dashboard}>
-          {/* <img src={logo} className="logoIcon" alt='run to learn' /> */}
           <img src={textLogo} className="textLogo" alt='Yantra Healthcare Logo' />
-          {/* <div className='logo-text'>Yantra Healthcare</div> */}
         </Link>
       </div>
       <div className='header-right'>
@@ -114,7 +118,7 @@ function Header ({ isOpen }) {
               <i className='icon-logout'></i>
               <FormattedMessage id='logout' />
             </Dropdown.Item>
-            <Dropdown.Divider />
+            {/* <Dropdown.Divider />
             <div className='theme-setting'>
               <span>Light</span>
               <Controller
@@ -136,14 +140,11 @@ function Header ({ isOpen }) {
                 )}
               />
               <span>Dark</span>
-            </div>
+            </div> */}
           </Dropdown.Menu>
         </Dropdown>
-        {/* <Button className='header-btn user-btn' >
-          {mode ? <FontAwesomeIcon icon={faMoon} /> : <FontAwesomeIcon icon={faSun} />}
-        </Button> */}
-
       </div>
+
       <CustomModal
         open={show}
         handleClose={handleClose}

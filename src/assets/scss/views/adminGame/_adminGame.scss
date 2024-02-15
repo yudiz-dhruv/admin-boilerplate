@@ -1,6 +1,15 @@
 .admin-game-form {
     .patient-name {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+
+        .input-field {
+            width: 100%;
+        }
+
         button.add-patient {
+            box-sizing: border-box;
             padding: 0;
             height: 100%;
             border-radius: 4px;

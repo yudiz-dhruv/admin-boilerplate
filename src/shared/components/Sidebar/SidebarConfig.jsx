@@ -1,7 +1,6 @@
 import { faCube, faGamepad, faUser, faUserDoctor } from '@fortawesome/free-solid-svg-icons'
 import { route } from 'shared/constants/AllRoutes'
 
-
 export const sidebarConfig = [
   {
     path: route.dashboard,

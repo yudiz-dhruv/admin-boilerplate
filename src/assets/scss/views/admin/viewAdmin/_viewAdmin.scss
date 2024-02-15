@@ -60,6 +60,7 @@
                     flex-wrap: nowrap;
                     gap: 8px;
                     margin-bottom: 5px;
+                    position: relative;
 
                     .user-name {
                         margin-top: 10px;
@@ -83,6 +84,7 @@
                         border-radius: 100%;
                         overflow: hidden;
                         text-align: center;
+                        position: relative;
 
                         img {
                             width: 100%;

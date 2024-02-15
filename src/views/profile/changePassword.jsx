@@ -72,8 +72,10 @@ export default function ChangePassword () {
             <Form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Form.Group className='form-group'>
                 <Form.Label>
-                  <FormattedMessage id='currentPassword' />
-                  <span className='inputStar'>*</span>
+                  <span>
+                    <FormattedMessage id='currentPassword' />
+                    <span className='inputStar'>*</span>
+                  </span>
                 </Form.Label>
                 <InputGroup>
                   <Controller
@@ -118,8 +120,10 @@ export default function ChangePassword () {
 
               <Form.Group className='form-group'>
                 <Form.Label>
-                  <FormattedMessage id='newPassword' />
-                  <span className='inputStar'>*</span>
+                  <span>
+                    <FormattedMessage id='newPassword' />
+                    <span className='inputStar'>*</span>
+                  </span>
                 </Form.Label>
                 <InputGroup>
                   <Controller
@@ -164,8 +168,10 @@ export default function ChangePassword () {
 
               <Form.Group className='form-group'>
                 <Form.Label>
-                  <FormattedMessage id='confirmNewPassword' />
-                  <span className='inputStar'>*</span>
+                  <span>
+                    <FormattedMessage id='confirmNewPassword' />
+                    <span className='inputStar'>*</span>
+                  </span>
                 </Form.Label>
                 <InputGroup>
                   <Controller

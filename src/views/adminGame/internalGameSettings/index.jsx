@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import { useForm, Controller } from 'react-hook-form'
@@ -22,15 +22,16 @@ import VergenceSettings from 'shared/components/VergenceSettings'
 import TorsionSettings from 'shared/components/TorsionSettings'
 import MonocularModeSettings from 'shared/components/MonocularModeSettings'
 import { eBallSpeed, eBubbleGameMode, eBubbleImageSize, eBubblePattern, eButtonCount, eButtonSize, eGaborFrequency, eHoopSize, eHoopieStimulusSizes, eHorizontalBiasOption, ePowerUpDelay, ePowerUpDuration, eShipSpeed, eSpawnRate, eStimulusSizes, eTargetRadius, eTargetSpawnType, eTargetSpeed, eTargetStayDurationOption, eTurboGameType, eTurboHammerType, eVerticallBiasOption } from 'shared/constants/TableHeaders'
+import { ReactToastify } from 'shared/utils'
 
 const InternalGameSettings = () => {
   const location = useLocation()
-
-  const { register, formState: { errors, isDirty, dirtyFields }, control, watch, handleSubmit, reset } = useForm({ mode: 'all' })
-
-  const [modal, setModal] = useState(false)
   const screenWidth = useMediaQuery('(max-width: 1200px)')
+
+  const { register, formState: { errors, dirtyFields }, control, watch, handleSubmit, reset } = useForm({ mode: 'all' })
+
   const [tabletMode, setTabletMode] = useState(false)
+  const [modal, setModal] = useState(false)
   const [gameStarted, setGameStarted] = useState(false)
   const [tachMode, setTachMode] = useState('y')
   const [headLockMode, setHeadLockMode] = useState('n')
@@ -42,185 +43,341 @@ const InternalGameSettings = () => {
     bubbles: false
   })
 
-  const [dominantEyeButton, setDominantEyeButton] = useState({
+  const [dominantEyeButton, setDominantEyeButton] = useState(() => ({
     left: true,
     right: false,
     none: false,
-  })
+  }))
 
-  const [antiSupSettings, setAntiSupSettings] = useState({
+  const [antiSupSettings, setAntiSupSettings] = useState(() => ({
     contrast: 0,
     occlusion: 0,
     blur: 0
-  })
+  }))
 
-  const [vergenceToggle, setVergenceToggle] = useState({
+  const [vergenceToggle, setVergenceToggle] = useState(() => ({
     horizontal: true,
     vertical: false,
-  })
+  }))
 
-  const [horizontalEyeSettings, setHorizontalEyeSettings] = useState({
+  const [horizontalEyeSettings, setHorizontalEyeSettings] = useState(() => ({
     left: 0,
     right: 0
-  })
+  }))
 
-  const [verticalEyeSettings, setVerticalEyeSettings] = useState({
+  const [verticalEyeSettings, setVerticalEyeSettings] = useState(() => ({
     left: 0,
     right: 0
-  })
+  }))
 
-  const [torsionSettings, setTorsionSettings] = useState({
+  const [torsionSettings, setTorsionSettings] = useState(() => ({
     left: 0,
     right: 0
-  })
+  }))
 
   // hoopie game
-  const [gameModeToggle, setGameModeToggle] = useState({
+  const [gameModeToggle, setGameModeToggle] = useState(() => ({
     head: true,
     hand: false
-  })
+  }))
 
-  const [textPositionToggle, setTextPositionToggle] = useState({
+  const [textPositionToggle, setTextPositionToggle] = useState(() => ({
     center: true,
     random: false
-  })
+  }))
 
   // ring runner game
-  const [ringrunnerMode, setRingRunnerMode] = useState({
+  const [ringrunnerMode, setRingRunnerMode] = useState(() => ({
     normal: true,
     gabor: false,
-  })
+  }))
 
   // turbo game
-  const [turboGameMode, setTurboGameMode] = useState({
+  const [turboGameMode, setTurboGameMode] = useState(() => ({
     turbo: true,
     hammer: false,
-  })
+  }))
 
   // DROPDOWN GAME LIST
-  const { data: eGameDropdown, isLoading } = useQuery('dropdownGame', getGameDropdownList, {
-    select: (data) => data?.data?.data,
-  })
+  const { data: eGameDropdown, isLoading } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
+
+
+  // Join Room UseEffect
+  useEffect(() => {
+    if (socket) {
+      socket.emit('reqJoinRoom', { iUserId: location?.state?.patientSettings?._id }, (response) => {
+        if (response?.oData) {
+          console.log('Join Room: ', response?.oData)
+        } else {
+          console.log('Join Room Error: ', response?.error)
+        }
+      })
+
+      socket.on('resGameState', (response) => {
+        console.log('Game Status :>> ', response);
+      })
+    }
+  }, [socket, location])
+
+  // Call when Game Popup opens
+  useEffect(() => {
+    const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
+
+    if (Object.keys(buttonToggle).find(key => buttonToggle[key] === true)) {
+      socket.on('resGameState', (response) => {
+        console.log('Game Status :>> ', response);
+      })
+    }
+  }, [Object.keys(buttonToggle).find(key => buttonToggle[key] === true)])
 
   useEffect(() => {
-    if (socket.connected) {
-      const isDirtyData = {
-        nConstrast: watch('nConstrast'),
-        nOcclusion: watch('nOcclusion'),
-      }
+    const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
 
-      const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
-
-      // if (payloadData.nConstrast || payloadData.nOcclusion) {
-      //   socket.emit('ping', {
-      //     '_id': {
-      //       oid: ''
-      //     },
-      //     eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
-      //     oVergence: {
-      //       oHorizontal: {
-      //         sLeftEye: watch('nHorizontalLeft') || 0,
-      //         sRightEye: watch('nHorizontalRight') || 0,
-      //       },
-      //       oVertical: {
-      //         sLeftEye: watch('nVerticalLeft') || 0,
-      //         sRightEye: watch('nVerticalRight') || 0,
-      //       }
-      //     },
-      //     oTorsion: {
-      //       sLeftEye: watch('nTorsionLeft') || 0,
-      //       sRightEye: watch('nTorsionRight') || 0,
-      //     },
-      //     bMonocularMode: watch('bMonocularMode') || true,
-      //     oVisions: {
-      //       nContrast: watch('nContrast') || 0,
-      //       nOcclusion: watch('nOcclusion') || 0,
-      //       nBlur: watch('nBlur') || 0
-      //     },
-      //     aGameStructure: [
-      //       {
-      //         sName: 'hoopie',
-      //         nDuration: watch('sHoopieGameDuration') || 1,
-      //         sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
-      //         bTachMode: watch('bTachMode') || true,
-      //         nSpeed: watch('nHoopieBallSpeed')?.value || 1,
-      //         nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
-      //         sSpawnRate: watch('sHoopieSpawnRate')?.value || 'high',
-      //         nStimulusSize: watch('nHoopieStimulusSize')?.value || 0.5,
-      //         sBasketSize: watch('sHoopSize')?.value || 'max',
-      //         sTextPosition: Object.keys(textPositionToggle).find(key => textPositionToggle[key] === true) || 'center'
-      //       },
-      //       {
-      //         sName: 'ringRunner',
-      //         nDuration: watch('sRRGameDuration') || 1,
-      //         sMode: Object.keys(ringrunnerMode).find(key => ringrunnerMode[key] === true) || 'normal',
-      //         nStimulusSize: watch('nRRStimulusSize')?.value || '-0.3',
-      //         nShipSpeed: watch('nShipSpeed')?.value || 1,
-      //         sPowerDuration: watch('sPowerDuration')?.value || 'low',
-      //         sPowerUpSpawnRate: watch('sPowerUpDelay')?.value || 'very low',
-      //         sObstacleSpawnRate: watch('sObstacleDelay')?.value || 'very low',
-      //       },
-      //       {
-      //         sName: 'turbo',
-      //         nDuration: watch('nTurboGameDuration') || 1,
-      //         sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'hammer' && 'hammer',
-      //         eTargetStayDuration: watch('nHammerTargetStayDuration') || 'low',
-      //         eGameType: watch('sHammerGameType')?.value || 'hit All',
-      //         eHammerType: watch('sHammerType')?.value || 'single',
-      //         eMobSpawnType: watch('sTargetSpawnType')?.value || 'single',
-      //         eMobColorType: watch('sTargetColorType')?.value || 'single',
-      //         sTargetSpeed: watch('sHammerTargetSpeed')?.value || 'slow'
-      //       },
-      //       {
-      //         sName: 'turbo',
-      //         nDuration: watch('nTurboGameDuration') || 1,
-      //         sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'turbo' && 'turbo',
-      //         sButtonSize: watch('sTurboButtonSize')?.value || 'small',
-      //         sButtonCount: watch('sTurboButtonCount')?.value || 'very less',
-      //         eTargetStayDuration: watch('sTurboTargetStayDuration')?.value || 'low',
-      //         eHorizontalBias: watch('sHorizontalBias')?.value || 'left',
-      //         eVerticalBias: watch('sVerticalBias')?.value || 'top',
-      //         sNextTargetDelay: watch('sTurboNextTargetDelay')?.value || 'low',
-      //         sTargetSpread: watch('sTurboTargetSpread')?.value || 'small',
-      //         bHeadlock: watch('bHeadlock') || false
-      //       },
-      //       {
-      //         sName: 'bubbleBurst',
-      //         nDuration: watch('sBubbleGameDuration') || 1,
-      //         sMode: watch('sBubbleGameMode')?.value || 'series',
-      //         sPattern: watch('sBubblePattern')?.value || 'duplet',
-      //         nImageSize: watch('nBubbleImageSize')?.value || 1,
-      //         sSepration: watch('sBubbleSeperation')?.value || 'very low',
-      //         sDisparity: watch('sBubbleDisparity')?.value || 'max'
-      //       }
-      //     ]
-      //   }, (e, data) => console.log('response data', e, data))
-      // }
+    const HOOPIE_GAME_STRUCTURE = {
+      sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
+      bTachMode: watch('bTachMode') || true,
+      nDuration: watch('sHoopieGameDuration') || 1,
+      sBasketSize: watch('sHoopSize')?.value || 'max',
+      nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
+      nSpeed: watch('nHoopieBallSpeed')?.value || 1,
+      sSpawnRate: watch('sHoopieSpawnRate')?.value || 'high',
+      nStimulusSize: watch('nHoopieStimulusSize')?.value || 0.5,
+      sTextPosition: Object.keys(textPositionToggle).find(key => textPositionToggle[key] === true) || 'center'
     }
 
-    socket.on('ping', (payload, e) => {
-      console.log('payload :>> ', payload, e);
-    })
+    // const RINGRUNNER_NORMAL_GAME_STRUCTURE = {
+    //   nDuration: watch('sRRGameDuration') || 1,
+    //   sMode: Object.keys(ringrunnerMode).find(key => ringrunnerMode[key] === true) || 'normal',
+    //   nStimulusSize: watch('nRRStimulusSize')?.value || '-0.3',
+    //   nShipSpeed: watch('nShipSpeed')?.value || 1,
+    //   sPowerDuration: watch('sPowerDuration')?.value || 'low',
+    //   sPowerUpSpawnRate: watch('sPowerUpDelay')?.value || 'very low',
+    //   sObstacleSpawnRate: watch('sObstacleDelay')?.value || 'very low',
+    // }
 
-    socket.on("connect_error", (error) => {
-      console.log("Connection Error:", error);
-    })
+    // const gameStructure = currentGameData?.sName === 'hoopie' ? HOOPIE_GAME_STRUCTURE : RINGRUNNER_NORMAL_GAME_STRUCTURE
 
-    socket.on("disconnect", (reason) => {
-      if (reason === 'io server disconnect' || reason === 'io client disconnect') {
-        socket.connect()
+    socket.emit(location?.state?.patientSettings?._id, {
+      sEventName: 'reqPlay',
+      oData: {
+        oGamePlay: {
+          iGameId: currentGameData?._id,
+          sName: currentGameData?.sName,
+          sBundle: currentGameData?.sUrl
+        }
       }
-      console.log("Disconnected:", reason);
+    }, (error, response) => {
+      if (response) {
+        console.log('Which Game Started? ', response)
+      } else {
+        console.log('Which Game Started? (Error): ', error)
+      }
     })
-  }, [watch('nConstrast'), watch('nOcclusion')])
 
-  async function onSubmit (data) {
-    console.log('data: ', data);
-  }
+    socket.emit(location?.state?.patientSettings?._id, {
+      sEventName: 'reqSetSetting',
+      oData: {
+        oGameSetting: {
+          iGameId: currentGameData?._id,
+          sName: currentGameData?.sName,
+          ...HOOPIE_GAME_STRUCTURE,
+          oGlobalSettings: {
+            eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true),
+            oVergence: {
+              oHorizontal: {
+                sLeftEye: watch('nHorizontalLeft'),
+                sRightEye: watch('nHorizontalRight'),
+              },
+              oVertical: {
+                sLeftEye: watch('nVerticalLeft'),
+                sRightEye: watch('nVerticalRight'),
+              }
+            },
+            oTorsion: {
+              sLeftEye: watch('nTorsionLeft'),
+              sRightEye: watch('nTorsionRight'),
+            },
+            bMonocularMode: watch('bMonocularMode'),
+            oVisions: {
+              nContrast: watch('nContrast'),
+              nOcclusion: watch('nOcclusion'),
+              nBlur: watch('nBlur')
+            },
+          }
+        },
+      }
+    }, (error, response) => {
+      if (response) {
+        console.log('Game Settings: ', response)
+      } else {
+        console.log('Game Settings (Error): ', error)
+      }
+    })
+  }, [gameStarted])
 
-  function handleClear () {
-    setModal(false)
-  }
+  // useEffect(() => {
+  //   const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
+
+  //   socket.emit('reqPlay', {
+  //     oData: {
+  //       oGamePlay: {
+  //         iGameId: currentGameData?._id,
+  //         sName: currentGameData?.sName
+  //       }
+  //     }
+  //   }, (err, res) => {
+  //     if (res) {
+  //       console.log('Request Game Play: ', res)
+  //     } else {
+  //       console.log('Request Game Play (Error): ', err)
+  //     }
+  //   })
+
+  // }, [socket, eGameDropdown, buttonToggle])
+
+  // useEffect(() => {
+  //   if (socket.connected) {
+  //     const isDirtyData = {
+  //       nConstrast: watch('nConstrast'),
+  //       nOcclusion: watch('nOcclusion'),
+  //     }
+
+  //     const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
+
+  //     if (payloadData.nConstrast || payloadData.nOcclusion) {
+  //       socket.emit('ping', {
+  //         '_id': {
+  //           oid: ''
+  //         },
+  //         eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
+  //         oVergence: {
+  //           oHorizontal: {
+  //             sLeftEye: watch('nHorizontalLeft') || 0,
+  //             sRightEye: watch('nHorizontalRight') || 0,
+  //           },
+  //           oVertical: {
+  //             sLeftEye: watch('nVerticalLeft') || 0,
+  //             sRightEye: watch('nVerticalRight') || 0,
+  //           }
+  //         },
+  //         oTorsion: {
+  //           sLeftEye: watch('nTorsionLeft') || 0,
+  //           sRightEye: watch('nTorsionRight') || 0,
+  //         },
+  //         bMonocularMode: watch('bMonocularMode') || true,
+  //         oVisions: {
+  //           nContrast: watch('nContrast') || 0,
+  //           nOcclusion: watch('nOcclusion') || 0,
+  //           nBlur: watch('nBlur') || 0
+  //         },
+  //         aGameStructure: [
+  //           {
+  //             sName: 'hoopie',
+  //             nDuration: watch('sHoopieGameDuration') || 1,
+  //             sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
+  //             bTachMode: watch('bTachMode') || true,
+  //             nSpeed: watch('nHoopieBallSpeed')?.value || 1,
+  //             nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
+  //             sSpawnRate: watch('sHoopieSpawnRate')?.value || 'high',
+  //             nStimulusSize: watch('nHoopieStimulusSize')?.value || 0.5,
+  //             sBasketSize: watch('sHoopSize')?.value || 'max',
+  //             sTextPosition: Object.keys(textPositionToggle).find(key => textPositionToggle[key] === true) || 'center'
+  //           },
+  //           {
+  //             sName: 'ringRunner',
+  //             nDuration: watch('sRRGameDuration') || 1,
+  //             sMode: Object.keys(ringrunnerMode).find(key => ringrunnerMode[key] === true) || 'normal',
+  //             nStimulusSize: watch('nRRStimulusSize')?.value || '-0.3',
+  //             nShipSpeed: watch('nShipSpeed')?.value || 1,
+  //             sPowerDuration: watch('sPowerDuration')?.value || 'low',
+  //             sPowerUpSpawnRate: watch('sPowerUpDelay')?.value || 'very low',
+  //             sObstacleSpawnRate: watch('sObstacleDelay')?.value || 'very low',
+  //           },
+  //           {
+  //             sName: 'turbo',
+  //             nDuration: watch('nTurboGameDuration') || 1,
+  //             sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'hammer' && 'hammer',
+  //             eTargetStayDuration: watch('nHammerTargetStayDuration') || 'low',
+  //             eGameType: watch('sHammerGameType')?.value || 'hit All',
+  //             eHammerType: watch('sHammerType')?.value || 'single',
+  //             eMobSpawnType: watch('sTargetSpawnType')?.value || 'single',
+  //             eMobColorType: watch('sTargetColorType')?.value || 'single',
+  //             sTargetSpeed: watch('sHammerTargetSpeed')?.value || 'slow'
+  //           },
+  //           {
+  //             sName: 'turbo',
+  //             nDuration: watch('nTurboGameDuration') || 1,
+  //             sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'turbo' && 'turbo',
+  //             sButtonSize: watch('sTurboButtonSize')?.value || 'small',
+  //             sButtonCount: watch('sTurboButtonCount')?.value || 'very less',
+  //             eTargetStayDuration: watch('sTurboTargetStayDuration')?.value || 'low',
+  //             eHorizontalBias: watch('sHorizontalBias')?.value || 'left',
+  //             eVerticalBias: watch('sVerticalBias')?.value || 'top',
+  //             sNextTargetDelay: watch('sTurboNextTargetDelay')?.value || 'low',
+  //             sTargetSpread: watch('sTurboTargetSpread')?.value || 'small',
+  //             bHeadlock: watch('bHeadlock') || false
+  //           },
+  //           {
+  //             sName: 'bubbleBurst',
+  //             nDuration: watch('sBubbleGameDuration') || 1,
+  //             sMode: watch('sBubbleGameMode')?.value || 'series',
+  //             sPattern: watch('sBubblePattern')?.value || 'duplet',
+  //             nImageSize: watch('nBubbleImageSize')?.value || 1,
+  //             sSepration: watch('sBubbleSeperation')?.value || 'very low',
+  //             sDisparity: watch('sBubbleDisparity')?.value || 'max'
+  //           }
+  //         ]
+  //       }, (e, data) => console.log('response data', e, data))
+  //     }
+  //   }
+
+  //   socket.on('ping', (payload, e) => {
+  //     console.log('payload :>> ', payload, e);
+  //   })
+
+  //   socket.on("connect_error", (error) => {
+  //     console.log("Connection Error:", error);
+  //   })
+
+  //   socket.on("disconnect", (reason, details) => {
+  //     if (reason === 'io server disconnect' || reason === 'io client disconnect') {
+  //       socket.connect()
+  //     }
+  //     console.log("Disconnected:", reason, details);
+  //   })
+  // }, [watch('nConstrast'), watch('nOcclusion'), socket])
+
+
+
+
+  // useEffect(() => {
+  //   const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
+  //   console.log('currentGameData: ', currentGameData);
+
+
+
+  //   if (gameStarted === true) {
+  //     socket.on('reqJoinRoom', (res, err) => {
+  //       console.log('res, err :>> ', res, err);
+  //     })
+
+  //     socket.emit('reqPlay', {
+  //       oData: {
+  //         oGamePlay: {
+  //           iGameId: currentGameData?._id,
+  //           sName: currentGameData?.sName
+  //         }
+  //       }
+  //     })
+  //   }
+
+  //   socket.on('reqPlay', (res, e) => {
+  //     console.log('Can I start game? ', res, e)
+  //   })
+  // }, [socket, buttonToggle, gameStarted])
+
+  const onSubmit = useCallback((data) => console.log('data: ', data), [])
+  const handleClear = useCallback(() => setModal(false), [setModal, modal])
 
   useEffect(() => {
     document.title = 'Game Settings | Yantra Healthcare'
@@ -246,6 +403,7 @@ const InternalGameSettings = () => {
                         <div className='settings'>
                           <div className='mx-3'>
                             <PatientInfo
+                              defaultData={location?.state?.patientSettings}
                               data={location?.state?.patientDetails}
                             />
                           </div>
@@ -467,6 +625,7 @@ const InternalGameSettings = () => {
                           <div className='mx-3'>
                             <PatientInfo
                               data={location?.state?.patientDetails}
+                              defaultData={location?.state?.patientSettings}
                             />
                           </div>
 
@@ -660,3 +819,4 @@ const InternalGameSettings = () => {
 }
 
 export default InternalGameSettings
+

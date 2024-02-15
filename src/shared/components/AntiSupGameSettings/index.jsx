@@ -19,8 +19,8 @@ const AntiSupGameSettings = (props) => {
     const [modal, setModal] = useState(false)
 
     const HOOPIE_GAME_STRUCTURE = data?.find(item => item?.sName === 'hoopie')
-    const RING_RUNNER_NORMAL_GAME_STRUCTURE = data?.filter(item => item?.sName === 'ringRunner')?.find(mode => mode?.sMode === 'normal')
-    const RING_RUNNER_GABOR_GAME_STRUCTURE = data?.filter(item => item?.sName === 'ringRunner')?.find(mode => mode?.sMode === 'gabor')
+    const RING_RUNNER_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'normal')
+    const RING_RUNNER_GABOR_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'gabor')
 
     const LABELS = {
         TITLE: 'Anti-Suppression',

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { getPatientById } from 'query/patient/patient.query'
 import { Col, Row } from 'react-bootstrap'
 import { useQuery } from 'react-query'
@@ -42,10 +42,10 @@ const ViewPatient = () => {
     const [requestParams, setRequestParams] = useState(getRequestParams())
     const [columns] = useState(getSortedColumns(PatientHistory, parsedData))
 
-    const [buttonToggle, setButtonToggle] = useState({
+    const [buttonToggle, setButtonToggle] = useState(() => ({
         information: true,
         history: false
-    })
+    }))
 
     const tab_buttons = [
         { label: 'Patient Information', toggle: 'information' },
@@ -66,10 +66,10 @@ const ViewPatient = () => {
         }
     })
 
-    function handlePageEvent (page) {
+    const handlePageEvent = useCallback((page) => {
         setRequestParams({ ...requestParams, pageNumber: page, nStart: page - 1 })
         appendParams({ pageNumber: page, nStart: page - 1 })
-    }
+    }, [requestParams, setRequestParams])
 
     return (
         <>
@@ -134,7 +134,7 @@ const ViewPatient = () => {
                                                             <span className='data-value capitalize'>{data?.eStrabismus || '-'}</span>
                                                         </Col>
                                                         <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
-                                                            <span className='data-title'>Status</span>
+                                                            <span className='data-title'>Patient Status</span>
                                                             <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
                                                         </Col>
                                                         <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">

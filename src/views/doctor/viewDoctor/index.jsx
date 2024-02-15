@@ -8,7 +8,7 @@ import { getAdminById } from 'query/admin/admin.query'
 import moment from 'moment'
 import { motion } from 'framer-motion'
 
-const ViewAdmin = () => {
+const ViewDoctor = () => {
     const { id } = useParams()
 
     // SPEICIFC ADMIN
@@ -30,7 +30,7 @@ const ViewAdmin = () => {
                                     <div className='img-content'>
                                         {isLoading ?
                                             <Spinner animation='border' className='text-center mt-5' variant='success' />
-                                            : <img src={data?.sAvatar} alt={data?.sUserName} />}
+                                            : <><img src={data?.sAvatar} alt={data?.sUserName} /> </>}
                                     </div>
                                     <span className='user-name'>{data?.sUserName || 'Loading...'}</span>
                                 </div>
@@ -58,6 +58,10 @@ const ViewAdmin = () => {
                                     <Col md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Company Name</span>
                                         <span className='data-value'>{data?.sCompanyName || '-'}</span>
+                                    </Col>
+                                    <Col md={6} sm={6} className="p-0 m-0">
+                                        <span className='data-title'>Doctor Status</span>
+                                        <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : 'In-Active'}</span>
                                     </Col>
                                     <Col md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Package Price</span>
@@ -101,4 +105,4 @@ const ViewAdmin = () => {
     )
 }
 
-export default ViewAdmin
+export default ViewDoctor

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { useMutation } from 'react-query'
 import { Controller, useForm } from 'react-hook-form'
@@ -35,7 +35,7 @@ const AddGame = () => {
         }
     })
 
-    async function onSubmit (data) {
+    const onSubmit = async (data) => {
         const formData = new FormData()
 
         if (isButtonDisabled) {
@@ -58,11 +58,7 @@ const AddGame = () => {
         }, 5000)
     }
 
-    const handleFileInputClick = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click()
-        }
-    }
+    const handleFileInputClick = useCallback(() => (fileInputRef.current) && fileInputRef.current.click(), [fileInputRef.current])
 
     useEffect(() => {
         document.title = 'Add Game | Yantra Healthcare'
@@ -274,11 +270,6 @@ const AddGame = () => {
                                                                         if (fileExtension && !allowedFormats.includes(fileExtension)) {
                                                                             return "Unsupported file format";
                                                                         }
-
-                                                                        // const maxSize = 1 * 1000 * 1000; // 1MB in bytes
-                                                                        // if (value.size >= maxSize) {
-                                                                        //     return "File size must be less than 1MB";
-                                                                        // }
                                                                     }
                                                                     return true;
                                                                 },

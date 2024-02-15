@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
@@ -20,7 +20,7 @@ import { FormattedMessage } from 'react-intl'
 import { PASSWORD } from 'shared/constants'
 import { ReactToastify } from 'shared/utils'
 
-const EditAdmin = () => {
+const EditDoctor = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
@@ -31,9 +31,7 @@ const EditAdmin = () => {
   const [isButtonDisabled, setButtonDisabled] = useState(false)
 
   // DROPDOWN GAME LIST
-  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, {
-    select: (data) => data?.data?.data,
-  })
+  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
 
   // SPECIFIC ADMIN
   const { data } = useQuery('adminDataById', () => getAdminById(id), {
@@ -75,7 +73,7 @@ const EditAdmin = () => {
     }
   })
 
-  async function onSubmit (data) {
+  const onSubmit = useCallback((data) => {
     const formData = new FormData()
 
     if (isButtonDisabled) {
@@ -99,17 +97,10 @@ const EditAdmin = () => {
     setTimeout(() => {
       setButtonDisabled(false)
     }, 5000)
-  }
+  }, [isButtonDisabled, setButtonDisabled, updateMutate])
 
-  const handleFileInputClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click()
-    }
-  }
-
-  const handleNewPasswordToggle = () => {
-    setNewPassword(!showNewPassword)
-  }
+  const handleFileInputClick = useCallback(() => (fileInputRef.current) && fileInputRef.current.click(), [fileInputRef.current])
+  const handleNewPasswordToggle = useCallback(() => setNewPassword(!showNewPassword), [showNewPassword, setNewPassword])
 
   useEffect(() => {
     document.title = 'Edit Admin | Yantra Healthcare'
@@ -410,6 +401,9 @@ const EditAdmin = () => {
                         label='Package Price'
                         placeholder='Enter the package price'
                         required
+                        price={true}
+                        hasTooltip={true}
+                        tooltipMsg='Price must be INR base.'
                         validation={{
                           pattern: {
                             value: /^[0-9]+$/,
@@ -526,4 +520,4 @@ const EditAdmin = () => {
   )
 }
 
-export default EditAdmin
+export default EditDoctor

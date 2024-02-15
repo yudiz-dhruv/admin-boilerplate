@@ -1,5 +1,5 @@
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 
   .form-check-input:focus {
     box-shadow: none;
@@ -28,12 +28,32 @@
 
   .form-label {
     font-size: $fs-12;
-    font-weight: $fw-500;
+    font-weight: $fw-700;
+    font-family: 'Helvetica-Bold';
     letter-spacing: 0.3px;
     // text-transform: uppercase;
-    color: var(--text-color) !important;
+    color: var(--secondary-500) !important;
     line-height: 1.83;
     margin-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+
+    .tooltip-icon {
+      display: flex;
+      justify-content: end;
+      align-items: center;
+
+      svg {
+        cursor: pointer;
+        color: var(--secondary-500);
+        font-size: 13px;
+      }
+    }
+
+    &::selection {
+      color: var(--white-color);
+      background: var(--text-hover);
+    }
 
     // span {
     //   color: var(--secondary-400);

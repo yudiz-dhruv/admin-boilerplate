@@ -56,7 +56,7 @@ const ViewGame = () => {
                                     <span className='data-value capitalize'>{data?.eCategory || '-'}</span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Status</span>
+                                    <span className='data-title'>Game Status</span>
                                     <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
