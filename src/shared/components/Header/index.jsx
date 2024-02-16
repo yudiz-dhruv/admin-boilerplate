@@ -84,7 +84,7 @@ function Header () {
       <div className='header-right'>
         <div className='user-name'>{profileLoader ?
           <Spinner animation='border' size='sm' variant='default' />
-          : <span>{data?.sUserName || 'Login Again'}</span>
+          : <span>{data?.sUserName}</span>
         }
         </div>
         <Dropdown>

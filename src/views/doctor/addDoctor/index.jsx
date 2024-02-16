@@ -30,7 +30,7 @@ const AddDoctor = () => {
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
 
-  // ADD ADMIN
+  // ADD DOCTOR
   const { mutate, isLoading } = useMutation(addAdmin, {
     onSuccess: (res) => {
       ReactToastify('New Admin Added Successfully!', 'success')
@@ -40,6 +40,7 @@ const AddDoctor = () => {
   })
 
   const onSubmit = useCallback((data) => {
+    console.log('data?.aGamesName: ', data?.aGamesName);
     const formData = new FormData()
 
     if (isButtonDisabled) {
@@ -49,7 +50,7 @@ const AddDoctor = () => {
 
     formData.append('sUserName', data?.sUserName || '')
     formData.append('sEmail', data?.sEmail || '')
-    formData.append('aGamesName', data?.aGamesName?.map(item => item?.sName) || '')
+    formData.append('aGamesName', data?.aGamesName?.map(item => item?._id) || '')
     formData.append('nPrice', +data?.nPrice || '')
     formData.append('dStartAt', data?.dStartAt?.toISOString() || '')
     formData.append('dEndAt', data?.dEndAt?.toISOString() || '')
@@ -348,22 +349,25 @@ const AddDoctor = () => {
                               message: 'Game name(s) are required.'
                             }
                           }}
-                          render={({ field: { onChange, value, ref } }) => (
-                            <Select
-                              placeholder='Select Games...'
-                              ref={ref}
-                              options={eGameDropdown}
-                              components={makeAnimated()}
-                              className={`react-select border-0 ${errors.aGamesName && 'error'}`}
-                              classNamePrefix='select'
-                              isSearchable={false}
-                              value={value}
-                              onChange={onChange}
-                              isMulti={true}
-                              getOptionLabel={(option) => option.sName}
-                              getOptionValue={(option) => option._id}
-                            />
-                          )}
+                          render={({ field: { onChange, value, ref } }) => {
+                            console.log('value: ', value?.map(item => item?._id));
+                            return (
+                              <Select
+                                placeholder='Select Games...'
+                                ref={ref}
+                                options={eGameDropdown}
+                                components={makeAnimated()}
+                                className={`react-select border-0 ${errors.aGamesName && 'error'}`}
+                                classNamePrefix='select'
+                                isSearchable={false}
+                                value={value}
+                                onChange={onChange}
+                                isMulti={true}
+                                getOptionLabel={(option) => option.sName}
+                                getOptionValue={(option) => option?._id}
+                              />
+                            )
+                          }}
                         />
                         {errors.aGamesName && (
                           <Form.Control.Feedback type='invalid'>

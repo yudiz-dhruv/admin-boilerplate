@@ -14,6 +14,7 @@ import { useMutation, useQuery } from 'react-query'
 import { getPatientById, getPatientDropdownList, joinRoom } from 'query/patient/patient.query'
 import { getDirtyFormValues } from 'helper/helper'
 import { ReactToastify } from 'shared/utils'
+import { socket } from 'shared/socket'
 
 const AdminGame = () => {
   const navigate = useNavigate()
@@ -52,6 +53,14 @@ const AdminGame = () => {
   const { mutate: joinRoomMutate, isLoading } = useMutation('joinGameRoom', joinRoom, {
     onSuccess: (data) => {
       navigate(route?.adminGameSettings(patientDetails?._id), { state: { patientSettings: data?.data?.data, patientDetails } })
+
+      socket.emit('reqJoinRoom', { iUserId: data?.data?.data?._id }, (response) => {
+        if (response?.oData) {
+          console.log('%cJoin Room: ', 'color: orange', response?.oData)
+        } else {
+          console.log('%cJoin Room Error: ', 'color: red', response?.message)
+        }
+      })
     },
     onError: () => {
       ReactToastify('Oops! Something went wrong. Please try again later.', 'error')

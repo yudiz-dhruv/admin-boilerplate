@@ -29,9 +29,6 @@ function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
       e.preventDefault();
 
       setModal({ open: true, item })
-      console.log('Quick session prevented');
-    } else {
-      console.log('want to quick session');
     }
   }
 

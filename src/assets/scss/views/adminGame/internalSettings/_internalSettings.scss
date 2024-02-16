@@ -39,6 +39,15 @@
                 margin: 0;
                 margin-top: 10px;
 
+                .no-games {
+                    width: 100%;
+                    text-align: center;
+                    color: var(--secondary-400);
+                    font-family: 'Helvetica-Bold';
+                    font-weight: 600;
+                    letter-spacing: 0.5px;
+                }
+
                 .form-content {
                     display: block;
                     width: 100%;

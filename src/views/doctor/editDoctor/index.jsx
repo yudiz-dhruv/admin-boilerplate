@@ -33,7 +33,7 @@ const EditDoctor = () => {
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
 
-  // SPECIFIC ADMIN
+  // SPECIFIC DOCTOR
   const { data } = useQuery('adminDataById', () => getAdminById(id), {
     enabled: !!id,
     select: (data) => data?.data?.data,
@@ -46,6 +46,7 @@ const EditDoctor = () => {
       const gameData = []
       for (let key of eGameDropdown) {
         console.log('key :>> ', key);
+        console.log('temp?.filter(item => item === key?.sName): ', temp?.filter(item => item));
         if (temp?.filter(item => item === key?.sName)?.length > 0) {
           gameData?.push(key)
         }

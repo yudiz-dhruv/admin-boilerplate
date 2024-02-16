@@ -21,6 +21,11 @@ import VergenceSettings from 'shared/components/VergenceSettings'
 import TorsionSettings from 'shared/components/TorsionSettings'
 import MonocularModeSettings from 'shared/components/MonocularModeSettings'
 import { ReactToastify } from 'shared/utils'
+import { useHoopieSettings } from 'shared/hooks/useHoopieSettings'
+import { useRingRunnerSettings } from 'shared/hooks/useRingRunnerSettings'
+import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
+import { useTurboSettings } from 'shared/hooks/useTurboSettings'
+import { useBubbleSetting } from 'shared/hooks/useBubbleSettings'
 
 const InternalGameSettings = () => {
   const location = useLocation()
@@ -31,8 +36,6 @@ const InternalGameSettings = () => {
   const [tabletMode, setTabletMode] = useState(false)
   const [modal, setModal] = useState(false)
   const [gameStarted, setGameStarted] = useState(false)
-  const [tachMode, setTachMode] = useState('y')
-  const [headLockMode, setHeadLockMode] = useState('n')
   const [connectivityStatus, setConnectivityStatus] = useState('')
 
   const [buttonToggle, setButtonToggle] = useState({
@@ -42,75 +45,28 @@ const InternalGameSettings = () => {
     bubbles: false
   })
 
-  const [dominantEyeButton, setDominantEyeButton] = useState(() => ({
-    left: true,
-    right: false,
-    none: false,
-  }))
-
-  const [antiSupSettings, setAntiSupSettings] = useState(() => ({
-    contrast: 0,
-    occlusion: 0,
-    blur: 0
-  }))
-
-  const [vergenceToggle, setVergenceToggle] = useState(() => ({
-    horizontal: true,
-    vertical: false,
-  }))
-
-  const [horizontalEyeSettings, setHorizontalEyeSettings] = useState(() => ({
-    left: 0,
-    right: 0
-  }))
-
-  const [verticalEyeSettings, setVerticalEyeSettings] = useState(() => ({
-    left: 0,
-    right: 0
-  }))
-
-  const [torsionSettings, setTorsionSettings] = useState(() => ({
-    left: 0,
-    right: 0
-  }))
-
-  // hoopie game
-  const [gameModeToggle, setGameModeToggle] = useState(() => ({
-    head: true,
-    hand: false
-  }))
-
-  const [textPositionToggle, setTextPositionToggle] = useState(() => ({
-    center: true,
-    random: false
-  }))
-
-  // ring runner game
-  const [ringrunnerMode, setRingRunnerMode] = useState(() => ({
-    normal: true,
-    gabor: false,
-  }))
-
-  // turbo game
-  const [turboGameMode, setTurboGameMode] = useState(() => ({
-    turbo: true,
-    hammer: false,
-  }))
+  // ALL GAME SETTINGS
+  const { dominantEyeButton, setDominantEyeButton, antiSupSettings, setAntiSupSettings, vergenceToggle, setVergenceToggle, horizontalEyeSettings, setHorizontalEyeSettings, verticalEyeSettings, setVerticalEyeSettings, torsionSettings, setTorsionSettings } = useGlobalSettings()
+  const { gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, tachMode, setTachMode, HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
+  const { ringrunnerMode, setRingRunnerMode, RINGRUNNER_GAME_STRUCTURE } = useRingRunnerSettings(watch)
+  const { headLockMode, setHeadLockMode, turboGameMode, setTurboGameMode, TURBO_GAME_STRUCTURE } = useTurboSettings(watch)
+  const { BUBBLES_GAME_STRUCTURE } = useBubbleSetting(watch)
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown, isLoading } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
 
-
   // Join Room UseEffect
   useEffect(() => {
-    socket.emit('reqJoinRoom', { iUserId: location?.state?.patientSettings?._id }, (response) => {
-      if (response?.oData) {
-        console.log('%cJoin Room: ', 'color: orange', response?.oData)
-      } else {
-        console.log('%cJoin Room Error: ', 'color: red', response?.message)
-      }
-    })
-  }, [socket, location?.state])
+    setTimeout(() => {
+      socket.emit('reqJoinRoom', { iUserId: location?.state?.patientSettings?._id }, (response) => {
+        if (response?.oData) {
+          console.log('%cJoin Room: ', 'color: orange', response?.oData)
+        } else {
+          console.log('%cJoin Room Error: ', 'color: red', response?.message)
+        }
+      })
+    }, 3000)
+  }, [socket, location?.state, setTimeout])
 
   // Game status useEffect
   useEffect(() => {
@@ -121,55 +77,6 @@ const InternalGameSettings = () => {
   }, [buttonToggle])
 
   const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
-
-  const HOOPIE_GAME_STRUCTURE = {
-    sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
-    bTachMode: watch('bTachMode') || true,
-    nDuration: watch('sHoopieGameDuration') || 1,
-    sBasketSize: watch('sHoopSize')?.value || 'max',
-    nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
-    nSpeed: watch('nHoopieBallSpeed')?.value || 1,
-    sSpawnRate: watch('sHoopieSpawnRate')?.value || 'high',
-    nStimulusSize: watch('nHoopieStimulusSize')?.value || 0.5,
-    sTextPosition: Object.keys(textPositionToggle).find(key => textPositionToggle[key] === true) || 'center'
-  }
-
-  const RINGRUNNER_GAME_STRUCTURE = {
-    nDuration: watch('sRRGameDuration') || 1,
-    sMode: Object.keys(ringrunnerMode).find(key => ringrunnerMode[key] === true) || 'normal',
-    nStimulusSize: watch('nRRStimulusSize')?.value || -0.3,
-    nShipSpeed: watch('nShipSpeed')?.value || 1,
-    sPowerDuration: watch('sPowerDuration')?.value || 'low',
-    sPowerUpSpawnRate: watch('sPowerUpDelay')?.value || 'very low',
-    sObstacleSpawnRate: watch('sObstacleDelay')?.value || 'very low',
-    nLocalOrientation: +watch('sLocalOrientation') || 90,
-    nGlobalOrientation: +watch('sGlobalOrientation') || 120,
-    nFrequency: watch('nGaborFrequency')?.value || 2,
-  }
-
-  const TURBO_GAME_STRUCTURE = {
-    nDuration: watch('nTurboGameDuration') || 1,
-    sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'turbo' && 'turbo',
-    sButtonSize: watch('sTurboButtonSize')?.value || 'small',
-    sButtonCount: watch('sTurboButtonCount')?.value || 'very less',
-    eHorizontalBias: watch('sHorizontalBias')?.value || 'left',
-    eVerticalBias: watch('sVerticalBias')?.value || 'top',
-    eTargetStayDuration: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) === 'turbo' ? (watch('sTurboTargetStayDuration')?.value || 'low') : (watch('nHammerTargetStayDuration')?.value || 'low'),
-    sNextTargetDelay: watch('sTurboNextTargetDelay')?.value || 'low',
-    sTargetSpread: watch('sTurboTargetSpread')?.value || 'small',
-    bHeadlock: watch('bHeadlock') || false
-  }
-
-  const BUBBLES_GAME_STRUCTURE = {
-    nDuration: watch('sBubbleGameDuration') || 5,
-    sMode: watch('sBubbleGameMode')?.value || 'series',
-    sPattern: watch('sBubblePattern')?.value || 'duplet',
-    nStimulusSize: watch('nBubbleStimulusSize')?.value || 1,
-    sSepration: watch('sBubbleSeperation')?.value || 'high',
-    sDisparity: watch('sBubbleDisparity')?.value || 'max',
-    nPanelDistance: watch('nPanelDistance')?.value || 1,
-  }
-
   const getCurrentGameStructure = (name) => {
     switch (name) {
       case 'Hoopie':
@@ -221,14 +128,14 @@ const InternalGameSettings = () => {
             }
           },
         }
-      }, (error, response) => {
-        if (response) {
-          console.log('%cGame Settings: ', 'color: #1ba1bc', response)
-        } else {
-          if (error.message === 'Game is in invalid state') {
+      }, (response) => {
+        if (response?.error) {
+          if (response?.error?.message === 'Game is in invalid state') {
             ReactToastify('Please wait for the App connection!', 'error', 'invalid-status')
           }
-          console.log('%cGame Settings (Error): ', 'color: red', error)
+          console.log('%cGame Settings (Error): ', 'color: red', response?.error?.message)
+        } else {
+          console.log('%cGame Settings: ', 'color: #1ba1bc', response)
         }
       })
     }
@@ -246,48 +153,20 @@ const InternalGameSettings = () => {
   watch('nBlur'),
     getCurrentGameStructure,
     HOOPIE_GAME_STRUCTURE,
-    RINGRUNNER_GAME_STRUCTURE,
+  watch('sRRGameDuration'), ringrunnerMode, watch('nRRStimulusSize'), watch('nShipSpeed'), watch('sPowerDuration'), watch('sPowerUpDelay'), watch('sObstacleDelay'), watch('sLocalOrientation'), watch('sGlobalOrientation'), watch('nGaborFrequency'),
     TURBO_GAME_STRUCTURE,
     BUBBLES_GAME_STRUCTURE])
-
-  // useEffect(() => {
-  //   const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
-
-  //   socket.emit('reqPlay', {
-  //     oData: {
-  //       oGamePlay: {
-  //         iGameId: currentGameData?._id,
-  //         sName: currentGameData?.sName
-  //       }
-  //     }
-  //   }, (err, res) => {
-  //     if (res) {
-  //       console.log('Request Game Play: ', res)
-  //     } else {
-  //       console.log('Request Game Play (Error): ', err)
-  //     }
-  //   })
-
-  // }, [socket, eGameDropdown, buttonToggle])
 
   const onSubmit = useCallback((data) => console.log('data: ', data), [])
   const handleClear = useCallback(() => setModal(false), [setModal, modal])
 
-  const handleStartGame = useCallback((e, buttonToggle) => {
+  /**
+   * Handle the Start Game Button
+   * @param {Event} e - The event object
+   * @param {Object} buttonToggle - The button toggle value
+   */
+  const handleStartGame = (e, buttonToggle) => {
     e?.preventDefault()
-
-    const RINGRUNNER_DEFAULT_VALUES = {
-      nDuration: 1,
-      sMode: 'normal',
-      nStimulusSize: -0.3,
-      nShipSpeed: 1,
-      sPowerDuration: 'low',
-      sPowerUpSpawnRate: 'very low',
-      sObstacleSpawnRate: 'very low',
-      nLocalOrientation: 90,
-      nGlobalOrientation: 120,
-      nFrequency: 2,
-    }
 
     socket.emit(location?.state?.patientSettings?._id, {
       sEventName: 'reqPlay',
@@ -299,47 +178,65 @@ const InternalGameSettings = () => {
           eGameState: 'playing',
         },
         oGameSetting: {
-          ...RINGRUNNER_DEFAULT_VALUES,
+          ...gameStructure,
           aGlobal: {
-            eDominantEye: 'left',
+            eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
             oVergence: {
               oHorizontal: {
-                sLeftEye: -1,
-                sRightEye: 0,
+                sLeftEye: watch('nHorizontalLeft') || 0,
+                sRightEye: watch('nHorizontalRight') || 0,
               },
               oVertical: {
-                sLeftEye: -1,
-                sRightEye: 0,
+                sLeftEye: watch('nVerticalLeft') || 0,
+                sRightEye: watch('nVerticalRight') || 0,
               }
             },
             oTorsion: {
-              sLeftEye: -1,
-              sRightEye: 0,
+              sLeftEye: watch('nTorsionLeft') || 0,
+              sRightEye: watch('nTorsionRight') || 0,
             },
-            bMonocularMode: true,
+            bMonocularMode: watch('bMonocularMode') || true,
             oVisions: {
-              nContrast: 0,
-              nOcclusion: 0,
-              nBlur: 0
-            },
+              nContrast: watch('nContrast') || 0,
+              nOcclusion: watch('nOcclusion') || 0,
+              nBlur: watch('nBlur') || 0
+            }
           }
         }
       }
-    }, (error, response) => {
-      if (response) {
-        setGameStarted(true)
-        console.log('%cWhich Game Started? ', 'color: #1ba1bc', response)
-      } else {
-        if (error.message === 'Game is in invalid state') {
+    }, (response) => {
+      if (response?.error) {
+        if (response?.error?.message === 'Game is in invalid state') {
           ReactToastify('Please wait for the App connection!', 'error', 'invalid-status')
           setGameStarted(false)
         }
-        console.log('%cWhich Game Started? (Error): ', 'color: red', error)
+        console.log('%cWhich Game Started? (Error): ', 'color: red', response?.error?.message)
+      } else {
+        setGameStarted(true)
+        console.log('%cWhich Game Started? ', 'color: #1ba1bc', response)
       }
     })
-  }, [gameStarted, setGameStarted])
+  }
 
-  const handleEndGame = useCallback((e, buttonData) => {
+
+
+  useEffect(() => {
+    socket.on(location?.state?.patientSettings?._id, (response) => {
+      if (response?.sEventName === 'resEndParticularGame') {
+        console.log('Particular End Game', response)
+      }
+    })
+  }, [socket])
+
+
+
+
+  /**
+ * Handle the End Game Button
+ * @param {Event} e - The event object
+ * @param {Object} buttonToggle - The button toggle value
+ */
+  const handleEndGame = (e, buttonData) => {
     e.preventDefault()
 
     socket.emit(location?.state?.patientSettings?._id, {
@@ -347,16 +244,16 @@ const InternalGameSettings = () => {
       oData: {
         eGameState: 'finished'
       }
-    }, (error, response) => {
-      if (response) {
-        console.log('%cGame Ended: ', 'color: #fff', response)
+    }, (response) => {
+      if (response?.error) {
+        console.log('%cGame Ended (Error): ', 'color: red', response?.error?.message)
       } else {
-        console.log('%cGame Ended (Error): ', 'color: red', error)
+        console.log('%cGame Ended: ', 'color: #fff', response)
       }
     })
 
     setGameStarted(false)
-  }, [gameStarted, setGameStarted])
+  }
 
   useEffect(() => {
     document.title = 'Game Settings | Yantra Healthcare'
@@ -468,6 +365,7 @@ const InternalGameSettings = () => {
                               register={register}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
+                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -489,6 +387,7 @@ const InternalGameSettings = () => {
                               setButtonToggle={setButtonToggle}
                               turboGameMode={turboGameMode}
                               setTurboGameMode={setTurboGameMode}
+                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -508,6 +407,7 @@ const InternalGameSettings = () => {
                               control={control}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
+                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -548,6 +448,7 @@ const InternalGameSettings = () => {
                               register={register}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
+                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -569,6 +470,7 @@ const InternalGameSettings = () => {
                               setButtonToggle={setButtonToggle}
                               turboGameMode={turboGameMode}
                               setTurboGameMode={setTurboGameMode}
+                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -588,6 +490,7 @@ const InternalGameSettings = () => {
                               control={control}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
+                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}

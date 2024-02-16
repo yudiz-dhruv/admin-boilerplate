@@ -14,6 +14,7 @@ import { MdFormatAlignCenter } from "react-icons/md"
 
 const AntiSupGameSettings = (props) => {
     const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, tachMode, setTachMode, data, handleStartGame, handleEndGame } = props
+    // console.log('games: ', games?.[0]?.split(','));
 
     const [tabButtons, setTabButtons] = useState([])
     const [modal, setModal] = useState(false)
