@@ -5,6 +5,7 @@ export async function addAdmin (data) {
 }
 
 export async function updateAdmin (data) {
+    console.log('data: ', data);
     return axios.put(`/sub-admin/edit/${data?.id}`, data?.formData)
 }
 

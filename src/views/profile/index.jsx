@@ -113,7 +113,7 @@ function EditProfile () {
                 />
                 {updateFlag !== false &&
                   <>
-                    <div className=''>
+                    <div className='mt-2'>
                       <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || !updateFlag || isLoading}>
                         <FormattedMessage id='update' />
                         {isLoading && <Spinner animation='border' size='sm' variant='success' />}

@@ -9,6 +9,16 @@
   }
 }
 
+@media (max-width: 992px) {
+  .modal {
+    padding: 0 15px !important;
+
+    .modal-dialog {
+      max-width: 80%;
+    }
+  }
+}
+
 .modal-content {
   background-color: var(--boxes-color);
   border-radius: 10px;

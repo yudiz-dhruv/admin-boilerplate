@@ -45,10 +45,12 @@ const EditDoctor = () => {
 
       const gameData = []
       for (let key of eGameDropdown) {
+        console.log('key :>> ', key);
         if (temp?.filter(item => item === key?.sName)?.length > 0) {
           gameData?.push(key)
         }
       }
+      console.log('gameData: ', gameData);
       reset({
         ...data,
         aGamesName: gameData,
@@ -366,22 +368,25 @@ const EditDoctor = () => {
                               message: 'Game name(s) are required'
                             }
                           }}
-                          render={({ field: { onChange, value, ref } }) => (
-                            <Select
-                              placeholder='Select Games...'
-                              ref={ref}
-                              options={eGameDropdown}
-                              className={`react-select border-0 ${errors.aGamesName && 'error'}`}
-                              classNamePrefix='select'
-                              isSearchable={true}
-                              value={value}
-                              components={makeAnimated()}
-                              onChange={onChange}
-                              isMulti={true}
-                              getOptionLabel={(option) => option.sName}
-                              getOptionValue={(option) => option._id}
-                            />
-                          )}
+                          render={({ field: { onChange, value, ref } }) => {
+                            console.log('value: ', value);
+                            return (
+                              <Select
+                                placeholder='Select Games...'
+                                ref={ref}
+                                options={eGameDropdown}
+                                className={`react-select border-0 ${errors.aGamesName && 'error'}`}
+                                classNamePrefix='select'
+                                isSearchable={true}
+                                value={value}
+                                components={makeAnimated()}
+                                onChange={onChange}
+                                isMulti={true}
+                                getOptionLabel={(option) => option.sName}
+                                getOptionValue={(option) => option._id}
+                              />
+                            )
+                          }}
                         />
                         {errors.aGamesName && (
                           <Form.Control.Feedback type='invalid'>

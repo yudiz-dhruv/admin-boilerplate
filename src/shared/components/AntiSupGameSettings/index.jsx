@@ -13,7 +13,7 @@ import { motion } from 'framer-motion'
 import { MdFormatAlignCenter } from "react-icons/md"
 
 const AntiSupGameSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setGameStarted, tachMode, setTachMode, data } = props
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, tachMode, setTachMode, data, handleStartGame, handleEndGame } = props
 
     const [tabButtons, setTabButtons] = useState([])
     const [modal, setModal] = useState(false)
@@ -137,9 +137,9 @@ const AntiSupGameSettings = (props) => {
                                                                 onClick={(e) => {
                                                                     setGameModeToggle({ head: true })
 
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onClick(e)
                                                                 }}
                                                             >
@@ -163,9 +163,9 @@ const AntiSupGameSettings = (props) => {
                                                                 onClick={(e) => {
                                                                     setGameModeToggle({ hand: true })
 
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onClick(e)
                                                                 }}
                                                             >
@@ -197,9 +197,9 @@ const AntiSupGameSettings = (props) => {
                                                     onChange={(e) => {
                                                         handleConfirmStatus(e.target.checked)
 
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                 />
@@ -240,9 +240,9 @@ const AntiSupGameSettings = (props) => {
                                                 e.target.value?.trim() &&
                                                 e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                            if (gameStarted) {
-                                                setGameStarted(false)
-                                            }
+                                            // if (gameStarted) {
+                                            //     setGameStarted(false)
+                                            // }
                                         }}
                                     />
                                 </Col>
@@ -264,9 +264,9 @@ const AntiSupGameSettings = (props) => {
                                                     isSearchable={false}
                                                     isMulti={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -295,9 +295,9 @@ const AntiSupGameSettings = (props) => {
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -327,9 +327,9 @@ const AntiSupGameSettings = (props) => {
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -359,9 +359,9 @@ const AntiSupGameSettings = (props) => {
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -391,9 +391,9 @@ const AntiSupGameSettings = (props) => {
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -428,9 +428,9 @@ const AntiSupGameSettings = (props) => {
                                                                 name='sTextCenter'
                                                                 className={`${textPositionToggle?.center ? 'checked' : ''}`}
                                                                 onClick={() => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     setTextPositionToggle({ center: true })
                                                                 }}
                                                             >
@@ -450,9 +450,9 @@ const AntiSupGameSettings = (props) => {
                                                                 name='sTextRandom'
                                                                 className={`${textPositionToggle?.random ? 'checked' : ''}`}
                                                                 onClick={() => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     setTextPositionToggle({ random: true })
                                                                 }}
                                                             >
@@ -469,10 +469,10 @@ const AntiSupGameSettings = (props) => {
                             </Row>
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
-                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
                                 Start Game
                             </Button>
-                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
                                 End Game
                             </Button>
                         </Modal.Footer>
@@ -488,7 +488,7 @@ const AntiSupGameSettings = (props) => {
                         </Modal.Header>
                         <Modal.Body>
                             <Row>
-                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                <Col md={6} sm={12}>
                                     <CommonInput
                                         label={LABELS?.GAME_DURATION}
                                         type='text'
@@ -519,13 +519,13 @@ const AntiSupGameSettings = (props) => {
                                                 e.target.value?.trim() &&
                                                 e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                            if (gameStarted) {
-                                                setGameStarted(false)
-                                            }
+                                            // if (gameStarted) {
+                                            //     setGameStarted(false)
+                                            // }
                                         }}
                                     />
                                 </Col>
-                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                <Col md={6} sm={12}>
                                     <div className=''>
                                         <Form.Group className='form-group ringRunner'>
                                             <Form.Label>Game Mode</Form.Label>
@@ -534,9 +534,9 @@ const AntiSupGameSettings = (props) => {
                                                     whileTap={{ scale: 0.9 }}>
                                                     <Button type='button' className={`${ringrunnerMode?.normal ? 'checked' : ''}`} onClick={() => {
                                                         setRingRunnerMode({ normal: true })
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                     }}>
                                                         <span className='tab'>Normal</span>
                                                     </Button>
@@ -546,9 +546,9 @@ const AntiSupGameSettings = (props) => {
                                                     whileTap={{ scale: 0.9 }}>
                                                     <Button type='button' className={`${ringrunnerMode?.gabor ? 'checked' : ''}`} onClick={() => {
                                                         setRingRunnerMode({ gabor: true })
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                     }}>
                                                         <span className='tab'>Gabor</span>
                                                     </Button>
@@ -565,7 +565,7 @@ const AntiSupGameSettings = (props) => {
                                     transition={{ duration: 0.5, ease: 'easeInOut' }}>
                                     <Wrapper>
                                         <Row>
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
+                                            <Col md={6} sm={12}>
                                                 <Form.Group className='form-group'>
                                                     <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
                                                     <Controller
@@ -582,9 +582,9 @@ const AntiSupGameSettings = (props) => {
                                                                 isSearchable={false}
                                                                 value={value}
                                                                 onChange={(e) => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onChange(e)
                                                                 }}
                                                                 isMulti={false}
@@ -597,7 +597,7 @@ const AntiSupGameSettings = (props) => {
                                                 </Form.Group>
                                             </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-lg-0 mt-2'>
+                                            <Col md={6} sm={12} className='mt-md-0 mt-2'>
                                                 <Form.Group className='form-group'>
                                                     <Form.Label>{LABELS?.SHIP_SPEED}</Form.Label>
                                                     <Controller
@@ -614,9 +614,9 @@ const AntiSupGameSettings = (props) => {
                                                                 isSearchable={false}
                                                                 value={value}
                                                                 onChange={(e) => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onChange(e)
                                                                 }}
                                                                 isMulti={false}
@@ -629,7 +629,7 @@ const AntiSupGameSettings = (props) => {
                                                 </Form.Group>
                                             </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                            <Col md={6} sm={12} className='mt-2'>
                                                 <Form.Group className='form-group'>
                                                     <Form.Label>{LABELS?.POWERUP_DURATION}</Form.Label>
                                                     <Controller
@@ -646,9 +646,9 @@ const AntiSupGameSettings = (props) => {
                                                                 isSearchable={false}
                                                                 value={value}
                                                                 onChange={(e) => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onChange(e)
                                                                 }}
                                                                 isMulti={false}
@@ -661,7 +661,7 @@ const AntiSupGameSettings = (props) => {
                                                 </Form.Group>
                                             </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                            <Col md={6} sm={12} className='mt-2'>
                                                 <Form.Group className='form-group'>
                                                     <Form.Label>{LABELS?.POWERUP_DELAY}</Form.Label>
                                                     <Controller
@@ -678,9 +678,9 @@ const AntiSupGameSettings = (props) => {
                                                                 isSearchable={false}
                                                                 value={value}
                                                                 onChange={(e) => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onChange(e)
                                                                 }}
                                                                 isMulti={false}
@@ -693,7 +693,7 @@ const AntiSupGameSettings = (props) => {
                                                 </Form.Group>
                                             </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                            <Col md={6} sm={12} className='mt-2'>
                                                 <Form.Group className='form-group'>
                                                     <Form.Label>{LABELS?.OBSTACLE_DELAY}</Form.Label>
                                                     <Controller
@@ -710,9 +710,9 @@ const AntiSupGameSettings = (props) => {
                                                                 isSearchable={false}
                                                                 value={value}
                                                                 onChange={(e) => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onChange(e)
                                                                 }}
                                                                 isMulti={false}
@@ -735,7 +735,7 @@ const AntiSupGameSettings = (props) => {
                                     transition={{ duration: 0.5, ease: 'easeInOut' }}>
                                     <Wrapper>
                                         <Row>
-                                            <Col xxl={6} xl={6} lg={6} sm={12}>
+                                            <Col md={6} sm={12}>
                                                 <CommonInput
                                                     type='text'
                                                     register={register}
@@ -762,14 +762,14 @@ const AntiSupGameSettings = (props) => {
                                                             e.target.value?.trim() &&
                                                             e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                     }}
                                                 />
                                             </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-lg-0 mt-2'>
+                                            <Col md={6} sm={12} className='mt-md-0 mt-2'>
                                                 <CommonInput
                                                     type='text'
                                                     register={register}
@@ -796,14 +796,14 @@ const AntiSupGameSettings = (props) => {
                                                             e.target.value?.trim() &&
                                                             e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                     }}
                                                 />
                                             </Col>
 
-                                            <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                            <Col md={6} sm={12} className='mt-2'>
                                                 <Form.Group className='form-group'>
                                                     <Form.Label>{LABELS?.GABOR_FREQUENCY}</Form.Label>
                                                     <Controller
@@ -820,9 +820,9 @@ const AntiSupGameSettings = (props) => {
                                                                 isSearchable={false}
                                                                 value={value}
                                                                 onChange={(e) => {
-                                                                    if (gameStarted) {
-                                                                        setGameStarted(false)
-                                                                    }
+                                                                    // if (gameStarted) {
+                                                                    //     setGameStarted(false)
+                                                                    // }
                                                                     onChange(e)
                                                                 }}
                                                                 isMulti={false}
@@ -840,10 +840,10 @@ const AntiSupGameSettings = (props) => {
                             }
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
-                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
                                 Start Game
                             </Button>
-                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
                                 End Game
                             </Button>
                         </Modal.Footer>

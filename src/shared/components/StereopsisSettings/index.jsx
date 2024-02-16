@@ -10,7 +10,7 @@ import { Controller } from 'react-hook-form'
 import Skeleton from 'react-loading-skeleton'
 import CommonInput from '../CommonInput'
 
-const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted, data }) => {
+const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted, data, handleStartGame, handleEndGame }) => {
     const [tabButtons, setTabButtons] = useState([])
     const [modal, setModal] = useState(false)
 
@@ -82,7 +82,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                         </Modal.Header>
                         <Modal.Body>
                             <Row>
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                <Col md={6} sm={12}>
                                     <CommonInput
                                         label={LABELS?.GAME_DURATION}
                                         type='text'
@@ -108,13 +108,13 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                 e.target.value?.trim() &&
                                                 e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                            if (gameStarted) {
-                                                setGameStarted(false)
-                                            }
+                                            // if (gameStarted) {
+                                            //     setGameStarted(false)
+                                            // }
                                         }}
                                     />
                                 </Col>
-                                <Col xxl={6} xl={12} lg={6} sm={12}>
+                                <Col md={6} sm={12}>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.GAME_MODE}</Form.Label>
                                         <Controller
@@ -129,9 +129,9 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     className={`react-select border-0 ${errors.sBubbleGameMode && 'error'}`}
                                                     classNamePrefix='select'
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -146,7 +146,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12} className='mt-2'>
+                                <Col md={6} sm={12} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.PATTERN}</Form.Label>
                                         <Controller
@@ -161,9 +161,9 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     className={`react-select border-0 ${errors.sBubblePattern && 'error'}`}
                                                     classNamePrefix='select'
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -178,7 +178,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12} className='mt-2'>
+                                <Col md={6} sm={12} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.STIMULUS_SIZE} <span className='subTitle'>(LogMAR bases)</span></Form.Label>
                                         <Controller
@@ -193,9 +193,9 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     className={`react-select border-0 ${errors.nBubbleStimulusSize && 'error'}`}
                                                     classNamePrefix='select'
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -210,7 +210,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12} className='mt-2'>
+                                <Col md={6} sm={12} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.SEPERATION}</Form.Label>
                                         <Controller
@@ -226,9 +226,9 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -242,7 +242,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12} className='mt-2'>
+                                <Col md={6} sm={12} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.DISPARITY}</Form.Label>
                                         <Controller
@@ -258,9 +258,9 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -274,7 +274,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                     </Form.Group>
                                 </Col>
 
-                                <Col xxl={6} xl={12} lg={6} sm={12} className='mt-2'>
+                                <Col md={6} sm={12} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.PANEL_DISTANCE}</Form.Label>
                                         <Controller
@@ -285,14 +285,14 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     ref={ref}
                                                     placeholder='Select panel distance'
                                                     options={eShipSpeed}
-                                                    defaultValue={eShipSpeed?.find(speed => speed?.value === BUBBLE_BURST_GAME_STRUCTURE?.sDisparity)}
+                                                    defaultValue={eShipSpeed?.find(speed => speed?.value === BUBBLE_BURST_GAME_STRUCTURE?.nPanelDistance)}
                                                     className={`react-select border-0 ${errors.nPanelDistance && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
                                                     onChange={(e) => {
-                                                        if (gameStarted) {
-                                                            setGameStarted(false)
-                                                        }
+                                                        // if (gameStarted) {
+                                                        //     setGameStarted(false)
+                                                        // }
                                                         onChange(e)
                                                     }}
                                                     value={value}
@@ -308,10 +308,10 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                             </Row>
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
-                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
                                 Start Game
                             </Button>
-                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                            <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
                                 End Game
                             </Button>
                         </Modal.Footer>

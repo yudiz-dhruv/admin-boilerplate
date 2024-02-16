@@ -2,7 +2,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 
-const PatientInfo = ({ data, defaultData }) => {
+const PatientInfo = ({ data, defaultData, status }) => {
     return (
         <>
             <div className='current-patient'>
@@ -28,7 +28,7 @@ const PatientInfo = ({ data, defaultData }) => {
                     </div>
                     <div className='patient-content'>
                         <span className='data-label'>Status</span>
-                        <span className='data-value capitalize'>{defaultData?.eState === 'waiting' ? <span className='not-connected'>{defaultData?.eState}</span> : <span className='connected'>{defaultData?.eState}</span>}</span>
+                        <span className='data-value capitalize'>{status === 'connected' ? <span className='connected'>{status}</span> : <span className='not-connected'>{status || 'waiting'}</span>}</span>
                     </div>
                 </div>
             </div>

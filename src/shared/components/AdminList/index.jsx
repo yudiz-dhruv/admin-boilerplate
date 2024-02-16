@@ -12,12 +12,16 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
     const [isButtonDisabled, setButtonDisabled] = useState(false)
 
     const handleConfirmStatus = (status, id) => {
+        const formData = new FormData()
+
         if (isButtonDisabled) {
             return;
         }
 
+        formData.append('eStatus', status ? 'y' : 'n')
+
         setButtonDisabled(true)
-        updateMutate({ id, eStatus: status ? 'y' : 'n' })
+        updateMutate({ id, formData })
 
         setTimeout(() => {
             setButtonDisabled(false)

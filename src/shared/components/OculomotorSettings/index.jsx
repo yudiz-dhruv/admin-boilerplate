@@ -13,7 +13,7 @@ import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 
 const OculomotorSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, setGameStarted, headLockMode, setHeadLockMode, data } = props
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, headLockMode, setHeadLockMode, data, handleStartGame, handleEndGame } = props
 
     const [tabButtons, setTabButtons] = useState([])
     const [modal, setModal] = useState(false)
@@ -97,7 +97,7 @@ const OculomotorSettings = (props) => {
                             </Modal.Header>
                             <Modal.Body>
                                 <Row>
-                                    <Col xxl={6} xl={6} lg={6} sm={12}>
+                                    <Col md={6} sm={12}>
                                         <CommonInput
                                             label={LABELS?.GAME_DURATION}
                                             type='text'
@@ -128,13 +128,13 @@ const OculomotorSettings = (props) => {
                                                     e.target.value?.trim() &&
                                                     e.target.value.replace(/^[a-zA-z]+$/g, '')
 
-                                                if (gameStarted) {
-                                                    setGameStarted(false)
-                                                }
+                                                // if (gameStarted) {
+                                                //     setGameStarted(false)
+                                                // }
                                             }}
                                         />
                                     </Col>
-                                    <Col xxl={6} xl={6} lg={6} sm={12}>
+                                    <Col md={6} sm={12}>
                                         <div className=''>
                                             <Form.Group className='form-group ringRunner'>
                                                 <Form.Label>Game Mode</Form.Label>
@@ -144,9 +144,9 @@ const OculomotorSettings = (props) => {
                                                         whileTap={{ scale: 0.9 }}>
                                                         <Button type='button' className={`${turboGameMode?.turbo ? 'checked' : ''}`} onClick={() => {
                                                             setTurboGameMode({ turbo: true })
-                                                            if (gameStarted) {
-                                                                setGameStarted(false)
-                                                            }
+                                                            // if (gameStarted) {
+                                                            //     setGameStarted(false)
+                                                            // }
                                                         }}>
                                                             <span className='tab'>Turbo</span>
                                                         </Button>
@@ -156,9 +156,9 @@ const OculomotorSettings = (props) => {
                                                         whileTap={{ scale: 0.9 }}>
                                                         <Button type='button' className={`${turboGameMode?.hammer ? 'checked' : ''}`} onClick={() => {
                                                             setTurboGameMode({ hammer: true })
-                                                            if (gameStarted) {
-                                                                setGameStarted(false)
-                                                            }
+                                                            // if (gameStarted) {
+                                                            //     setGameStarted(false)
+                                                            // }
                                                         }}>
                                                             <span className='tab'>Hammer</span>
                                                         </Button>
@@ -175,7 +175,7 @@ const OculomotorSettings = (props) => {
                                         transition={{ duration: 0.5, ease: 'easeInOut' }}>
                                         <Wrapper>
                                             <Row>
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                <Col md={6} sm={12}>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.BUTTON_SIZE}</Form.Label>
                                                         <Controller
@@ -192,9 +192,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -207,7 +207,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                <Col md={6} sm={12}>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.BUTTON_COUNT}</Form.Label>
                                                         <Controller
@@ -224,9 +224,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -239,7 +239,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.HORIZONTAL_BIAS}</Form.Label>
                                                         <Controller
@@ -256,9 +256,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -271,7 +271,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.VERTICAL_BIAS}</Form.Label>
                                                         <Controller
@@ -288,9 +288,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -303,7 +303,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.TARGET_STAY_DURATION}</Form.Label>
                                                         <Controller
@@ -320,9 +320,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
 
                                                                         onChange(e)
                                                                     }}
@@ -336,7 +336,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.NEXT_TARGET_DELAY}</Form.Label>
                                                         <Controller
@@ -353,9 +353,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -368,7 +368,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.TARGET_SPREAD}</Form.Label>
                                                         <Controller
@@ -385,9 +385,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -400,7 +400,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.HEADLOCK}</Form.Label>
                                                         <Controller
@@ -416,9 +416,9 @@ const OculomotorSettings = (props) => {
                                                                     value={value}
                                                                     onChange={(e) => {
                                                                         handleConfirmStatus(e.target.checked)
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                 />
@@ -438,7 +438,7 @@ const OculomotorSettings = (props) => {
                                         transition={{ duration: 0.5, ease: 'easeInOut' }}>
                                         <Wrapper>
                                             <Row>
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                <Col md={6} sm={12}>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.TARGET_STAY_DURATION}</Form.Label>
                                                         <Controller
@@ -455,9 +455,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -470,7 +470,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12}>
+                                                <Col md={6} sm={12}>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.GAME_TYPE}</Form.Label>
                                                         <Controller
@@ -487,9 +487,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -502,7 +502,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.HAMMER_TYPE}</Form.Label>
                                                         <Controller
@@ -519,9 +519,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -534,7 +534,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.TARGET_SPAWN_TYPE}</Form.Label>
                                                         <Controller
@@ -551,9 +551,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -566,7 +566,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.TARGET_COLOR_TYPE}</Form.Label>
                                                         <Controller
@@ -583,9 +583,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -598,7 +598,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col xxl={6} xl={6} lg={6} sm={12} className='mt-2'>
+                                                <Col md={6} sm={12} className='mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.TARGET_SPEED}</Form.Label>
                                                         <Controller
@@ -615,9 +615,9 @@ const OculomotorSettings = (props) => {
                                                                     isSearchable={false}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        if (gameStarted) {
-                                                                            setGameStarted(false)
-                                                                        }
+                                                                        // if (gameStarted) {
+                                                                        //     setGameStarted(false)
+                                                                        // }
                                                                         onChange(e)
                                                                     }}
                                                                     isMulti={false}
@@ -635,10 +635,10 @@ const OculomotorSettings = (props) => {
                                 </>}
                             </Modal.Body>
                             <Modal.Footer className='mt-4'>
-                                <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={() => setGameStarted(true)}>
+                                <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
                                     Start Game
                                 </Button>
-                                <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={() => setGameStarted(false)}>
+                                <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
                                     End Game
                                 </Button>
                             </Modal.Footer>

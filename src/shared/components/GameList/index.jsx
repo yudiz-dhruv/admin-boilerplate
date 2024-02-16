@@ -46,12 +46,16 @@ const GameList = ({ key, index, game, onDelete }) => {
     }
 
     const handleConfirmStatus = (status, id) => {
+        const formData = new FormData()
+
         if (isButtonDisabled) {
             return;
         }
 
+        formData.append('eStatus', status ? 'y' : 'n')
+
         setButtonDisabled(true);
-        updateMutate({ id: modal?.id, eStatus: modal?.status ? 'y' : 'n' })
+        updateMutate({ id: modal?.id, formData })
 
         setTimeout(() => {
             setButtonDisabled(false)

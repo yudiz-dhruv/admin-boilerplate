@@ -30,11 +30,11 @@
     font-size: $fs-12;
     font-weight: $fw-700;
     font-family: 'Helvetica-Bold';
-    letter-spacing: 0.3px;
-    // text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: var(--secondary-500) !important;
     line-height: 1.83;
-    margin-bottom: 3px;
+    margin-bottom: 1px;
+    text-transform: uppercase;
     display: flex;
     justify-content: space-between;
 

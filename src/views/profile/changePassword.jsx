@@ -67,7 +67,7 @@ export default function ChangePassword () {
   return (
     <>
       <Row className='justify-content-center'>
-        <Col xxl={4} xl={8} md={10} sm={12}>
+        <Col xxl={6} xl={8} md={10} sm={12}>
           <Wrapper Wrapper>
             <Form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Form.Group className='form-group'>

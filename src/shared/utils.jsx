@@ -74,7 +74,7 @@ export const ordinalSuffix = num => {
   }
 }
 
-export const ReactToastify = (msg, type) => {
+export const ReactToastify = (msg, type, customId) => {
   switch (type) {
     case 'success':
       toast.success(msg, {
@@ -98,6 +98,7 @@ export const ReactToastify = (msg, type) => {
         draggable: true,
         theme: "light",
         transition: Bounce,
+        toastId: customId
       })
       break;
     default:
