@@ -39,7 +39,7 @@ function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
         eState: 'finished'
       }
     }, (response) => {
-      console.warn('Socket Disconnecting and Leaveing Room.', response)
+      console.warn('Leaveing Room...', response)
     })
 
     navigate(modal?.item?.path)
@@ -126,7 +126,7 @@ function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
         handleClose={handleCancel}
         handleConfirm={handleConfirmNavigate}
         disableHeader
-        bodyTitle='Are you sure you want to Quict the Game Session?'
+        bodyTitle='Are you sure you want to Quit the Game Session?'
       >
         <span className='text-danger'>All the data of Game will be removed</span>
       </CustomModal>

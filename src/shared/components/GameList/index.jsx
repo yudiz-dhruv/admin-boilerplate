@@ -140,7 +140,7 @@ const GameList = ({ key, index, game, onDelete }) => {
                 disableHeader
                 isLoading={isLoading}
                 bodyTitle={MODAL_TYPE[modal?.status]?.TITLE}
-                confirmValue={modal?.id}
+                confirmValue={modal?.status}
             >
                 <article>
                     <p className='text-danger m-0'>{MODAL_TYPE[modal?.status]?.WARNING}</p>

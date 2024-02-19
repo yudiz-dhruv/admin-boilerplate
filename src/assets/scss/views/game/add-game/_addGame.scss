@@ -40,6 +40,17 @@
                 overflow: hidden;
                 padding: 10px;
 
+                label {
+                    font-size: $fs-12;
+                    font-weight: $fw-700;
+                    font-family: 'Helvetica-Bold';
+                    letter-spacing: 0.5px;
+                    color: var(--secondary-500) !important;
+                    line-height: 2;
+                    margin-bottom: 1px;
+                    text-transform: uppercase;
+                }
+
                 .inputtypefile {
                     border: 4px solid var(--theme-color);
                     outline: 4px solid var(--secondary-300);
@@ -137,7 +148,14 @@
 
         .fileinput {
             label {
-                color: var(--text-color);
+                font-size: $fs-12;
+                font-weight: $fw-700;
+                font-family: 'Helvetica-Bold';
+                letter-spacing: 0.5px;
+                color: var(--secondary-500) !important;
+                line-height: 2;
+                margin-bottom: 1px;
+                text-transform: uppercase;
                 text-align: start;
                 width: 100%;
                 padding: 0;

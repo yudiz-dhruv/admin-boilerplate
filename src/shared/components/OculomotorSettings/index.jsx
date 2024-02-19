@@ -16,6 +16,7 @@ const OculomotorSettings = (props) => {
     const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, headLockMode, setHeadLockMode, data, handleStartGame, handleEndGame } = props
 
     const [tabButtons, setTabButtons] = useState([])
+    console.log('tabButtons: ', tabButtons);
     const [modal, setModal] = useState(false)
 
     const TURBO_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'turbo' && item?.sMode === 'turbo')
@@ -82,11 +83,11 @@ const OculomotorSettings = (props) => {
                         <Skeleton count={1} width='110px' height={37} />
                     </div>
                 </>
-                    : tabButtons?.map((tab, index) => (
+                    : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
                         <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
-                    ))
+                    )) : <span className='no-games'>No games in Oculomotor</span>
                 }
 
                 {buttonToggle?.turbo && (

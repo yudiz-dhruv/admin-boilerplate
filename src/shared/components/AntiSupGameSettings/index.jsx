@@ -11,15 +11,17 @@ import { FaPlay } from "react-icons/fa"
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 import { MdFormatAlignCenter } from "react-icons/md"
+import { useHoopieSettings } from 'shared/hooks/useHoopieSettings'
 
 const AntiSupGameSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, tachMode, setTachMode, data, handleStartGame, handleEndGame } = props
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, tachMode, setTachMode, data, handleStartGame, handleEndGame, watch } = props
     // console.log('games: ', games?.[0]?.split(','));
 
     const [tabButtons, setTabButtons] = useState([])
     const [modal, setModal] = useState(false)
 
-    const HOOPIE_GAME_STRUCTURE = data?.find(item => item?.sName === 'hoopie')
+    const { HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
+    // const HOOPIE_GAME_STRUCTURE = data?.find(item => item?.sName === 'hoopie')
     const RING_RUNNER_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'normal')
     const RING_RUNNER_GABOR_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'gabor')
 
@@ -91,7 +93,7 @@ const AntiSupGameSettings = (props) => {
                         <Skeleton count={1} width='110px' height={37} />
                     </div>
                 </>
-                    : tabButtons?.map((tab, index) => (
+                    : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
                         <Button
                             key={index}
                             className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'}
@@ -101,17 +103,7 @@ const AntiSupGameSettings = (props) => {
                         >
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
-                    ))
-                    // : <>
-                    //     <Button
-                    //         className={buttonToggle?.hoopie ? 'square btn-primary' : 'square btn-secondary'}
-                    //         variant={buttonToggle?.hoopie ? 'primary' : 'secondary'}
-                    //         onClick={(e) => handleTabs(e, { key: 'hoopie', value: '' })}
-                    //         disabled={buttonToggle?.hoopie !== true && gameStarted}
-                    //     >
-                    //         <FaPlay color='var(--text-hover)' /> Hoopie
-                    //     </Button>
-                    // </>
+                    )) : <span className='no-games'>No games in Anti-Suppression</span>
                 }
 
             </div >
@@ -143,6 +135,7 @@ const AntiSupGameSettings = (props) => {
                                                                 ref={ref}
                                                                 type='button'
                                                                 name='eHeadMode'
+                                                                disabled={gameStarted}
                                                                 // defaultValue={setGameModeToggle({ [HOOPIE_GAME_STRUCTURE?.sMode]: true })}
                                                                 className={`${gameModeToggle?.head ? 'checked' : ''}`}
                                                                 value={value}
@@ -169,6 +162,7 @@ const AntiSupGameSettings = (props) => {
                                                                 ref={ref}
                                                                 type='button'
                                                                 name='eHandMode'
+                                                                disabled={gameStarted}
                                                                 // defaultValue={setGameModeToggle({ [HOOPIE_GAME_STRUCTURE?.sMode]: true })}
                                                                 className={`${gameModeToggle?.hand ? 'checked' : ''}`}
                                                                 value={value}
@@ -229,6 +223,7 @@ const AntiSupGameSettings = (props) => {
                                         errors={errors}
                                         className={`form-control ${errors?.sHoopieGameDuration && 'error'}`}
                                         name='sHoopieGameDuration'
+                                        disabled={gameStarted}
                                         defaultValue={HOOPIE_GAME_STRUCTURE?.nDuration}
                                         placeholder='Game duration (i.e.: in minutes)'
                                         validation={{
@@ -506,6 +501,7 @@ const AntiSupGameSettings = (props) => {
                                         type='text'
                                         register={register}
                                         errors={errors}
+                                        disabled={gameStarted}
                                         className={`form-control ${errors?.sRRGameDuration && 'error'}`}
                                         name='sRRGameDuration'
                                         placeholder='Game duration (i.e.: in minutes)'
@@ -549,7 +545,9 @@ const AntiSupGameSettings = (props) => {
                                                         // if (gameStarted) {
                                                         //     setGameStarted(false)
                                                         // }
-                                                    }}>
+                                                    }}
+                                                        disabled={gameStarted}
+                                                    >
                                                         <span className='tab'>Normal</span>
                                                     </Button>
                                                 </motion.div>
@@ -561,7 +559,9 @@ const AntiSupGameSettings = (props) => {
                                                         // if (gameStarted) {
                                                         //     setGameStarted(false)
                                                         // }
-                                                    }}>
+                                                    }}
+                                                        disabled={gameStarted}
+                                                    >
                                                         <span className='tab'>Gabor</span>
                                                     </Button>
                                                 </motion.div>

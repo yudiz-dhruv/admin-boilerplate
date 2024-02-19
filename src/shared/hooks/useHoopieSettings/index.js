@@ -16,12 +16,12 @@ export const useHoopieSettings = (watch) => {
   const HOOPIE_GAME_STRUCTURE = {
     sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
     bTachMode: watch('bTachMode') || true,
-    nDuration: watch('sHoopieGameDuration') || 1,
-    sBasketSize: watch('sHoopSize')?.value || 'max',
-    nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
+    nDuration: watch('sHoopieGameDuration') || '20',
+    sBasketSize: watch('sHoopSize')?.value || 'medium',
+    nTargetRadius: watch('nHoopieTargetRadius')?.value || 1,
     nSpeed: watch('nHoopieBallSpeed')?.value || 1,
-    sSpawnRate: watch('sHoopieSpawnRate')?.value || 'high',
-    nStimulusSize: watch('nHoopieStimulusSize')?.value || 0.5,
+    sSpawnRate: watch('sHoopieSpawnRate')?.value || 'medium',
+    nStimulusSize: watch('nHoopieStimulusSize')?.value || 1,
     sTextPosition: Object.keys(textPositionToggle).find(key => textPositionToggle[key] === true) || 'center'
   }
   

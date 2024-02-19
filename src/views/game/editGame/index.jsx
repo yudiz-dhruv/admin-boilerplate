@@ -260,7 +260,7 @@ const EditGame = () => {
                                             />
                                         </Col>
 
-                                        <Col xl={6} lg={6} className='mt-2'>
+                                        <Col xl={6} lg={6} className=''>
                                             <div className='fileinput'>
                                                 <label className='d-flex justify-content-between'>
                                                     <span>Game Assets File<span className='inputStar'>*</span></span>
@@ -324,7 +324,7 @@ const EditGame = () => {
                                             </div>
                                         </Col>
 
-                                        <Col xl={6} lg={6} className='mt-1'>
+                                        <Col xl={6} lg={6} className=''>
                                             <CommonInput
                                                 type='text'
                                                 register={register}

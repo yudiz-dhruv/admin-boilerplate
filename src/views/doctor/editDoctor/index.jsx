@@ -32,7 +32,6 @@ const EditDoctor = () => {
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
-  console.log('eGameDropdown: ', eGameDropdown);
 
   // SPECIFIC DOCTOR
   const { data } = useQuery('adminDataById', () => getAdminById(id), {
@@ -40,26 +39,25 @@ const EditDoctor = () => {
     select: (data) => data?.data?.data,
   })
 
-  // useEffect(() => {
-  //   if (data && eGameDropdown?.length > 0) {
-  //     const temp = data ? [...data?.aGamesName] : []
+  useEffect(() => {
+    if (data && eGameDropdown?.length > 0) {
+      const temp = data ? [...data?.aGamesId] : []
 
-  //     const gameData = []
-  //     for (let key of eGameDropdown) {
-  //       if (temp?.[0]?.split(',')?.length > 0) {
-  //         gameData?.push(key)
-  //       }
-  //     }
-  //     console.log('gameData: ', gameData);
-  //     reset({
-  //       ...data,
-  //       aGamesName: gameData,
-  //       dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
-  //       dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
-  //       sPassword: ''
-  //     })
-  //   }
-  // }, [data, eGameDropdown, reset])
+      const gameData = []
+      for (let key of eGameDropdown?.filter(obj => data?.aGamesId.includes(obj._id))) {
+        if (temp?.length > 0) {
+          gameData?.push(key)
+        }
+      }
+      reset({
+        ...data,
+        aGamesName: gameData,
+        dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
+        dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
+        sPassword: ''
+      })
+    }
+  }, [data, eGameDropdown, reset])
 
   // EDIT ADMIN
   const { mutate: updateMutate, isLoading } = useMutation(updateAdmin, {

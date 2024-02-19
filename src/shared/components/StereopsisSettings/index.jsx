@@ -66,11 +66,12 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                         <Skeleton count={1} width='110px' height={37} />
                     </div>
                 </>
-                    : tabButtons?.map((tab, index) => (
+                    : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
                         <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
-                    ))}
+                    )) : <span className='no-games'>No games in Stereopsis</span>
+                }
 
             </div>
 

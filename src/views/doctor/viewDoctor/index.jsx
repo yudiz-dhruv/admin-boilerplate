@@ -19,12 +19,10 @@ const ViewDoctor = () => {
     })
 
     // GAME DROPDOWN
-    const { data: eDropDown } = useQuery('gameDropDown', () => getGameDropdownList(), {
+    const { data: eDropDown } = useQuery('dropdownGame', () => getGameDropdownList(), {
         enabled: !!data,
         select: (data) => data?.data?.data,
     })
-    console.log('eDropDown: ', eDropDown);
-    console.log('data: ', data);
 
     return (
         <>
@@ -102,9 +100,8 @@ const ViewDoctor = () => {
                                     </Col>
                                     <Col md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Games</span>
-                                        {/* <span className='data-value capitalize'>{data?.aGamesId ? `[ ${data?.aGamesId?.map(item => eDropDown[item]?._id === item?._id)} ]` : 'No Games'}</span> */}
+                                        <span className='data-value capitalize'>{data?.aGamesId ? `[ ${eDropDown?.filter(obj => data?.aGamesId.includes(obj._id))?.map(game => game?.sName)} ]` : 'No Games'}</span>
                                     </Col>
-                                    {/* {console.log('data?.aGamesId?.map(item => eDropDown[item]?._id === item?._id): ', eDropDown?.map(item => item?._id === data?.aGamesId))} */}
                                 </Row>
                             </div>
                         </motion.div>

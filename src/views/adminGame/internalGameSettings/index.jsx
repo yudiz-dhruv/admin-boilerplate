@@ -9,7 +9,7 @@ import AntiSupGameSettings from 'shared/components/AntiSupGameSettings'
 import OculomotorSettings from 'shared/components/OculomotorSettings'
 import StereopsisSettings from 'shared/components/StereopsisSettings'
 import { useQuery } from 'react-query'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { getGameDropdownList } from 'query/game/game.query'
 import CommonInput from 'shared/components/CommonInput'
 import Select from 'react-select'
@@ -26,9 +26,14 @@ import { useRingRunnerSettings } from 'shared/hooks/useRingRunnerSettings'
 import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 import { useTurboSettings } from 'shared/hooks/useTurboSettings'
 import { useBubbleSetting } from 'shared/hooks/useBubbleSettings'
+import moment from 'moment-timezone'
+import { route } from 'shared/constants/AllRoutes'
 
 const InternalGameSettings = () => {
   const location = useLocation()
+  const { id } = useParams()
+  console.log('id: ', id);
+  const navigate = useNavigate()
   const screenWidth = useMediaQuery('(max-width: 1200px)')
 
   const { register, formState: { errors }, control, watch, handleSubmit, reset } = useForm({ mode: 'all' })
@@ -74,7 +79,11 @@ const InternalGameSettings = () => {
       setConnectivityStatus(response?.eState)
       console.log('%cGame Status :>> ', 'color: #00bf7f', response);
     })
-  }, [buttonToggle])
+
+    return () => {
+      socket.off('resGameState');
+    }
+  })
 
   const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
   const getCurrentGameStructure = (name) => {
@@ -151,13 +160,32 @@ const InternalGameSettings = () => {
   watch('nContrast'),
   watch('nOcclusion'),
   watch('nBlur'),
-    getCurrentGameStructure,
-    HOOPIE_GAME_STRUCTURE,
-  watch('sRRGameDuration'), ringrunnerMode, watch('nRRStimulusSize'), watch('nShipSpeed'), watch('sPowerDuration'), watch('sPowerUpDelay'), watch('sObstacleDelay'), watch('sLocalOrientation'), watch('sGlobalOrientation'), watch('nGaborFrequency'),
+    gameStructure,
     TURBO_GAME_STRUCTURE,
     BUBBLES_GAME_STRUCTURE])
 
-  const onSubmit = useCallback((data) => console.log('data: ', data), [])
+  const onSubmit = (data) => {
+    socket.emit(location?.state?.patientSettings?._id, {
+      sEventName: 'reqEndGame',
+      oData: {
+        eState: 'finished',
+        dCheckUpDate: moment(data?.dDateTime?._d).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm:ss.000Z'), //  2024-02-19T15:00:00.000+05:30
+        aGamesId: data?.aGames?.map(item => item?._id), // [ { _id, sName, sUrl, eCategory } ]
+        sGamesName: data?.aGames?.map(item => item?.sName), // [ { _id, sName, sUrl, eCategory } ]
+        sComments: data?.sComment || '',
+      }
+    }, (response) => {
+      console.log('response: ', response);
+      if (Object?.keys(response?.error)?.length > 0) {
+        console.log('%cLeaveing Room (Error)', 'color: red', response?.error)
+      } else {
+        navigate(route?.viewPatient(id))
+        console.log('%cSaving progress and Leaveing Room...', 'color: #20a8c3', response)
+      }
+    })
+  }
+
+
   const handleClear = useCallback(() => setModal(false), [setModal, modal])
 
   /**
@@ -179,7 +207,7 @@ const InternalGameSettings = () => {
         },
         oGameSetting: {
           ...gameStructure,
-          aGlobal: {
+          oGlobalSettings: {
             eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
             oVergence: {
               oHorizontal: {
@@ -252,6 +280,7 @@ const InternalGameSettings = () => {
       }
     })
 
+    setModal(false)
     setGameStarted(false)
   }
 
@@ -363,6 +392,7 @@ const InternalGameSettings = () => {
                               ringrunnerMode={ringrunnerMode}
                               setRingRunnerMode={setRingRunnerMode}
                               register={register}
+                              watch={watch}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
                               // games={data?.aGamesName}
@@ -446,6 +476,7 @@ const InternalGameSettings = () => {
                               ringrunnerMode={ringrunnerMode}
                               setRingRunnerMode={setRingRunnerMode}
                               register={register}
+                              watch={watch}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
                               // games={data?.aGamesName}
@@ -601,12 +632,12 @@ const InternalGameSettings = () => {
                       </span>
                     </Form.Label>
                     <Controller
-                      name="dTime"
+                      name="dDateTime"
                       control={control}
                       rules={{
                         required: {
                           value: true,
-                          message: 'Time is required'
+                          message: 'Date and Time is required'
                         }
                       }}
                       render={({ field }) => (
@@ -617,7 +648,7 @@ const InternalGameSettings = () => {
                           dateFormat="MM/DD/yyyy"
                           showTimeInput
                           inputProps={{
-                            placeholder: 'Select the time',
+                            placeholder: 'Select the date and time',
                           }}
                           isValidDate={(currentDate, selectedDate) => {
                             return !currentDate.isBefore(new Date(), 'day');
@@ -627,9 +658,9 @@ const InternalGameSettings = () => {
                         />
                       )}
                     />
-                    {errors?.dTime && (
+                    {errors?.dDateTime && (
                       <Form.Control.Feedback type='invalid'>
-                        {errors?.dTime.message}
+                        {errors?.dDateTime.message}
                       </Form.Control.Feedback>
                     )}
                   </Form.Group>
@@ -643,7 +674,7 @@ const InternalGameSettings = () => {
                       </span>
                     </Form.Label>
                     <Controller
-                      name='aGamesName'
+                      name='aGames'
                       control={control}
                       rules={{
                         required: {
@@ -653,10 +684,10 @@ const InternalGameSettings = () => {
                       }}
                       render={({ field: { onChange, value, ref } }) => (
                         <Select
-                          placeholder='Select Games...'
+                          placeholder='Select Games'
                           ref={ref}
                           options={eGameDropdown}
-                          className={`react-select border-0 ${errors.aGamesName && 'error'}`}
+                          className={`react-select border-0 ${errors.aGames && 'error'}`}
                           classNamePrefix='select'
                           isSearchable={false}
                           value={value}
@@ -667,9 +698,9 @@ const InternalGameSettings = () => {
                         />
                       )}
                     />
-                    {errors.aGamesName && (
+                    {errors.aGames && (
                       <Form.Control.Feedback type='invalid'>
-                        {errors.aGamesName.message}
+                        {errors.aGames.message}
                       </Form.Control.Feedback>
                     )}
                   </Form.Group>
@@ -679,15 +710,15 @@ const InternalGameSettings = () => {
                     type='textarea'
                     register={register}
                     errors={errors}
-                    className={`for m-control ${errors?.sDescription && 'error'}`}
-                    name='sDescription'
+                    className={`for m-control ${errors?.sComment && 'error'}`}
+                    name='sComment'
                     label='Enter Comments'
-                    placeholder='Enter the comments...'
+                    placeholder='Enter the comments'
                     required
                     validation={{
                       required: {
                         value: true,
-                        message: 'Description is required'
+                        message: 'Comment is required'
                       },
                     }}
                     onChange={(e) => {
