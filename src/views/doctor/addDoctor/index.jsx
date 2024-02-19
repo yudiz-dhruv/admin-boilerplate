@@ -36,11 +36,14 @@ const AddDoctor = () => {
       ReactToastify('New Admin Added Successfully!', 'success')
       navigate(route.admin)
       reset()
+    },
+    onError: (err) => {
+      ReactToastify(err?.response?.data?.message, 'error')
     }
   })
 
-  const onSubmit = useCallback((data) => {
-    console.log('data?.aGamesName: ', data?.aGamesName);
+  const onSubmit = (data) => {
+    console.log('data?.aGamesName?.map(item => item?._id): ', data?.aGamesName);
     const formData = new FormData()
 
     if (isButtonDisabled) {
@@ -48,9 +51,12 @@ const AddDoctor = () => {
     }
     setButtonDisabled(true)
 
+    const gameNamesId = data?.aGamesName?.map(item => item?._id)
+    console.log('gameNamesId: ', gameNamesId);
+
     formData.append('sUserName', data?.sUserName || '')
     formData.append('sEmail', data?.sEmail || '')
-    formData.append('aGamesName', data?.aGamesName?.map(item => item?._id) || '')
+    formData.append('aGamesId', gameNamesId || '')
     formData.append('nPrice', +data?.nPrice || '')
     formData.append('dStartAt', data?.dStartAt?.toISOString() || '')
     formData.append('dEndAt', data?.dEndAt?.toISOString() || '')
@@ -64,7 +70,7 @@ const AddDoctor = () => {
     setTimeout(() => {
       setButtonDisabled(false)
     }, 5000)
-  }, [isButtonDisabled, mutate, setButtonDisabled])
+  }
 
   const handleFileInputClick = useCallback(() => (fileInputRef.current) && fileInputRef.current.click(), [])
   const handleNewPasswordToggle = useCallback(() => setNewPassword(!showNewPassword), [showNewPassword, setNewPassword])

@@ -32,6 +32,7 @@ const EditDoctor = () => {
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
+  console.log('eGameDropdown: ', eGameDropdown);
 
   // SPECIFIC DOCTOR
   const { data } = useQuery('adminDataById', () => getAdminById(id), {
@@ -39,28 +40,26 @@ const EditDoctor = () => {
     select: (data) => data?.data?.data,
   })
 
-  useEffect(() => {
-    if (data && eGameDropdown?.length > 0) {
-      const temp = data ? [...data?.aGamesName] : []
+  // useEffect(() => {
+  //   if (data && eGameDropdown?.length > 0) {
+  //     const temp = data ? [...data?.aGamesName] : []
 
-      const gameData = []
-      for (let key of eGameDropdown) {
-        console.log('key :>> ', key);
-        console.log('temp?.filter(item => item === key?.sName): ', temp?.filter(item => item));
-        if (temp?.filter(item => item === key?.sName)?.length > 0) {
-          gameData?.push(key)
-        }
-      }
-      console.log('gameData: ', gameData);
-      reset({
-        ...data,
-        aGamesName: gameData,
-        dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
-        dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
-        sPassword: ''
-      })
-    }
-  }, [data, eGameDropdown, reset])
+  //     const gameData = []
+  //     for (let key of eGameDropdown) {
+  //       if (temp?.[0]?.split(',')?.length > 0) {
+  //         gameData?.push(key)
+  //       }
+  //     }
+  //     console.log('gameData: ', gameData);
+  //     reset({
+  //       ...data,
+  //       aGamesName: gameData,
+  //       dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
+  //       dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
+  //       sPassword: ''
+  //     })
+  //   }
+  // }, [data, eGameDropdown, reset])
 
   // EDIT ADMIN
   const { mutate: updateMutate, isLoading } = useMutation(updateAdmin, {
@@ -87,7 +86,7 @@ const EditDoctor = () => {
 
     formData.append('sUserName', data?.sUserName || '')
     formData.append('sCompanyName', data?.sCompanyName || '')
-    formData.append('aGamesName', data?.aGamesName?.map(item => item?.sName) || '')
+    formData.append('aGamesName', data?.aGamesName?.map(item => item?._id) || '')
     formData.append('nPrice', +data?.nPrice || '')
     formData.append('dStartAt', data?.dStartAt?.toISOString() || '')
     formData.append('dEndAt', data?.dEndAt?.toISOString() || '')

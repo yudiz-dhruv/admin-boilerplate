@@ -39,7 +39,7 @@ function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
         eState: 'finished'
       }
     }, (response) => {
-      console.warn('Socket Disconnecting and Leaveing Room.')
+      console.warn('Socket Disconnecting and Leaveing Room.', response)
     })
 
     navigate(modal?.item?.path)

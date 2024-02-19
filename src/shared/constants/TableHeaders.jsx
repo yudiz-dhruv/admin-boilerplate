@@ -226,7 +226,7 @@ export const eTargetRadius = [
 ]
 
 export const eSpawnRate = [
-    { label: 'Very Low', value: 'very low' },
+    { label: 'Very Low', value: 'veryLow' },
     { label: 'Low', value: 'low' },
     { label: 'Medium', value: 'medium' },
     { label: 'High', value: 'high' },
@@ -236,7 +236,7 @@ export const eSpawnRate = [
 // bubble game
 export const eBubbleGameMode = [
     { label: 'Series', value: 'series' },
-    { label: 'Odd one out', value: 'odd-one-out' },
+    { label: 'Odd one out', value: 'oddOneOut' },
 ]
 
 export const eBubblePattern = [

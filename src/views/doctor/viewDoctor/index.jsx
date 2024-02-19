@@ -7,15 +7,24 @@ import { faIndianRupee } from '@fortawesome/free-solid-svg-icons'
 import { getAdminById } from 'query/admin/admin.query'
 import moment from 'moment'
 import { motion } from 'framer-motion'
+import { getGameDropdownList } from 'query/game/game.query'
 
 const ViewDoctor = () => {
     const { id } = useParams()
 
     // SPEICIFC ADMIN
-    const { data, isLoading } = useQuery('patientDataById', () => getAdminById(id), {
+    const { data, isLoading } = useQuery('adminDataById', () => getAdminById(id), {
         enabled: !!id,
         select: (data) => data?.data?.data,
     })
+
+    // GAME DROPDOWN
+    const { data: eDropDown } = useQuery('gameDropDown', () => getGameDropdownList(), {
+        enabled: !!data,
+        select: (data) => data?.data?.data,
+    })
+    console.log('eDropDown: ', eDropDown);
+    console.log('data: ', data);
 
     return (
         <>
@@ -89,12 +98,13 @@ const ViewDoctor = () => {
                                 <Row className='details-data-row p-0 m-0'>
                                     <Col md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>No. of Games</span>
-                                        <span className='data-value capitalize'>{data?.aGamesName?.length || '0'}</span>
+                                        <span className='data-value capitalize'>{data?.aGamesId?.length || '0'}</span>
                                     </Col>
                                     <Col md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Games</span>
-                                        <span className='data-value capitalize'>{data?.aGamesName ? `[ ${data?.aGamesName} ]` : 'No Games'}</span>
+                                        {/* <span className='data-value capitalize'>{data?.aGamesId ? `[ ${data?.aGamesId?.map(item => eDropDown[item]?._id === item?._id)} ]` : 'No Games'}</span> */}
                                     </Col>
+                                    {/* {console.log('data?.aGamesId?.map(item => eDropDown[item]?._id === item?._id): ', eDropDown?.map(item => item?._id === data?.aGamesId))} */}
                                 </Row>
                             </div>
                         </motion.div>

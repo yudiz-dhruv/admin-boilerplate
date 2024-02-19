@@ -121,7 +121,7 @@ const AdminGame = () => {
                             />
                           </div>
                           <div>
-                            <Button variant='primary' type='button' className='me-2 add-patient' onClick={() => navigate(route?.addPatient)}>
+                            <Button variant='primary' type='button' className='add-patient' onClick={() => navigate(route?.addPatient)}>
                               <FontAwesomeIcon icon={faPlus} /> Add New Patient
                             </Button>
                           </div>

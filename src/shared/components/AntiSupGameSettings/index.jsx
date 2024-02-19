@@ -101,7 +101,18 @@ const AntiSupGameSettings = (props) => {
                         >
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
-                    ))}
+                    ))
+                    // : <>
+                    //     <Button
+                    //         className={buttonToggle?.hoopie ? 'square btn-primary' : 'square btn-secondary'}
+                    //         variant={buttonToggle?.hoopie ? 'primary' : 'secondary'}
+                    //         onClick={(e) => handleTabs(e, { key: 'hoopie', value: '' })}
+                    //         disabled={buttonToggle?.hoopie !== true && gameStarted}
+                    //     >
+                    //         <FaPlay color='var(--text-hover)' /> Hoopie
+                    //     </Button>
+                    // </>
+                }
 
             </div >
 
