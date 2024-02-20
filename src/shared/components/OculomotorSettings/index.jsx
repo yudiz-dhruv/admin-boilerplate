@@ -13,11 +13,9 @@ import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 
 const OculomotorSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, headLockMode, setHeadLockMode, data, handleStartGame, handleEndGame } = props
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, headLockMode, setHeadLockMode, data, handleStartGame, handleEndGame, modal, setModal } = props
 
     const [tabButtons, setTabButtons] = useState([])
-    console.log('tabButtons: ', tabButtons);
-    const [modal, setModal] = useState(false)
 
     const TURBO_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'turbo' && item?.sMode === 'turbo')
     const TURBO_HAMMER_GAME_STRUCTURE = data?.find(item => item?.sName === 'turbo' && item?.sMode === 'hammer')
@@ -148,7 +146,9 @@ const OculomotorSettings = (props) => {
                                                             // if (gameStarted) {
                                                             //     setGameStarted(false)
                                                             // }
-                                                        }}>
+                                                        }}
+                                                            disabled={gameStarted}
+                                                        >
                                                             <span className='tab'>Turbo</span>
                                                         </Button>
                                                     </motion.div>
@@ -160,7 +160,9 @@ const OculomotorSettings = (props) => {
                                                             // if (gameStarted) {
                                                             //     setGameStarted(false)
                                                             // }
-                                                        }}>
+                                                        }}
+                                                            disabled={gameStarted}
+                                                        >
                                                             <span className='tab'>Hammer</span>
                                                         </Button>
                                                     </motion.div>

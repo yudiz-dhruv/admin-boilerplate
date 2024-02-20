@@ -9,6 +9,10 @@
   border-radius: 5px;
   cursor: pointer;
 
+  &.error {
+    border: 2px solid var(--error-color);
+  }
+
   // border: 1px solid var(--text-color);
   &:focus-visible {
     outline: none;
@@ -246,6 +250,14 @@ body.dark {
 }
 
 // date and time picker
+.rdt {
+  &.error {
+    input {
+      border: 2px solid var(--error-color);
+    }
+  }
+}
+
 .rdtPicker {
   background-color: var(--boxes-color) !important;
   border-color: transparent !important;

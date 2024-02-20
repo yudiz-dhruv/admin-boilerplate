@@ -56,37 +56,37 @@ const ViewDoctor = () => {
                         </motion.div>
                     </Col>
 
-                    <Col xxl={6} xl={8} lg={7} md={12} sm={12}>
+                    <Col xxl={9} xl={8} lg={7} md={12} sm={12}>
                         <motion.div className='details-card' initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.6, ease: 'easeInOut' }}>
                             <div className='details-card-data'>
                                 <Row className='details-data-row p-0 m-0'>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Company Name</span>
                                         <span className='data-value'>{data?.sCompanyName || '-'}</span>
                                     </Col>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Doctor Status</span>
                                         <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : 'In-Active'}</span>
                                     </Col>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Package Price</span>
                                         <span className='data-value'><FontAwesomeIcon icon={faIndianRupee} size='sm' /> {data?.nPrice || '0'}</span>
                                     </Col>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Purchase Date</span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.oGameValidity?.dStartAt).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Expiry Date</span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.oGameValidity?.dEndAt).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Created Date</span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD MMM, YYYY')}</span>
                                     </Col>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Last Updated Date</span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
@@ -94,11 +94,11 @@ const ViewDoctor = () => {
                                 <div className='title mt-3'>Game Details:-</div>
                                 <div className='line mt-1'></div>
                                 <Row className='details-data-row p-0 m-0'>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>No. of Games</span>
                                         <span className='data-value capitalize'>{data?.aGamesId?.length || '0'}</span>
                                     </Col>
-                                    <Col md={6} sm={6} className="p-0 m-0">
+                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
                                         <span className='data-title'>Games</span>
                                         <span className='data-value capitalize'>{data?.aGamesId ? `[ ${eDropDown?.filter(obj => data?.aGamesId.includes(obj._id))?.map(game => game?.sName)} ]` : 'No Games'}</span>
                                     </Col>

@@ -33,7 +33,7 @@ const ViewGame = () => {
                         </div>
                     </motion.div>
                 </Col>
-                <Col xxl={6} xl={8} lg={7} md={12} sm={12}>
+                <Col xxl={9} xl={8} lg={7} md={12} sm={12}>
                     <motion.div className='details-card' initial={{ x: 20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.6, ease: 'easeInOut' }}>

@@ -2,7 +2,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 
-const PatientInfo = ({ data, defaultData, status }) => {
+const PatientInfo = ({ data, status }) => {
     return (
         <>
             <div className='current-patient'>

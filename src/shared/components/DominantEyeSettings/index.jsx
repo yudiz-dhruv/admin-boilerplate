@@ -4,8 +4,11 @@ import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { motion } from 'framer-motion'
+import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 
-const DominantEyeSettings = ({ buttonToggle, setButtonToggle, defaultData, reset }) => {
+const DominantEyeSettings = ({ defaultData, watch }) => {
+    const { dominantEyeButton, setDominantEyeButton } = useGlobalSettings(watch)
+
     const tabs = [
         { key: 'left', label: 'Left' },
         { key: 'right', label: 'Right' },
@@ -13,8 +16,8 @@ const DominantEyeSettings = ({ buttonToggle, setButtonToggle, defaultData, reset
     ]
 
     useEffect(() => {
-        setButtonToggle({ [defaultData?.oSetting?.eDominantEye]: true })
-    }, [defaultData, setButtonToggle])
+        setDominantEyeButton({ [defaultData?.oSetting?.eDominantEye]: true })
+    }, [defaultData, setDominantEyeButton])
 
     return (
         <>
@@ -26,7 +29,7 @@ const DominantEyeSettings = ({ buttonToggle, setButtonToggle, defaultData, reset
                     <motion.div key={tab.key}
                         whileTap={{ scale: 0.9 }}
                         className='tab-wrapper'>
-                        <Button key={tab.key} type='button' className={`${buttonToggle[tab?.key] ? 'checked' : ''}`} onClick={() => setButtonToggle({ [tab?.key]: true })}>
+                        <Button key={tab.key} type='button' className={`${dominantEyeButton[tab?.key] ? 'checked' : ''}`} onClick={() => setDominantEyeButton({ [tab?.key]: true })}>
                             <span className='tab'>{tab?.label}</span>
                         </Button>
                     </motion.div>

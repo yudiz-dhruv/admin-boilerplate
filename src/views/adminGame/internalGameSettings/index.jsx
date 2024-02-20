@@ -31,9 +31,8 @@ import { route } from 'shared/constants/AllRoutes'
 
 const InternalGameSettings = () => {
   const location = useLocation()
-  const { id } = useParams()
-  console.log('id: ', id);
   const navigate = useNavigate()
+  const { id } = useParams()
   const screenWidth = useMediaQuery('(max-width: 1200px)')
 
   const { register, formState: { errors }, control, watch, handleSubmit, reset } = useForm({ mode: 'all' })
@@ -51,7 +50,7 @@ const InternalGameSettings = () => {
   })
 
   // ALL GAME SETTINGS
-  const { dominantEyeButton, setDominantEyeButton, antiSupSettings, setAntiSupSettings, vergenceToggle, setVergenceToggle, horizontalEyeSettings, setHorizontalEyeSettings, verticalEyeSettings, setVerticalEyeSettings, torsionSettings, setTorsionSettings } = useGlobalSettings()
+  const { dominantEyeButton } = useGlobalSettings()
   const { gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, tachMode, setTachMode, HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
   const { ringrunnerMode, setRingRunnerMode, RINGRUNNER_GAME_STRUCTURE } = useRingRunnerSettings(watch)
   const { headLockMode, setHeadLockMode, turboGameMode, setTurboGameMode, TURBO_GAME_STRUCTURE } = useTurboSettings(watch)
@@ -59,6 +58,7 @@ const InternalGameSettings = () => {
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown, isLoading } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
+  const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
 
   // Join Room UseEffect
   useEffect(() => {
@@ -70,7 +70,11 @@ const InternalGameSettings = () => {
           console.log('%cJoin Room Error: ', 'color: red', response?.message)
         }
       })
-    }, 3000)
+    }, 500)
+
+    return (
+      clearTimeout()
+    )
   }, [socket, location?.state, setTimeout])
 
   // Game status useEffect
@@ -79,13 +83,13 @@ const InternalGameSettings = () => {
       setConnectivityStatus(response?.eState)
       console.log('%cGame Status :>> ', 'color: #00bf7f', response);
     })
+  }, [buttonToggle, currentGameData])
 
-    return () => {
-      socket.off('resGameState');
-    }
-  })
-
-  const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
+  /**
+   * @description It takes one parameter and it returns an object as per Game Popup Model.
+   * @param {string} name 
+   * @returns {object} object
+   */
   const getCurrentGameStructure = (name) => {
     switch (name) {
       case 'Hoopie':
@@ -103,6 +107,7 @@ const InternalGameSettings = () => {
 
   const gameStructure = getCurrentGameStructure(currentGameData?.sName)
 
+  // Game setting UserEffect
   useEffect(() => {
     if (gameStarted === true) {
       socket.emit(location?.state?.patientSettings?._id, {
@@ -150,6 +155,7 @@ const InternalGameSettings = () => {
     }
   }, [(gameStarted === true),
     dominantEyeButton,
+    gameModeToggle,
   watch('nHorizontalLeft'),
   watch('nHorizontalRight'),
   watch('nVerticalLeft'),
@@ -160,31 +166,30 @@ const InternalGameSettings = () => {
   watch('nContrast'),
   watch('nOcclusion'),
   watch('nBlur'),
-    gameStructure,
-    TURBO_GAME_STRUCTURE,
-    BUBBLES_GAME_STRUCTURE])
+    gameStructure])
 
   const onSubmit = (data) => {
     socket.emit(location?.state?.patientSettings?._id, {
       sEventName: 'reqEndGame',
       oData: {
         eState: 'finished',
-        dCheckUpDate: moment(data?.dDateTime?._d).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm:ss.000Z'), //  2024-02-19T15:00:00.000+05:30
+        dCheckUp: moment(data?.dDateTime?._d).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm:ss.000Z'), //  2024-02-19T15:00:00.000+05:30
         aGamesId: data?.aGames?.map(item => item?._id), // [ { _id, sName, sUrl, eCategory } ]
-        sGamesName: data?.aGames?.map(item => item?.sName), // [ { _id, sName, sUrl, eCategory } ]
+        aGamesName: data?.aGames?.map(item => item?.sName), // [ { _id, sName, sUrl, eCategory } ]
         sComments: data?.sComment || '',
       }
     }, (response) => {
-      console.log('response: ', response);
-      if (Object?.keys(response?.error)?.length > 0) {
-        console.log('%cLeaveing Room (Error)', 'color: red', response?.error)
-      } else {
-        navigate(route?.viewPatient(id))
-        console.log('%cSaving progress and Leaveing Room...', 'color: #20a8c3', response)
+      if (response?.error !== null) {
+        console.log('%cNot Able to save progress and Leaveing Room (Error)', 'color: red', response?.error)
+      }
+
+      if (response?.oData?.message || response?.error === null) {
+        navigate(route?.viewPatient(id), { state: 'open-history' })
+        setModal({ open: false })
+        console.log('%cSaving progress and Leaveing Room...', 'color: #20a8c3', response?.oData?.message)
       }
     })
   }
-
 
   const handleClear = useCallback(() => setModal(false), [setModal, modal])
 
@@ -277,10 +282,11 @@ const InternalGameSettings = () => {
         console.log('%cGame Ended (Error): ', 'color: red', response?.error?.message)
       } else {
         console.log('%cGame Ended: ', 'color: #fff', response)
+        setModal({ open: false })
       }
     })
 
-    setModal(false)
+    setModal({ open: false })
     setGameStarted(false)
   }
 
@@ -303,74 +309,41 @@ const InternalGameSettings = () => {
               <Row>
                 {tabletMode ?
                   <>
-                    <Col xl={4} lg={12} className='global'>
+                    <Col xl={4} lg={12} className='global-setting global'>
                       <Wrapper>
                         <div className='settings'>
                           <div className='mx-3'>
-                            <PatientInfo
-                              defaultData={location?.state?.patientSettings}
-                              data={location?.state?.patientDetails}
-                              status={connectivityStatus}
-                            />
+                            <PatientInfo data={location?.state?.patientDetails} status={connectivityStatus} />
                           </div>
 
                           <Row>
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <MonocularModeSettings
-                                  control={control}
-                                  errors={errors}
-                                  reset={reset}
-                                  defaultData={location?.state?.patientSettings}
-                                />
+                                <MonocularModeSettings control={control} errors={errors} reset={reset} defaultData={location?.state?.patientSettings} />
                               </div>
                             </Col>
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <DominantEyeSettings
-                                  buttonToggle={dominantEyeButton}
-                                  setButtonToggle={setDominantEyeButton}
-                                  reset={reset}
-                                  defaultData={location?.state?.patientSettings}
-                                />
+                                <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} />
                               </div>
                             </Col>
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <AntiSupSettings
-                                  control={control}
-                                  settings={antiSupSettings}
-                                  setSettings={setAntiSupSettings}
-                                  reset={reset}
-                                  defaultData={location?.state?.patientSettings}
-                                />
+                                <AntiSupSettings control={control} watch={watch} />
                               </div>
                             </Col>
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <VergenceSettings
-                                  control={control}
-                                  horizontalSettings={horizontalEyeSettings}
-                                  setHorizontalSettings={setHorizontalEyeSettings}
-                                  verticalSettings={verticalEyeSettings}
-                                  setVerticalSettings={setVerticalEyeSettings}
-                                  vergenceToggle={vergenceToggle}
-                                  setVergenceToggle={setVergenceToggle}
-                                />
+                                <VergenceSettings control={control} watch={watch} />
                               </div>
                             </Col>
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <TorsionSettings
-                                  control={control}
-                                  errors={errors}
-                                  settings={torsionSettings}
-                                  setSettings={setTorsionSettings}
-                                />
+                                <TorsionSettings control={control} watch={watch} />
                               </div>
                             </Col>
                           </Row>
@@ -395,7 +368,6 @@ const InternalGameSettings = () => {
                               watch={watch}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
-                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -405,6 +377,8 @@ const InternalGameSettings = () => {
                               data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
+                              modal={modal}
+                              setModal={setModal}
                             />
                           </div>
 
@@ -417,7 +391,6 @@ const InternalGameSettings = () => {
                               setButtonToggle={setButtonToggle}
                               turboGameMode={turboGameMode}
                               setTurboGameMode={setTurboGameMode}
-                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -427,6 +400,8 @@ const InternalGameSettings = () => {
                               data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
+                              modal={modal}
+                              setModal={setModal}
                             />
                           </div>
 
@@ -437,7 +412,6 @@ const InternalGameSettings = () => {
                               control={control}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
-                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -445,13 +419,15 @@ const InternalGameSettings = () => {
                               data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
+                              modal={modal}
+                              setModal={setModal}
                             />
                           </div>
 
                           {Object.values(buttonToggle).some(Boolean) ?
                             <Row className='mt-3 text-end'>
                               <Col sm={12}>
-                                <Button variant='primary' type='button' className='square' disabled={gameStarted} onClick={() => setModal(true)}>
+                                <Button variant='primary' type='button' className='square' disabled={gameStarted} onClick={() => setModal({ open: true, type: 'save-progress' })}>
                                   Save Progress
                                 </Button>
                               </Col>
@@ -466,8 +442,7 @@ const InternalGameSettings = () => {
                       <Wrapper>
                         <div className='games'>
                           <div className=''>
-                            <AntiSupGameSettings
-                              control={control}
+                            <AntiSupGameSettings control={control}
                               errors={errors}
                               gameModeToggle={gameModeToggle}
                               setGameModeToggle={setGameModeToggle}
@@ -479,7 +454,6 @@ const InternalGameSettings = () => {
                               watch={watch}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
-                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -489,6 +463,8 @@ const InternalGameSettings = () => {
                               data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
+                              modal={modal}
+                              setModal={setModal}
                             />
                           </div>
 
@@ -501,7 +477,6 @@ const InternalGameSettings = () => {
                               setButtonToggle={setButtonToggle}
                               turboGameMode={turboGameMode}
                               setTurboGameMode={setTurboGameMode}
-                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -511,6 +486,8 @@ const InternalGameSettings = () => {
                               data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
+                              modal={modal}
+                              setModal={setModal}
                             />
                           </div>
 
@@ -521,7 +498,6 @@ const InternalGameSettings = () => {
                               control={control}
                               buttonToggle={buttonToggle}
                               setButtonToggle={setButtonToggle}
-                              // games={data?.aGamesName}
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
@@ -529,13 +505,15 @@ const InternalGameSettings = () => {
                               data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
+                              modal={modal}
+                              setModal={setModal}
                             />
                           </div>
 
                           {Object.values(buttonToggle).some(Boolean) ?
                             <Row className='mt-3 text-end'>
                               <Col sm={12}>
-                                <Button variant='primary' type='button' className='square' disabled={gameStarted} onClick={() => setModal(true)}>
+                                <Button variant='primary' type='button' className='square' disabled={gameStarted} onClick={() => setModal({ open: true, type: 'save-progress' })}>
                                   Save Progress
                                 </Button>
                               </Col>
@@ -545,66 +523,32 @@ const InternalGameSettings = () => {
                       </Wrapper>
                     </Col>
 
-                    <Col xl={4} lg={12} className='mt-xl-0 mt-3 global'>
+                    <Col xl={4} lg={12} className='mt-xl-0 mt-3 global-setting global'>
                       <Wrapper>
                         <div className='settings'>
                           <div className='mx-3'>
-                            <PatientInfo
-                              data={location?.state?.patientDetails}
-                              defaultData={location?.state?.patientSettings}
-                              status={connectivityStatus}
-                            />
+                            <PatientInfo data={location?.state?.patientDetails} status={connectivityStatus} />
                           </div>
 
                           <div className='mt-4 mx-3'>
-                            <MonocularModeSettings
-                              control={control}
-                              errors={errors}
-                              reset={reset}
-                              defaultData={location?.state?.patientSettings}
-                            />
+                            <MonocularModeSettings control={control} errors={errors} reset={reset} defaultData={location?.state?.patientSettings} />
                           </div>
 
                           <div className='mt-3 mx-3'>
-                            <DominantEyeSettings
-                              buttonToggle={dominantEyeButton}
-                              setButtonToggle={setDominantEyeButton}
-                              reset={reset}
-                              defaultData={location?.state?.patientSettings}
-                            />
+                            <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} />
                           </div>
 
                           <div className='mt-4 mx-3'>
-                            <AntiSupSettings
-                              control={control}
-                              settings={antiSupSettings}
-                              setSettings={setAntiSupSettings}
-                              reset={reset}
-                              defaultData={location?.state?.patientSettings}
-                            />
+                            <AntiSupSettings control={control} watch={watch} />
                           </div>
 
                           <div className='mt-4 mx-3'>
-                            <VergenceSettings
-                              control={control}
-                              horizontalSettings={horizontalEyeSettings}
-                              setHorizontalSettings={setHorizontalEyeSettings}
-                              verticalSettings={verticalEyeSettings}
-                              setVerticalSettings={setVerticalEyeSettings}
-                              vergenceToggle={vergenceToggle}
-                              setVergenceToggle={setVergenceToggle}
-                            />
+                            <VergenceSettings control={control} watch={watch} />
                           </div>
 
                           <div className='mt-4 mx-3'>
-                            <TorsionSettings
-                              control={control}
-                              errors={errors}
-                              settings={torsionSettings}
-                              setSettings={setTorsionSettings}
-                            />
+                            <TorsionSettings control={control} watch={watch} />
                           </div>
-
                         </div>
                       </Wrapper>
                     </Col>
@@ -615,132 +559,130 @@ const InternalGameSettings = () => {
         </Row>
       </Form >
 
-      {modal &&
-        <Modal show={modal} onHide={() => setModal(false)} id='add-ticket' size='lg'>
-          <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-            <Modal.Header closeButton>
-              <Modal.Title className='add-ticket-header'>Enter Patient Progress</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Row>
-                <Col sm={6}>
-                  <Form.Group className='form-group reSchedule-datepicker mb-2'>
-                    <Form.Label>
-                      <span>
-                        Date & Time
-                        <span className='inputStar'>*</span>
-                      </span>
-                    </Form.Label>
-                    <Controller
-                      name="dDateTime"
-                      control={control}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: 'Date and Time is required'
-                        }
-                      }}
-                      render={({ field }) => (
-                        <Datetime
-                          {...field}
-                          selected={field.value}
-                          timeInputLabel="Time:"
-                          dateFormat="MM/DD/yyyy"
-                          showTimeInput
-                          inputProps={{
-                            placeholder: 'Select the date and time',
-                          }}
-                          isValidDate={(currentDate, selectedDate) => {
-                            return !currentDate.isBefore(new Date(), 'day');
-                          }}
-                          onChange={(date) => field.onChange(date)}
-                          isClearable={true}
-                        />
-                      )}
-                    />
-                    {errors?.dDateTime && (
-                      <Form.Control.Feedback type='invalid'>
-                        {errors?.dDateTime.message}
-                      </Form.Control.Feedback>
-                    )}
-                  </Form.Group>
-                </Col>
-                <Col sm={6}>
-                  <Form.Group className='form-group'>
-                    <Form.Label>
-                      <span>
-                        Game Played
-                        <span className='inputStar'>*</span>
-                      </span>
-                    </Form.Label>
-                    <Controller
-                      name='aGames'
-                      control={control}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: 'Game name(s) are required.'
-                        }
-                      }}
-                      render={({ field: { onChange, value, ref } }) => (
-                        <Select
-                          placeholder='Select Games'
-                          ref={ref}
-                          options={eGameDropdown}
-                          className={`react-select border-0 ${errors.aGames && 'error'}`}
-                          classNamePrefix='select'
-                          isSearchable={false}
-                          value={value}
-                          onChange={onChange}
-                          isMulti={true}
-                          getOptionLabel={(option) => option.sName}
-                          getOptionValue={(option) => option._id}
-                        />
-                      )}
-                    />
-                    {errors.aGames && (
-                      <Form.Control.Feedback type='invalid'>
-                        {errors.aGames.message}
-                      </Form.Control.Feedback>
-                    )}
-                  </Form.Group>
-                </Col>
-                <Col sm={6}>
-                  <CommonInput
-                    type='textarea'
-                    register={register}
-                    errors={errors}
-                    className={`for m-control ${errors?.sComment && 'error'}`}
-                    name='sComment'
-                    label='Enter Comments'
-                    placeholder='Enter the comments'
-                    required
-                    validation={{
+      <Modal show={modal?.type === 'save-progress' && modal?.open} onHide={() => setModal(false)} id='add-ticket' size='lg'>
+        <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+          <Modal.Header closeButton>
+            <Modal.Title className='add-ticket-header'>Enter Patient Progress</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Row>
+              <Col sm={6}>
+                <Form.Group className='form-group reSchedule-datepicker mb-2'>
+                  <Form.Label>
+                    <span>
+                      Date & Time
+                      <span className='inputStar'>*</span>
+                    </span>
+                  </Form.Label>
+                  <Controller
+                    name="dDateTime"
+                    control={control}
+                    rules={{
                       required: {
                         value: true,
-                        message: 'Comment is required'
-                      },
+                        message: 'Date and Time is required'
+                      }
                     }}
-                    onChange={(e) => {
-                      e.target.value =
-                        e.target.value?.trim() &&
-                        e.target.value.replace(/^[0-9]+$/g, '')
-                    }}
+                    render={({ field }) => (
+                      <Datetime
+                        selected={field.value}
+                        timeInputLabel="Time:"
+                        dateFormat="MM/DD/yyyy"
+                        showTimeInput
+                        inputProps={{
+                          placeholder: 'Select the date and time',
+                        }}
+                        className={`${errors?.dDateTime && 'error'}`}
+                        isValidDate={(currentDate, selectedDate) => {
+                          return !currentDate?.isBefore(new Date(), 'day');
+                        }}
+                        onChange={(date) => field.onChange(date)}
+                        isClearable={true}
+                      />
+                    )}
                   />
-                </Col>
-              </Row>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="primary" type='submit' className='square' >
-                Save
-              </Button>
-              <Button variant="secondary" className='square' onClick={() => handleClear()}>
-                Cancel
-              </Button>
-            </Modal.Footer>
-          </Form >
-        </Modal>
-      }
+                  {errors?.dDateTime && (
+                    <Form.Control.Feedback type='invalid'>
+                      {errors?.dDateTime.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              </Col>
+              <Col sm={6}>
+                <Form.Group className='form-group'>
+                  <Form.Label>
+                    <span>
+                      Game Played
+                      <span className='inputStar'>*</span>
+                    </span>
+                  </Form.Label>
+                  <Controller
+                    name='aGames'
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Game name(s) are required.'
+                      }
+                    }}
+                    render={({ field: { onChange, value, ref } }) => (
+                      <Select
+                        placeholder='Select Games'
+                        ref={ref}
+                        options={eGameDropdown}
+                        className={`react-select border-0 ${errors.aGames && 'error'}`}
+                        classNamePrefix='select'
+                        isSearchable={false}
+                        value={value}
+                        onChange={onChange}
+                        isMulti={true}
+                        getOptionLabel={(option) => option.sName}
+                        getOptionValue={(option) => option._id}
+                      />
+                    )}
+                  />
+                  {errors.aGames && (
+                    <Form.Control.Feedback type='invalid'>
+                      {errors.aGames.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
+              </Col>
+              <Col sm={6}>
+                <CommonInput
+                  type='textarea'
+                  register={register}
+                  errors={errors}
+                  className={`for m-control ${errors?.sComment && 'error'}`}
+                  name='sComment'
+                  label='Enter Comments'
+                  placeholder='Enter the comments'
+                  required
+                  validation={{
+                    required: {
+                      value: true,
+                      message: 'Comment is required'
+                    },
+                  }}
+                  onChange={(e) => {
+                    e.target.value =
+                      e.target.value?.trim() &&
+                      e.target.value.replace(/^[0-9]+$/g, '')
+                  }}
+                />
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" type='submit' className='square' >
+              Save
+            </Button>
+            <Button variant="secondary" className='square' onClick={() => handleClear()}>
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Form >
+      </Modal>
     </>
   )
 }

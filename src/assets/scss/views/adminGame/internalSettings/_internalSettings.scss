@@ -103,7 +103,7 @@
 
     .global {
         .wrapper {
-            height: 705px;
+            max-height: calc(100vh - 168px);
             padding: 30px 10px;
             overflow-y: auto;
             overflow-x: hidden;
@@ -449,9 +449,11 @@
 @media (max-width: 1200px) {
     .game-settings {
         .global {
-            .wrapper {
-                height: 580px;
-                padding: 30px 10px;
+            &.global-setting {
+                .wrapper {
+                    max-height: calc(100vh - 260px);
+                    padding: 30px 10px;
+                }
             }
         }
     }

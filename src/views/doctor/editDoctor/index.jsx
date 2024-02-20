@@ -82,9 +82,11 @@ const EditDoctor = () => {
 
     setButtonDisabled(true)
 
+    const gameNamesId = data?.aGamesName?.map(item => item?._id)
+
     formData.append('sUserName', data?.sUserName || '')
     formData.append('sCompanyName', data?.sCompanyName || '')
-    formData.append('aGamesName', data?.aGamesName?.map(item => item?._id) || '')
+    formData.append('aGamesId', gameNamesId || '')
     formData.append('nPrice', +data?.nPrice || '')
     formData.append('dStartAt', data?.dStartAt?.toISOString() || '')
     formData.append('dEndAt', data?.dEndAt?.toISOString() || '')
@@ -316,7 +318,7 @@ const EditDoctor = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={6} className='mt-2'>
+                    <Col md={12} lg={6} className='mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -367,7 +369,6 @@ const EditDoctor = () => {
                             }
                           }}
                           render={({ field: { onChange, value, ref } }) => {
-                            console.log('value: ', value);
                             return (
                               <Select
                                 placeholder='Select Games...'

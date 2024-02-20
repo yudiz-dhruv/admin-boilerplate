@@ -7,13 +7,23 @@
         .input-field {
             width: 100%;
         }
+    }
 
-        button.add-patient {
-            box-sizing: border-box;
-            height: 100%;
-            border-radius: 4px;
-            width: 100%;
-            font-weight: 600;
+    .add-patient {
+        text-align: end;
+        display: block;
+
+        .b-link {
+            font-family: 'Helvetica-Bold';
+            padding-bottom: 2px;
+            border-bottom: 2px solid var(--primary-color);
+            font-style: italic;
+            color: var(--primary-color);
+            cursor: pointer;
+
+            &:hover {
+                color: var(--text-color);
+            }
         }
     }
 }

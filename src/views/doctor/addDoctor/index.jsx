@@ -43,7 +43,6 @@ const AddDoctor = () => {
   })
 
   const onSubmit = (data) => {
-    console.log('data?.aGamesName?.map(item => item?._id): ', data?.aGamesName);
     const formData = new FormData()
 
     if (isButtonDisabled) {
@@ -52,7 +51,6 @@ const AddDoctor = () => {
     setButtonDisabled(true)
 
     const gameNamesId = data?.aGamesName?.map(item => item?._id)
-    console.log('gameNamesId: ', gameNamesId);
 
     formData.append('sUserName', data?.sUserName || '')
     formData.append('sEmail', data?.sEmail || '')
@@ -356,7 +354,6 @@ const AddDoctor = () => {
                             }
                           }}
                           render={({ field: { onChange, value, ref } }) => {
-                            console.log('value: ', value?.map(item => item?._id));
                             return (
                               <Select
                                 placeholder='Select Games...'
@@ -437,7 +434,7 @@ const AddDoctor = () => {
                               selected={field.value}
                               placeholderText='Select Purchase Date'
                               onChange={(date) => field.onChange(date)}
-                              className="datepicker-inputbox"
+                              className={`datepicker-inputbox ${errors?.dStartAt && 'error'}`}
                               showIcon
                               toggleCalendarOnIconClick
                               minDate={new Date()}
@@ -477,7 +474,7 @@ const AddDoctor = () => {
                               onChange={(date) => field.onChange(date)}
                               minDate={getValues('dStartAt')}
                               filterDate={(date) => date >= new Date(getValues('dStartAt'))}
-                              className="datepicker-inputbox"
+                              className={`datepicker-inputbox ${errors?.dEndAt && 'error'}`}
                               showIcon
                               toggleCalendarOnIconClick
                             />

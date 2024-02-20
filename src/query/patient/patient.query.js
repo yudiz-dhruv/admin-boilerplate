@@ -8,6 +8,10 @@ export async function getPatientById (id) {
     return await axios.get(`/patient/view/${id}`)
 }
 
+export async function getPatientHistory (data, id) {
+    return await axios.post(`/patient/history/list/${id}`, data)
+}
+
 export async function joinRoom (id) {
     return await axios.post(`/vision/table/join/${id}`, id)
 }

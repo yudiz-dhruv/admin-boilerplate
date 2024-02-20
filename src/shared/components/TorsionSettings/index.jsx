@@ -5,8 +5,11 @@ import { Form } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import { Slider } from '@mui/material'
 import { SLIDER_STYLE } from 'shared/constants'
+import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 
-const TorsionSettings = ({ control, settings, setSettings, errors }) => {
+const TorsionSettings = ({ control, watch }) => {
+    const { torsionSettings, setTorsionSettings } = useGlobalSettings(watch)
+
     return (
         <>
             <h3 className='data-title'><FontAwesomeIcon icon={faArrowsRotate} color='var(--secondary-500)' size='sm' /> Torsion</h3>
@@ -16,19 +19,19 @@ const TorsionSettings = ({ control, settings, setSettings, errors }) => {
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>Left Eye</span>
-                        <span className='value'>{settings?.left}</span>
+                        <span className='value'>{torsionSettings?.left}</span>
                     </Form.Label>
                     <Controller
                         name='nTorsionLeft'
                         control={control}
-                        defaultValue={settings?.left}
+                        defaultValue={torsionSettings?.left}
                         render={({ field: { onChange, value } }) => (
                             <Slider
-                                defaultValue={settings?.left}
+                                defaultValue={torsionSettings?.left}
                                 valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
-                                    setSettings({ ...settings, left: +e.target.value })
+                                    setTorsionSettings({ ...torsionSettings, left: +e.target.value })
                                     onChange(e)
                                 }}
                                 min={-20}
@@ -44,19 +47,19 @@ const TorsionSettings = ({ control, settings, setSettings, errors }) => {
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>Right Eye</span>
-                        <span className='value'>{settings?.right}</span>
+                        <span className='value'>{torsionSettings?.right}</span>
                     </Form.Label>
                     <Controller
                         name='nTorsionRight'
                         control={control}
-                        defaultValue={settings?.right}
+                        defaultValue={torsionSettings?.right}
                         render={({ field: { onChange, value } }) => (
                             <Slider
-                                defaultValue={settings?.right}
+                                defaultValue={torsionSettings?.right}
                                 valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
-                                    setSettings({ ...settings, right: +e.target.value })
+                                    setTorsionSettings({ ...torsionSettings, right: +e.target.value })
                                     onChange(e)
                                 }}
                                 min={-20}

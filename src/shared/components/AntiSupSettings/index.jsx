@@ -6,8 +6,11 @@ import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { Slider } from '@mui/material'
 import { SLIDER_STYLE } from 'shared/constants'
+import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 
-const AntiSupSettings = ({ control, settings, setSettings, defaultData, reset }) => {
+const AntiSupSettings = ({ control, watch }) => {
+    const { antiSupSettings, setAntiSupSettings } = useGlobalSettings(watch)
+
     const LABELS = {
         TITLE: 'Anti Suppresion',
         CONTRAST_LEVEL: 'Contrast Level',
@@ -23,19 +26,19 @@ const AntiSupSettings = ({ control, settings, setSettings, defaultData, reset })
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>{LABELS?.CONTRAST_LEVEL}</span>
-                        <span className='value'>{settings?.contrast}</span>
+                        <span className='value'>{antiSupSettings?.contrast}</span>
                     </Form.Label>
                     <Controller
                         name='nContrast'
                         control={control}
-                        defaultValue={settings?.contrast}
+                        defaultValue={antiSupSettings?.contrast}
                         render={({ field: { onChange, value } }) => (
                             <Slider
-                                defaultValue={settings?.contrast}
+                                defaultValue={antiSupSettings?.contrast}
                                 valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
-                                    setSettings({ ...settings, contrast: +e.target.value })
+                                    setAntiSupSettings({ ...antiSupSettings, contrast: +e.target.value })
                                     onChange(e)
                                 }}
                                 min={0}
@@ -51,19 +54,19 @@ const AntiSupSettings = ({ control, settings, setSettings, defaultData, reset })
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>{LABELS?.OCCLUSION_LEVEL}</span>
-                        <span className='value'>{settings?.occlusion}</span>
+                        <span className='value'>{antiSupSettings?.occlusion}</span>
                     </Form.Label>
                     <Controller
                         name='nOcclusion'
                         control={control}
-                        defaultValue={settings?.occlusion}
+                        defaultValue={antiSupSettings?.occlusion}
                         render={({ field: { onChange, value } }) => (
                             <Slider
-                                defaultValue={settings?.occlusion}
+                                defaultValue={antiSupSettings?.occlusion}
                                 valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
-                                    setSettings({ ...settings, occlusion: +e.target.value })
+                                    setAntiSupSettings({ ...antiSupSettings, occlusion: +e.target.value })
                                     onChange(e)
                                 }}
                                 min={0}
@@ -79,19 +82,19 @@ const AntiSupSettings = ({ control, settings, setSettings, defaultData, reset })
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>{LABELS?.BLUR_LEVEL}</span>
-                        <span className='value'>{settings?.blur}</span>
+                        <span className='value'>{antiSupSettings?.blur}</span>
                     </Form.Label>
                     <Controller
                         name='nBlur'
                         control={control}
-                        defaultValue={settings?.blur}
+                        defaultValue={antiSupSettings?.blur}
                         render={({ field: { onChange, value } }) => (
                             <Slider
-                                defaultValue={settings?.blur}
+                                defaultValue={antiSupSettings?.blur}
                                 valueLabelDisplay="auto"
                                 value={value}
                                 onChange={e => {
-                                    setSettings({ ...settings, blur: +e.target.value })
+                                    setAntiSupSettings({ ...antiSupSettings, blur: +e.target.value })
                                     onChange(e)
                                 }}
                                 min={0}
@@ -107,8 +110,8 @@ const AntiSupSettings = ({ control, settings, setSettings, defaultData, reset })
 }
 
 AntiSupSettings.propTypes = {
-    settings: PropTypes.object,
-    setSettings: PropTypes.func
+    antiSupSettings: PropTypes.object,
+    setAntiSupSettings: PropTypes.func
 }
 
 export default AntiSupSettings

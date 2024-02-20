@@ -10,9 +10,8 @@ import { Controller } from 'react-hook-form'
 import Skeleton from 'react-loading-skeleton'
 import CommonInput from '../CommonInput'
 
-const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted, data, handleStartGame, handleEndGame }) => {
+const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted, data, handleStartGame, handleEndGame, modal, setModal }) => {
     const [tabButtons, setTabButtons] = useState([])
-    const [modal, setModal] = useState(false)
 
     const BUBBLE_BURST_GAME_STRUCTURE = data?.find(item => item?.sName === 'bubbleBurst')
 

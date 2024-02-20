@@ -6,8 +6,11 @@ import { Button, Form } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import { SLIDER_STYLE } from 'shared/constants'
 import { motion } from 'framer-motion'
+import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 
-const VergenceSettings = ({ control, vergenceToggle, setVergenceToggle, horizontalSettings, setHorizontalSettings, verticalSettings, setVerticalSettings }) => {
+const VergenceSettings = ({ control, watch }) => {
+    const { horizontalEyeSettings, setHorizontalEyeSettings, verticalEyeSettings, setVerticalEyeSettings, vergenceToggle, setVergenceToggle } = useGlobalSettings(watch)
+
     const tabs = [
         { key: 'horizontal', label: 'Horizontal' },
         { key: 'vertical', label: 'Vertical' },
@@ -38,20 +41,20 @@ const VergenceSettings = ({ control, vergenceToggle, setVergenceToggle, horizont
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Left Eye</span>
-                            <span className='value'>{horizontalSettings?.left}</span>
+                            <span className='value'>{horizontalEyeSettings?.left}</span>
                         </Form.Label>
                         <Controller
                             name='nHorizontalLeft'
                             control={control}
-                            defaultValue={horizontalSettings?.left}
+                            defaultValue={horizontalEyeSettings?.left}
                             render={({ field: { onChange, value, ref } }) => (
                                 <Slider
                                     ref={ref}
-                                    defaultValue={horizontalSettings?.left}
+                                    defaultValue={horizontalEyeSettings?.left}
                                     valueLabelDisplay="auto"
                                     value={value}
                                     onChange={e => {
-                                        setHorizontalSettings({ ...horizontalSettings, left: +e.target.value })
+                                        setHorizontalEyeSettings({ ...horizontalEyeSettings, left: +e.target.value })
                                         onChange(e)
                                     }}
                                     min={-20}
@@ -67,20 +70,20 @@ const VergenceSettings = ({ control, vergenceToggle, setVergenceToggle, horizont
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Right Eye</span>
-                            <span className='value'>{horizontalSettings?.right}</span>
+                            <span className='value'>{horizontalEyeSettings?.right}</span>
                         </Form.Label>
                         <Controller
                             name='nHorizontalRight'
                             control={control}
-                            defaultValue={horizontalSettings?.right}
+                            defaultValue={horizontalEyeSettings?.right}
                             render={({ field: { onChange, value, ref } }) => (
                                 <Slider
                                     ref={ref}
-                                    defaultValue={horizontalSettings?.right}
+                                    defaultValue={horizontalEyeSettings?.right}
                                     valueLabelDisplay="auto"
                                     value={value}
                                     onChange={e => {
-                                        setHorizontalSettings({ ...horizontalSettings, right: +e.target.value })
+                                        setHorizontalEyeSettings({ ...horizontalEyeSettings, right: +e.target.value })
                                         onChange(e)
                                     }}
                                     min={-20}
@@ -100,20 +103,20 @@ const VergenceSettings = ({ control, vergenceToggle, setVergenceToggle, horizont
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Left Eye</span>
-                            <span className='value'>{verticalSettings?.left}</span>
+                            <span className='value'>{verticalEyeSettings?.left}</span>
                         </Form.Label>
                         <Controller
                             name='nVerticalLeft'
                             control={control}
-                            defaultValue={verticalSettings?.left}
+                            defaultValue={verticalEyeSettings?.left}
                             render={({ field: { onChange, value, ref } }) => (
                                 <Slider
                                     ref={ref}
-                                    defaultValue={verticalSettings?.left}
+                                    defaultValue={verticalEyeSettings?.left}
                                     valueLabelDisplay="auto"
                                     value={value}
                                     onChange={e => {
-                                        setVerticalSettings({ ...verticalSettings, left: +e.target.value })
+                                        setVerticalEyeSettings({ ...verticalEyeSettings, left: +e.target.value })
                                         onChange(e)
                                     }}
                                     min={-20}
@@ -129,20 +132,20 @@ const VergenceSettings = ({ control, vergenceToggle, setVergenceToggle, horizont
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Right Eye</span>
-                            <span className='value'>{verticalSettings?.right}</span>
+                            <span className='value'>{verticalEyeSettings?.right}</span>
                         </Form.Label>
                         <Controller
                             name='nVerticalRight'
                             control={control}
-                            defaultValue={verticalSettings?.right}
+                            defaultValue={verticalEyeSettings?.right}
                             render={({ field: { onChange, value, ref } }) => (
                                 <Slider
                                     ref={ref}
-                                    defaultValue={verticalSettings?.right}
+                                    defaultValue={verticalEyeSettings?.right}
                                     valueLabelDisplay="auto"
                                     value={value}
                                     onChange={e => {
-                                        setVerticalSettings({ ...verticalSettings, right: +e.target.value })
+                                        setVerticalEyeSettings({ ...verticalEyeSettings, right: +e.target.value })
                                         onChange(e)
                                     }}
                                     min={-20}

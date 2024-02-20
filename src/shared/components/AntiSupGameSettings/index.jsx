@@ -14,11 +14,9 @@ import { MdFormatAlignCenter } from "react-icons/md"
 import { useHoopieSettings } from 'shared/hooks/useHoopieSettings'
 
 const AntiSupGameSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, tachMode, setTachMode, data, handleStartGame, handleEndGame, watch } = props
-    // console.log('games: ', games?.[0]?.split(','));
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, tachMode, setTachMode, data, handleStartGame, handleEndGame, watch, modal, setModal } = props
 
     const [tabButtons, setTabButtons] = useState([])
-    const [modal, setModal] = useState(false)
 
     const { HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
     // const HOOPIE_GAME_STRUCTURE = data?.find(item => item?.sName === 'hoopie')
