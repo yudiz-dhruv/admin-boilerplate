@@ -27,30 +27,6 @@ const GamelistFilters = ({ defaultValue, setRequestParams }) => {
             <Form className='patient-filter' autoComplete='off'>
                 <Form.Group className='form-group'>
                     <Form.Label>
-                        Category
-                    </Form.Label>
-                    <Controller
-                        name='eCategory'
-                        control={control}
-                        render={({ field: { onChange, value = [], ref } }) => (
-                            <Select
-                                ref={ref}
-                                value={value}
-                                options={eGameCategoryFilter}
-                                className='react-select'
-                                classNamePrefix='select'
-                                closeMenuOnSelect={true}
-                                onChange={(e) => {
-                                    setRequestParams({ ...defaultValue, eCategory: e?.value })
-                                    onChange(e)
-                                }}
-                            />
-                        )}
-                    />
-                </Form.Group>
-
-                <Form.Group className='form-group'>
-                    <Form.Label>
                         Status
                     </Form.Label>
                     <Controller
@@ -66,6 +42,30 @@ const GamelistFilters = ({ defaultValue, setRequestParams }) => {
                                 closeMenuOnSelect={true}
                                 onChange={(e) => {
                                     setRequestParams({ ...defaultValue, eStatus: e?.value })
+                                    onChange(e)
+                                }}
+                            />
+                        )}
+                    />
+                </Form.Group>
+
+                <Form.Group className='form-group'>
+                    <Form.Label>
+                        Category
+                    </Form.Label>
+                    <Controller
+                        name='eCategory'
+                        control={control}
+                        render={({ field: { onChange, value = [], ref } }) => (
+                            <Select
+                                ref={ref}
+                                value={value}
+                                options={eGameCategoryFilter}
+                                className='react-select'
+                                classNamePrefix='select'
+                                closeMenuOnSelect={true}
+                                onChange={(e) => {
+                                    setRequestParams({ ...defaultValue, eCategory: e?.value })
                                     onChange(e)
                                 }}
                             />

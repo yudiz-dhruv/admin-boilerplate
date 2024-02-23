@@ -1,9 +1,9 @@
 .react-select {
   width: 100%;
-  height: auto !important;
   font-size: $fs-14;
-  background-color: var(--input-background-color);
+  background-color: transparent;
   color: var(--heading-color);
+  border: 1px solid var(--secondary-300) !important;
 
   &.custom-select {
     .select__control {
@@ -14,12 +14,11 @@
 
   // width: 100px;
   height: 38px;
-  border: 1px solid #dfe4ec;
   border-radius: 5px;
 
   &.select--is-disabled {
     &.react-select .select__control {
-      background-color: var(--input-disable-background-color);
+      background-color: var(--input-background-color);
     }
   }
 
@@ -36,10 +35,10 @@
 
   .select__control {
     // min-height: 38px;
-    background-color: var(--input-background-color);
+    background-color: transparent;
     border-radius: 4px;
     box-shadow: none;
-    border: 1px solid transparent;
+    border: none;
     text-align: left;
 
     .select__indicators {

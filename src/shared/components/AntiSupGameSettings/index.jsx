@@ -14,7 +14,7 @@ import { MdFormatAlignCenter } from "react-icons/md"
 import { useHoopieSettings } from 'shared/hooks/useHoopieSettings'
 
 const AntiSupGameSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, tachMode, setTachMode, data, handleStartGame, handleEndGame, watch, modal, setModal } = props
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setTachMode, data, handleStartGame, handleEndGame, watch, modal, setModal } = props
 
     const [tabButtons, setTabButtons] = useState([])
 
@@ -196,7 +196,7 @@ const AntiSupGameSettings = (props) => {
                                                     type='switch'
                                                     name='bTachMode'
                                                     className='mt-2'
-                                                    checked={tachMode === 'y'}
+                                                    checked={watch('bTachMode') ? watch('bTachMode') : false}
                                                     value={value}
                                                     onChange={(e) => {
                                                         handleConfirmStatus(e.target.checked)
@@ -213,7 +213,7 @@ const AntiSupGameSettings = (props) => {
                                     </Form.Group>
                                 </Col>
 
-                                <Col lg={6} sm={6} className='mt-1'>
+                                <Col lg={6} sm={6} className='mt-2'>
                                     <CommonInput
                                         label={LABELS?.GAME_DURATION}
                                         type='text'
@@ -252,7 +252,7 @@ const AntiSupGameSettings = (props) => {
                                     />
                                 </Col>
 
-                                <Col lg={6} sm={6} className='mt-1'>
+                                <Col lg={6} sm={6} className='mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.HOOP_SIZE}</Form.Label>
                                         <Controller
@@ -531,7 +531,7 @@ const AntiSupGameSettings = (props) => {
                                         }}
                                     />
                                 </Col>
-                                <Col md={6} sm={12}>
+                                <Col md={6} sm={12} className='mt-md-0 mt-2'>
                                     <div className=''>
                                         <Form.Group className='form-group ringRunner'>
                                             <Form.Label>Game Mode</Form.Label>
@@ -572,7 +572,8 @@ const AntiSupGameSettings = (props) => {
                             {ringrunnerMode?.normal &&
                                 <motion.div initial={{ y: 10, opacity: 0 }}
                                     animate={{ y: 0, opacity: ringrunnerMode?.normal ? 1 : 0 }}
-                                    transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                    className='mt-3'>
                                     <Wrapper>
                                         <Row>
                                             <Col md={6} sm={12}>
@@ -742,7 +743,8 @@ const AntiSupGameSettings = (props) => {
                             {ringrunnerMode?.gabor &&
                                 <motion.div initial={{ y: 10, opacity: 0 }}
                                     animate={{ y: 0, opacity: ringrunnerMode?.gabor ? 1 : 0 }}
-                                    transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                    className='mt-3'>
                                     <Wrapper>
                                         <Row>
                                             <Col md={6} sm={12}>

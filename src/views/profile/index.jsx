@@ -9,7 +9,6 @@ import { profile, UpdateProfile } from 'query/profile/profile.query'
 import { getDirtyFormValues } from 'helper/helper'
 import { useNavigate } from 'react-router-dom'
 import Wrapper from 'shared/components/Wrap'
-import { route } from 'shared/constants/AllRoutes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { ReactToastify } from 'shared/utils'
@@ -113,12 +112,12 @@ function EditProfile () {
                 />
                 {updateFlag !== false &&
                   <>
-                    <div className='mt-2'>
+                    <div className='mt-3'>
                       <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || !updateFlag || isLoading}>
                         <FormattedMessage id='update' />
                         {isLoading && <Spinner animation='border' size='sm' variant='success' />}
                       </Button>
-                      <Button variant='secondary' disabled={isLoading} className='square' onClick={() => navigate(route.dashboard)}>
+                      <Button variant='secondary' disabled={isLoading} className='square' onClick={() => setUpdateFlag(!updateFlag)}>
                         Cancel
                       </Button>
                     </div>

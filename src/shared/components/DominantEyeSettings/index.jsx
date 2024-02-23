@@ -6,8 +6,7 @@ import PropTypes from 'prop-types'
 import { motion } from 'framer-motion'
 import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 
-const DominantEyeSettings = ({ defaultData, watch }) => {
-    const { dominantEyeButton, setDominantEyeButton } = useGlobalSettings(watch)
+const DominantEyeSettings = ({ defaultData, watch, dominantEyeButton, setDominantEyeButton }) => {
 
     const tabs = [
         { key: 'left', label: 'Left' },

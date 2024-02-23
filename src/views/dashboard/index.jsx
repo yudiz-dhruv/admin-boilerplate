@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Card, Col, Row, Spinner } from 'react-bootstrap'
 import Cards from 'shared/components/Card'
 import { faUserDoctor, faUser, faUserSlash, faGamepad, faUsers } from '@fortawesome/free-solid-svg-icons'
@@ -8,7 +8,6 @@ import { GRAPH_OPTIONS } from 'shared/constants'
 import { useQuery } from 'react-query'
 import { getSuperAdminStats } from 'query/dashboard/dashboard.query'
 import { motion } from 'framer-motion';
-import { socket } from 'shared/socket'
 
 function Dashboard () {
   const [statsData, setStatsData] = useState({})
@@ -38,10 +37,7 @@ function Dashboard () {
   // })
 
   useEffect(() => {
-    document.title = 'Dashboard'
-
-    socket.connect()
-    console.warn('Socket Connected Successfuly.')
+    document.title = 'Dashboard | Yantra Healthcare'
   }, [])
 
   return (

@@ -17,6 +17,7 @@ const AntiSupSettings = ({ control, watch }) => {
         OCCLUSION_LEVEL: 'Occlusion Level',
         BLUR_LEVEL: 'Blur Level'
     }
+
     return (
         <>
             <h3 className='data-title'><FontAwesomeIcon icon={faGear} color='var(--secondary-500)' size='sm' /> {LABELS?.TITLE}</h3>
@@ -26,7 +27,7 @@ const AntiSupSettings = ({ control, watch }) => {
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>{LABELS?.CONTRAST_LEVEL}</span>
-                        <span className='value'>{antiSupSettings?.contrast}</span>
+                        <span className='value'>{antiSupSettings?.contrast}%</span>
                     </Form.Label>
                     <Controller
                         name='nContrast'
@@ -54,7 +55,7 @@ const AntiSupSettings = ({ control, watch }) => {
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>{LABELS?.OCCLUSION_LEVEL}</span>
-                        <span className='value'>{antiSupSettings?.occlusion}</span>
+                        <span className='value'>{antiSupSettings?.occlusion}%</span>
                     </Form.Label>
                     <Controller
                         name='nOcclusion'
@@ -82,7 +83,7 @@ const AntiSupSettings = ({ control, watch }) => {
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>{LABELS?.BLUR_LEVEL}</span>
-                        <span className='value'>{antiSupSettings?.blur}</span>
+                        <span className='value'>{antiSupSettings?.blur}%</span>
                     </Form.Label>
                     <Controller
                         name='nBlur'

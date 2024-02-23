@@ -151,11 +151,13 @@ export const eButtonCount = [
 export const eHorizontalBiasOption = [
     { label: 'Left', value: 'left' },
     { label: 'Right', value: 'right' },
+    { label: 'None', value: 'none' }
 ]
 
-export const eVerticallBiasOption = [
+export const eVerticalBiasOption = [
     { label: 'Top', value: 'top' },
     { label: 'Bottom', value: 'bottom' },
+    { label: 'None', value: 'none' }
 ]
 
 export const eTargetStayDurationOption = [

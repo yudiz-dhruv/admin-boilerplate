@@ -1,6 +1,13 @@
 .patient-form {
     .wrapper {
         .form-group {
+            .react-select {
+                &.error {
+                    box-shadow: inset 0 0 0 1px #e64343;
+                    border-color: var(--error-color) !important;
+                }
+            }
+
             input:disabled {
                 cursor: not-allowed;
             }

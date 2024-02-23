@@ -25,7 +25,7 @@
       }
 
       &.textLogo {
-        width: 120px;
+        width: 150px;
         height: auto;
         margin: 8px 0;
       }
@@ -47,6 +47,12 @@
     gap: 10px;
     margin-right: 5px;
 
+    .dropdown {
+      .dropdown-menu.up-arrow {
+        margin-top: 5px;
+      }
+    }
+
     .btn {
       border: 1px solid transparent;
       font-size: $fs-18;
@@ -57,8 +63,10 @@
       border-radius: 4px;
       // width: 50px;
       height: 35px;
+      text-transform: capitalize;
       color: var(--white-color);
-      display: grid;
+      display: flex;
+      justify-content: space-between;
       place-items: center;
       border: unset !important;
 
@@ -75,6 +83,10 @@
         border: 2px solid var(--text-hover);
         border-radius: 99px;
         padding: 1px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
       }
 
       &:hover {

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
@@ -12,10 +12,11 @@ import { useMutation, useQuery } from 'react-query'
 import { getPatientById, getPatientDropdownList, joinRoom } from 'query/patient/patient.query'
 import { getDirtyFormValues } from 'helper/helper'
 import { ReactToastify } from 'shared/utils'
-import { socket } from 'shared/socket'
+import SocketContext from 'context/SocketContext'
 
 const AdminGame = () => {
   const navigate = useNavigate()
+  const socket = useContext(SocketContext)
 
   const { register, handleSubmit, formState: { errors, dirtyFields }, control, reset, watch } = useForm({ mode: 'all' })
 
@@ -55,6 +56,7 @@ const AdminGame = () => {
       socket.emit('reqJoinRoom', { iUserId: data?.data?.data?._id }, (response) => {
         if (response?.oData) {
           console.log('%cJoin Room: ', 'color: orange', response?.oData)
+          ReactToastify('Game Session started successfully.', 'success')
         } else {
           console.log('%cJoin Room Error: ', 'color: red', response?.message)
         }
@@ -122,7 +124,7 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col lg={6} md={6}>
+                    <Col lg={6} md={6} className='mt-md-0 mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -135,7 +137,7 @@ const AdminGame = () => {
                       />
                     </Col>
 
-                    <Col lg={6} md={6}>
+                    <Col lg={6} md={6} className='mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -148,7 +150,7 @@ const AdminGame = () => {
                       />
                     </Col>
 
-                    <Col md={6}>
+                    <Col md={6} className='mt-2'>
                       <Form.Group className='form-group'>
                         <Form.Label> Dominant Eye </Form.Label>
                         <Controller
@@ -170,7 +172,7 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={6}>
+                    <Col md={6} className='mt-2'>
                       <Form.Group className='form-group'>
                         <Form.Label> Has Amblyopia? </Form.Label>
                         <Controller
@@ -192,7 +194,7 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={6}>
+                    <Col md={6} className='mt-2'>
                       <Form.Group className='form-group'>
                         <Form.Label> Has Strabisums? </Form.Label>
                         <Controller
@@ -214,7 +216,7 @@ const AdminGame = () => {
                       </Form.Group>
                     </Col>
 
-                    <Row className='mt-2'>
+                    <Row className='mt-3'>
                       <Col sm={12}>
                         <Button variant='primary' type='submit' className='me-2 next-button square' disabled={(isDisabled === false) || isLoading}>
                           Next {isLoading && <Spinner animation='border' size='sm' />}

@@ -9,9 +9,8 @@ import { validationErrors } from 'shared/constants/ValidationErrors'
 import { useMutation, useQuery } from 'react-query'
 import { EMAIL } from 'shared/constants'
 import { profile } from 'query/profile/profile.query'
-import textLogo from 'assets/images/Yantra.Care.svg'
+import textLogo from 'assets/images/Yantra.Care Logo.svg'
 import { ReactToastify } from 'shared/utils'
-
 
 function Login () {
   const navigate = useNavigate()
@@ -30,8 +29,9 @@ function Login () {
     setShowPassword(!showPassword)
   }
 
+
   const { mutate, isLoading } = useMutation(login, {
-    onSettled: (response, err) => {
+    onSettled: async (response, err) => {
       if (response) {
         localStorage.setItem('token', response?.headers?.authorization)
         setIsLoginSuccess(true)
@@ -70,14 +70,14 @@ function Login () {
   }
 
   useEffect(() => {
-    document.title = 'Login'
+    document.title = 'Login | Yantra Healthcare'
   }, [])
 
   return (
     <>
       <Form noValidate onSubmit={handleSubmit(onSubmit)} className='login-form'>
         <div className='yantra-logo'>
-          <img src={textLogo} className="textLogo" alt='Yantra Healthcare' />
+          <img src={textLogo} className="textLogo img-fluid" alt='Yantra Healthcare' />
         </div>
         <div className='title-b mt-5'>
           <div className=''>
@@ -105,7 +105,8 @@ function Login () {
           />
           {errors.sEmail && <Form.Control.Feedback type='invalid'>{errors.sEmail.message}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group className='form-group'>
+
+        <Form.Group className='form-group mt-2'>
           <Form.Label>
             <FormattedMessage id='password' />
           </Form.Label>
@@ -133,8 +134,9 @@ function Login () {
           </InputGroup>
           {errors.sPassword && <Form.Control.Feedback type='invalid'>{errors.sPassword.message}</Form.Control.Feedback>}
         </Form.Group>
+
         <div className='button-section mb-1'>
-          <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
+          <Button variant='primary' type='submit' disabled={isLoading} className='login-btn mt-3'>
             <FormattedMessage id='Login' /> {(isLoading || profileLoader || profileFetching) && <Spinner animation='border' size='sm' />}
           </Button>
         </div>

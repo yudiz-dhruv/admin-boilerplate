@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { Col, Row, Spinner } from 'react-bootstrap'
@@ -23,6 +23,11 @@ const ViewDoctor = () => {
         enabled: !!data,
         select: (data) => data?.data?.data,
     })
+
+
+    useEffect(() => {
+        document.title = 'View Doctor | Yantra Healthcare'
+    }, [])
 
     return (
         <>

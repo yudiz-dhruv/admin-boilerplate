@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { forgotPassword } from 'query/auth/auth.query'
 import { EMAIL } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import textLogo from 'assets/images/Yantra.Care.svg'
+import textLogo from 'assets/images/Yantra.Care Logo.svg'
 import { ReactToastify } from 'shared/utils'
 
 function ForgotPassword () {
@@ -28,7 +28,7 @@ function ForgotPassword () {
   }
 
   useEffect(() => {
-    document.title = 'Forgot Password'
+    document.title = 'Forgot Password | Yantra Healthcare'
   }, [])
   return (
     <>
@@ -60,7 +60,7 @@ function ForgotPassword () {
           {errors.sEmail && <Form.Control.Feedback type='invalid'>{errors.sEmail.message}</Form.Control.Feedback>}
         </Form.Group>
         <div className='button-section mb-1'>
-          <Button variant='primary' type='submit' disabled={isLoading} className='login-btn'>
+          <Button variant='primary' type='submit' disabled={isLoading} className='login-btn mt-3'>
             <FormattedMessage id='submit' /> {isLoading && <Spinner animation='border' size='sm' />}
           </Button>
         </div>

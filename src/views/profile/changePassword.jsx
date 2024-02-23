@@ -32,7 +32,7 @@ export default function ChangePassword () {
   sNewPassword.current = watch('sNewPassword')
 
   useEffect(() => {
-    document.title = 'Change Password'
+    document.title = 'Change Password | Yantra Healthcare'
   }, [])
 
   const { mutate, isLoading } = useMutation(changePassWord, {
@@ -96,7 +96,7 @@ export default function ChangePassword () {
                       />
                     )}
                     rules={{
-                      required: validationErrors.currentPasswordRequired,
+                      required: 'Current Password is required',
                       pattern: {
                         value: PASSWORD,
                         message: 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
@@ -118,7 +118,7 @@ export default function ChangePassword () {
                 {errors.sCurrentPassword && (<Form.Control.Feedback type='invalid'>{errors.sCurrentPassword.message}</Form.Control.Feedback>)}
               </Form.Group>
 
-              <Form.Group className='form-group'>
+              <Form.Group className='form-group mt-2'>
                 <Form.Label>
                   <span>
                     <FormattedMessage id='newPassword' />
@@ -144,7 +144,7 @@ export default function ChangePassword () {
                       />
                     )}
                     rules={{
-                      required: validationErrors.newPasswordRequired,
+                      required: 'New Password is required',
                       pattern: {
                         value: PASSWORD,
                         message: 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
@@ -166,7 +166,7 @@ export default function ChangePassword () {
                 {errors.sNewPassword && (<Form.Control.Feedback type='invalid'>{errors.sNewPassword.message}</Form.Control.Feedback>)}
               </Form.Group>
 
-              <Form.Group className='form-group'>
+              <Form.Group className='form-group mt-2'>
                 <Form.Label>
                   <span>
                     <FormattedMessage id='confirmNewPassword' />
@@ -206,7 +206,7 @@ export default function ChangePassword () {
                 </InputGroup>
                 {errors.sConfirmPassword && (<Form.Control.Feedback type='invalid'>{errors.sConfirmPassword.message}</Form.Control.Feedback>)}
               </Form.Group>
-              <Col lg={12} className='mt-4'>
+              <Col lg={12} className='mt-3'>
                 <div className='top-d-button'>
                   <Button variant='primary' type='submit' className='me-2 square' disabled={isLoading}>
                     <FormattedMessage id='submit' />{' '}

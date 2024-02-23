@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Dropdown, Form, Spinner } from 'react-bootstrap'
 import { FormattedMessage } from 'react-intl'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -6,13 +6,13 @@ import { useQuery, useQueryClient } from 'react-query'
 import { logout } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
 import CustomModal from 'shared/components/Modal'
-import textLogo from 'assets/images/Yantra.Care.svg'
+import textLogo from 'assets/images/Yantra.Care Logo.svg'
 import { profile } from 'query/profile/profile.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faUser } from '@fortawesome/free-solid-svg-icons'
 import { ReactToastify } from 'shared/utils'
 import { Controller, useForm } from 'react-hook-form'
-import { socket } from 'shared/socket'
+import SocketContext from 'context/SocketContext'
 
 function Header () {
   const navigate = useNavigate()
@@ -26,6 +26,7 @@ function Header () {
   // const [mode, setMode] = useState(temp)
   const [clickedLogOut, setClickedLogOut] = useState(false)
   const [show, setShow] = useState(false)
+  const socket = useContext(SocketContext)
 
   // LOGOUT QUERY
   const { isLoading, isFetching } = useQuery('logoutUser', logout, {
@@ -36,16 +37,18 @@ function Header () {
       navigate('/login')
       ReactToastify(res?.data?.message, 'success')
 
-      socket.emit(location?.state?.patientSettings?._id, {
-        sEventName: 'reqEndGame',
-        oData: {
-          eState: 'finished'
-        }
-      }, (response) => {
-        console.warn('Socket Disconnecting and Leaveing Room.', response)
-        socket.disconnect()
-      })
-      console.warn('Socket disconnected successfully.');
+      if (socket !== undefined) {
+        socket.emit(location?.state?.patientSettings?._id, {
+          sEventName: 'reqEndGame',
+          oData: {
+            eState: 'finished'
+          }
+        }, (response) => {
+          console.warn('Socket Disconnecting and Leaveing Room.', response)
+          console.warn('Socket disconnected successfully.');
+          socket.disconnect()
+        })
+      }
     },
     onError: () => {
       localStorage.removeItem('token')
@@ -82,13 +85,13 @@ function Header () {
         </Link>
       </div>
       <div className='header-right'>
-        <div className='user-name'>{profileLoader ?
-          <Spinner animation='border' size='sm' variant='default' />
-          : <span>{data?.sUserName}</span>
-        }
-        </div>
         <Dropdown>
           <Dropdown.Toggle className='header-btn'>
+            <div className='user-name me-2'>{profileLoader ?
+              <Spinner animation='border' size='sm' variant='default' />
+              : <span>{data?.sUserName}</span>
+            }
+            </div>
             <div className='img'>
               {data?.eUserType === 'admin' ?
                 (data?.sAvatar === ''

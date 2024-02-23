@@ -9,7 +9,7 @@ import { resetPassWord } from 'query/auth/auth.query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { checkToken } from 'query/profile/profile.query'
 import NotFound from 'shared/components/404'
-import textLogo from 'assets/images/Yantra.Care.svg'
+import textLogo from 'assets/images/Yantra.Care Logo.svg'
 import { ReactToastify } from 'shared/utils'
 
 function ResetPassword () {
@@ -77,7 +77,7 @@ function ResetPassword () {
   }
 
   useEffect(() => {
-    document.title = 'Reset Password'
+    document.title = 'Reset Password | Yantra Healthcare'
   }, [])
 
   return (
@@ -127,7 +127,7 @@ function ResetPassword () {
             {errors.sAuthCode && <Form.Control.Feedback type='invalid'>{errors.sAuthCode.message}</Form.Control.Feedback>}
           </Form.Group> */}
 
-          <Form.Group className='form-group'>
+          <Form.Group className='form-group mt-3'>
             <Form.Label>
               <FormattedMessage id='newPassword' />
             </Form.Label>
@@ -171,7 +171,8 @@ function ResetPassword () {
             </InputGroup>
             {errors.sNewPassword && <Form.Control.Feedback type='invalid'>{errors.sNewPassword.message}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group className='form-group'>
+
+          <Form.Group className='form-group mt-3'>
             <Form.Label>
               <FormattedMessage id='confirmNewPassword' />
             </Form.Label>
@@ -222,7 +223,7 @@ function ResetPassword () {
           <div className='button-section'>
             <Row>
               <Col sm={12}>
-                <Button variant='primary' type='submit' disabled={isLoading} className='login-btn me-2'>
+                <Button variant='primary' type='submit' disabled={isLoading} className='login-btn me-2 mt-3'>
                   <FormattedMessage id='reset' /> {isLoading && <Spinner animation='border' size='sm' />}
                 </Button>
               </Col>

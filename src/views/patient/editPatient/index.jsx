@@ -133,7 +133,7 @@ const EditPatient = () => {
                                             />
                                         </Col>
 
-                                        <Col lg={6} md={12}>
+                                        <Col lg={6} md={12} className='mt-lg-0 mt-2'>
                                             <CommonInput
                                                 type='text'
                                                 register={register}
@@ -166,12 +166,12 @@ const EditPatient = () => {
                                                 onChange={(e) => {
                                                     e.target.value =
                                                         e.target.value?.trim() &&
-                                                        e.target.value.replace(/^[a-zA-z]+$/g, '')
+                                                        e.target.value.replace(/[^0-9]/g, '').slice(0, 10)
                                                 }}
                                             />
                                         </Col>
 
-                                        <Col lg={6} md={12}>
+                                        <Col lg={6} md={12} className='mt-2'>
                                             <CommonInput
                                                 type='text'
                                                 register={register}
@@ -205,7 +205,7 @@ const EditPatient = () => {
                                             />
                                         </Col>
 
-                                        <Col lg={6} md={12}>
+                                        <Col lg={6} md={12} className='mt-2'>
                                             <Form.Group className='form-group'>
                                                 <Form.Label>
                                                     <span>
@@ -245,7 +245,7 @@ const EditPatient = () => {
                                             </Form.Group>
                                         </Col>
 
-                                        <Col lg={6} md={12}>
+                                        <Col lg={6} md={12} className='mt-2'>
                                             <Form.Group className='form-group'>
                                                 <Form.Label>
                                                     <span>
@@ -285,7 +285,7 @@ const EditPatient = () => {
                                             </Form.Group>
                                         </Col>
 
-                                        <Col lg={6} md={12}>
+                                        <Col lg={6} md={12} className='mt-2'>
                                             <Form.Group className='form-group'>
                                                 <Form.Label>
                                                     <span>

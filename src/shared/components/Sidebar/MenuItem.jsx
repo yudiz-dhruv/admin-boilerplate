@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CustomModal from '../Modal'
-import { socket } from 'shared/socket'
+import SocketContext from 'context/SocketContext'
 
 function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const socket = useContext(SocketContext)
 
   const [modal, setModal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -33,18 +34,20 @@ function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
   }
 
   const handleConfirmNavigate = () => {
-    socket.emit(location?.state?.patientSettings?._id, {
-      sEventName: 'reqEndGame',
-      oData: {
-        eState: 'finished'
-      }
-    }, (response) => {
-      console.warn('Leaveing Room...', response)
-    })
+    if (socket?.connected && socket !== undefined) {
+      socket.emit(location?.state?.patientSettings?._id, {
+        sEventName: 'reqEndGame',
+        oData: {
+          eState: 'finished'
+        }
+      }, (response) => {
+        console.warn('Leaveing Room...', response)
+      })
 
-    navigate(modal?.item?.path)
+      navigate(modal?.item?.path)
 
-    setModal(false)
+      setModal(false)
+    }
   }
 
   const handleCancel = () => {
@@ -128,7 +131,6 @@ function MenuItem ({ item, isMenuOpen, activeSubMenu, toggleSubMenu }) {
         disableHeader
         bodyTitle='Are you sure you want to Quit the Game Session?'
       >
-        <span className='text-danger'>All the data of Game will be removed</span>
       </CustomModal>
     </>
   )

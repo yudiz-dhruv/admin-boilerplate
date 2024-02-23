@@ -74,7 +74,7 @@ const AddDoctor = () => {
   const handleNewPasswordToggle = useCallback(() => setNewPassword(!showNewPassword), [showNewPassword, setNewPassword])
 
   useEffect(() => {
-    document.title = 'Add Admin | Yantra Healthcare'
+    document.title = 'Add Doctor | Yantra Healthcare'
   }, [])
 
   return (
@@ -105,7 +105,7 @@ const AddDoctor = () => {
                             name={`sAvatar`}
                             control={control}
                             rules={{
-                              required: "Please add admin profile",
+                              required: "Please add Doctor profile",
                               validate: {
                                 fileType: (value) => {
                                   if (value && typeof (watch(`sAvatar`)) !== 'string') {
@@ -310,8 +310,8 @@ const AddDoctor = () => {
                         errors={errors}
                         className={`form-control ${errors?.sMobile && 'error'}`}
                         name='sMobile'
-                        label='Mobile'
-                        placeholder='Enter mobile number'
+                        label='Phone Number'
+                        placeholder='Enter the phone number'
                         required
                         validation={{
                           pattern: {
@@ -320,7 +320,7 @@ const AddDoctor = () => {
                           },
                           required: {
                             value: true,
-                            message: 'Mobile number is required'
+                            message: 'Phone number is required'
                           },
                           maxLength: {
                             value: 10,
@@ -331,7 +331,7 @@ const AddDoctor = () => {
                         onChange={(e) => {
                           e.target.value =
                             e.target.value?.trim() &&
-                            e.target.value.replace(/^[a-zA-z]+$/g, '')
+                            e.target.value.replace(/[^0-9]/g, '').slice(0, 10)
                         }}
                       />
                     </Col>
@@ -395,7 +395,7 @@ const AddDoctor = () => {
                         required
                         validation={{
                           pattern: {
-                            value: /^[0-9]+$/,
+                            value: /^\d+(\.\d+)?$/,
                             message: 'Only numbers are allowed'
                           },
                           required: {
@@ -488,7 +488,7 @@ const AddDoctor = () => {
                       )}
                     </Col>
 
-                    <Row className='mt-4'>
+                    <Row className='mt-3'>
                       <Col sm={12}>
                         <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
                           Add Doctor {isLoading && <Spinner animation='border' size='sm' />}

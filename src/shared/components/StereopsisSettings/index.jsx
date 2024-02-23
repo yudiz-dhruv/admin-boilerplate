@@ -9,11 +9,13 @@ import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import Skeleton from 'react-loading-skeleton'
 import CommonInput from '../CommonInput'
+import { useBubbleSetting } from 'shared/hooks/useBubbleSettings'
 
-const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted, data, handleStartGame, handleEndGame, modal, setModal }) => {
+const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted, data, handleStartGame, handleEndGame, modal, setModal, watch }) => {
     const [tabButtons, setTabButtons] = useState([])
 
-    const BUBBLE_BURST_GAME_STRUCTURE = data?.find(item => item?.sName === 'bubbleBurst')
+    const { BUBBLES_GAME_STRUCTURE } = useBubbleSetting(watch)
+    // const BUBBLE_BURST_GAME_STRUCTURE = data?.find(item => item?.sName === 'bubbleBurst')
 
     useEffect(() => {
         if (!games) {
@@ -101,7 +103,8 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                 message: 'Game duration must be less than 30 minutes.'
                                             },
                                         }}
-                                        defaultValue={BUBBLE_BURST_GAME_STRUCTURE?.nDuration}
+                                        disabled={gameStarted}
+                                        defaultValue={BUBBLES_GAME_STRUCTURE?.nDuration}
                                         maxLength={2}
                                         onChange={(e) => {
                                             e.target.value =
@@ -114,7 +117,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                         }}
                                     />
                                 </Col>
-                                <Col md={6} sm={12}>
+                                <Col md={6} sm={12} className='mt-md-0 mt-2'>
                                     <Form.Group className='form-group'>
                                         <Form.Label>{LABELS?.GAME_MODE}</Form.Label>
                                         <Controller
@@ -124,7 +127,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                 <Select
                                                     ref={ref}
                                                     placeholder='Select bubble size'
-                                                    defaultValue={eBubbleGameMode?.find(mode => mode?.value === BUBBLE_BURST_GAME_STRUCTURE?.sMode)}
+                                                    defaultValue={eBubbleGameMode?.find(mode => mode?.value === BUBBLES_GAME_STRUCTURE?.sMode)}
                                                     options={eBubbleGameMode}
                                                     className={`react-select border-0 ${errors.sBubbleGameMode && 'error'}`}
                                                     classNamePrefix='select'
@@ -135,6 +138,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                         onChange(e)
                                                     }}
                                                     value={value}
+                                                    isDisabled={gameStarted}
                                                     isSearchable={false}
                                                     isMulti={false}
                                                     getOptionLabel={(option) => option.label}
@@ -157,7 +161,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     ref={ref}
                                                     placeholder='Select bubble distance'
                                                     options={eBubblePattern}
-                                                    defaultValue={eBubblePattern?.find(mode => mode?.value === BUBBLE_BURST_GAME_STRUCTURE?.sPattern)}
+                                                    defaultValue={eBubblePattern?.find(mode => mode?.value === BUBBLES_GAME_STRUCTURE?.sPattern)}
                                                     className={`react-select border-0 ${errors.sBubblePattern && 'error'}`}
                                                     classNamePrefix='select'
                                                     onChange={(e) => {
@@ -189,7 +193,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     ref={ref}
                                                     placeholder='Select bubble distance'
                                                     options={eBubbleImageSize}
-                                                    defaultValue={eBubbleImageSize?.find(size => size?.value === BUBBLE_BURST_GAME_STRUCTURE?.nImageSize)}
+                                                    defaultValue={eBubbleImageSize?.find(size => size?.value === BUBBLES_GAME_STRUCTURE?.nStimulusSize)}
                                                     className={`react-select border-0 ${errors.nBubbleStimulusSize && 'error'}`}
                                                     classNamePrefix='select'
                                                     onChange={(e) => {
@@ -221,7 +225,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     ref={ref}
                                                     placeholder='Select bubble distance'
                                                     options={eSpawnRate}
-                                                    defaultValue={eSpawnRate?.find(size => size?.value === BUBBLE_BURST_GAME_STRUCTURE?.sSepration)}
+                                                    defaultValue={eSpawnRate?.find(size => size?.value === BUBBLES_GAME_STRUCTURE?.sSepration)}
                                                     className={`react-select border-0 ${errors.sBubbleSeperation && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
@@ -253,7 +257,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     ref={ref}
                                                     placeholder='Select bubble distance'
                                                     options={eSpawnRate}
-                                                    defaultValue={eSpawnRate?.find(size => size?.value === BUBBLE_BURST_GAME_STRUCTURE?.sDisparity)}
+                                                    defaultValue={eSpawnRate?.find(size => size?.value === BUBBLES_GAME_STRUCTURE?.sDisparity)}
                                                     className={`react-select border-0 ${errors.sBubbleDisparity && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}
@@ -285,7 +289,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                     ref={ref}
                                                     placeholder='Select panel distance'
                                                     options={eShipSpeed}
-                                                    defaultValue={eShipSpeed?.find(speed => speed?.value === BUBBLE_BURST_GAME_STRUCTURE?.nPanelDistance)}
+                                                    defaultValue={eShipSpeed?.find(speed => speed?.value === BUBBLES_GAME_STRUCTURE?.nPanelDistance)}
                                                     className={`react-select border-0 ${errors.nPanelDistance && 'error'}`}
                                                     classNamePrefix='select'
                                                     isSearchable={false}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { getGameById } from 'query/game/game.query'
@@ -14,6 +14,10 @@ const ViewGame = () => {
         enabled: !!id,
         select: (data) => data?.data?.data,
     })
+
+    useEffect(() => {
+        document.title = 'View Game | Yantra Healthcare'
+    }, [])
 
     return (
         <>
@@ -41,7 +45,9 @@ const ViewGame = () => {
                             <Row className='details-data-row p-0 m-0'>
                                 <Col sm={12} className="p-0 m-0">
                                     <span className='data-title'>Asset Url</span>
-                                    <span className='data-value'>{data?.sUrl || '-'}</span>
+                                    <span className='data-value'>
+                                        <a className='url' href={data?.sUrl} download={data?.sUrl} >{data?.sUrl || '-'}</a>
+                                    </span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
                                     <span className='data-title'>Asset Version</span>

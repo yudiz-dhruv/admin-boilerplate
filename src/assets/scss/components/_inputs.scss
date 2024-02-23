@@ -1,5 +1,5 @@
 .form-group {
-  margin-bottom: 8px;
+  margin-bottom: 0px !important;
 
   .form-check-input:focus {
     box-shadow: none;
@@ -70,14 +70,13 @@
   .form-control {
     padding: 8px 10px 8px 12px;
     border-radius: 4px !important;
-    background-color: var(--input-background-color);
-    border: none;
+    background-color: transparent;
+    border: 1px solid var(--secondary-300);
     box-shadow: inset 0 0 0 0 var(--white-color);
     color: var(--heading-color);
     font-size: $fs-14;
     transition: unset;
     background-image: none;
-    border: 1px solid transparent;
 
     &::-ms-expand {
       display: none;
@@ -96,8 +95,9 @@
     }
 
     &:disabled {
+      cursor: not-allowed;
       color: var(--secondary-500);
-      background-color: var(--input-disable-background-color) !important;
+      background-color: var(--input-background-color) !important;
     }
 
     &.form-control-sm,
@@ -107,6 +107,7 @@
     }
 
     &::placeholder {
+      font-family: 'Helvetica-regular';
       color: var(--secondary-400);
     }
   }

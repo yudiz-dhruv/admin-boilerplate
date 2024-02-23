@@ -1,4 +1,8 @@
 .admin-game-form {
+    .form-group {
+        margin: 0;
+    }
+
     .patient-name {
         display: flex;
         justify-content: space-between;
@@ -10,7 +14,7 @@
     }
 
     .add-patient {
-        text-align: end;
+        text-align: start;
         display: block;
 
         .b-link {

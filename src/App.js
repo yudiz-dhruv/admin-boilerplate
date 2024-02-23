@@ -1,7 +1,6 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense } from 'react'
 import { Spinner } from 'react-bootstrap'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
-import { socket } from 'shared/socket'
 const AllRoutes = React.lazy(() => import('routes'))
 
 export const queryClient = new QueryClient({
@@ -49,7 +48,7 @@ export const queryClient = new QueryClient({
 function App() {
   // const temp = localStorage.getItem('mode') === 'true'
 
-  useEffect(() => {
+  // useEffect(() => {
     // window.onunhandledrejection = (ex, e) => {
     //   console.log(`Unhandled Error:`, ex, e)
     // };
@@ -57,18 +56,7 @@ function App() {
     // window.onerror = (ex, e) => {
     //   console.log(`Uncaught Error:`, ex, e)
     // }
-
-    socket.on("connect_error", (error) => {
-      console.log("Connection Error:", error);
-    })
-
-    socket.on("disconnect", (reason, details) => {
-      if (reason === 'io server disconnect' || reason === 'io client disconnect') {
-        socket.connect()
-      }
-      console.log("Disconnected:", reason, details);
-    })
-  })
+  // }, [])
 
   // useEffect(() => {
   //   localStorage.setItem('mode', temp)

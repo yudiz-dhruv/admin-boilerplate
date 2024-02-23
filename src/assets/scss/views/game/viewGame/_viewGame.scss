@@ -94,6 +94,16 @@
                     padding: 3px 0;
                     word-break: break-all;
                     margin: 0 2px;
+
+                    .url {
+                        color: var(--text-color);
+                        transition: 0.3s;
+
+                        &:hover {
+                            cursor: pointer;
+                            color: var(--text-hover);
+                        }
+                    }
                 }
 
                 .capitalize {

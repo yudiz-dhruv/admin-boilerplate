@@ -30,7 +30,7 @@ const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
         <>
             <tr key={key}>
                 <td>{index + 1}</td>
-                <td><span className='single-line patient-name' onClick={() => navigate(route.viewPatient(patient?._id))}>{(patient?.sUserName?.length > 10 ? textTruncate(patient?.sUserName) : patient?.sUserName) || ''}</span></td>
+                <td><span className='single-line patient-name' onClick={() => navigate(route.viewPatient(patient?._id))}>{(patient?.sUserName?.length > 15 ? textTruncate(patient?.sUserName) : patient?.sUserName) || ''}</span></td>
                 <td className='dominant-eye'>{patient?.eDominantEye || ''}</td>
                 <td className='disease'>{patient?.eAmblyopia === 'yes' ? <span className='present'>{patient?.eAmblyopia || ''}</span> : <span className='not-present'>{patient?.eAmblyopia || ''}</span>}</td>
                 <td className='disease'>{patient?.eStrabismus === 'yes' ? <span className='present'>{patient?.eStrabismus || ''}</span> : <span className='not-present'>No</span>}</td>

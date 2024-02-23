@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import { useForm, Controller } from 'react-hook-form'
@@ -16,7 +16,6 @@ import Select from 'react-select'
 import Datetime from 'react-datetime'
 import useMediaQuery from 'shared/hooks/useMediaQuery'
 import PatientInfo from 'shared/components/PatientInfo'
-import { socket } from 'shared/socket'
 import VergenceSettings from 'shared/components/VergenceSettings'
 import TorsionSettings from 'shared/components/TorsionSettings'
 import MonocularModeSettings from 'shared/components/MonocularModeSettings'
@@ -28,12 +27,14 @@ import { useTurboSettings } from 'shared/hooks/useTurboSettings'
 import { useBubbleSetting } from 'shared/hooks/useBubbleSettings'
 import moment from 'moment-timezone'
 import { route } from 'shared/constants/AllRoutes'
+import SocketContext from 'context/SocketContext'
 
 const InternalGameSettings = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { id } = useParams()
   const screenWidth = useMediaQuery('(max-width: 1200px)')
+  const socket = useContext(SocketContext)
 
   const { register, formState: { errors }, control, watch, handleSubmit, reset } = useForm({ mode: 'all' })
 
@@ -50,7 +51,7 @@ const InternalGameSettings = () => {
   })
 
   // ALL GAME SETTINGS
-  const { dominantEyeButton } = useGlobalSettings()
+  const { dominantEyeButton, setDominantEyeButton } = useGlobalSettings()
   const { gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, tachMode, setTachMode, HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
   const { ringrunnerMode, setRingRunnerMode, RINGRUNNER_GAME_STRUCTURE } = useRingRunnerSettings(watch)
   const { headLockMode, setHeadLockMode, turboGameMode, setTurboGameMode, TURBO_GAME_STRUCTURE } = useTurboSettings(watch)
@@ -60,30 +61,30 @@ const InternalGameSettings = () => {
   const { data: eGameDropdown, isLoading } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
   const currentGameData = eGameDropdown?.find((item) => buttonToggle[item.sName.toLowerCase()] === true)
 
+  // Game status useEffect
+  useEffect(() => {
+    if (socket !== undefined && socket?.connected) {
+      socket.on('resGameState', (response) => {
+        setConnectivityStatus(response?.eState)
+        console.log('%cGame Status :>> ', 'color: #00bf7f', response);
+      })
+    }
+  }, [socket, buttonToggle, currentGameData])
+
   // Join Room UseEffect
   useEffect(() => {
     setTimeout(() => {
-      socket.emit('reqJoinRoom', { iUserId: location?.state?.patientSettings?._id }, (response) => {
-        if (response?.oData) {
-          console.log('%cJoin Room: ', 'color: orange', response?.oData)
-        } else {
-          console.log('%cJoin Room Error: ', 'color: red', response?.message)
-        }
-      })
-    }, 500)
-
-    return (
-      clearTimeout()
-    )
-  }, [socket, location?.state, setTimeout])
-
-  // Game status useEffect
-  useEffect(() => {
-    socket.on('resGameState', (response) => {
-      setConnectivityStatus(response?.eState)
-      console.log('%cGame Status :>> ', 'color: #00bf7f', response);
-    })
-  }, [buttonToggle, currentGameData])
+      if (socket !== undefined && socket?.connected) {
+        socket.emit('reqJoinRoom', { iUserId: location?.state?.patientSettings?._id }, (response) => {
+          if (response?.oData) {
+            console.log('%cJoin Room: ', 'color: orange', response?.oData)
+          } else {
+            console.log('%cJoin Room Error: ', 'color: red', response?.message)
+          }
+        })
+      }
+    }, 600)
+  }, [socket, location?.state?.patientSettings, setTimeout])
 
   /**
    * @description It takes one parameter and it returns an object as per Game Popup Model.
@@ -109,53 +110,56 @@ const InternalGameSettings = () => {
 
   // Game setting UserEffect
   useEffect(() => {
-    if (gameStarted === true) {
-      socket.emit(location?.state?.patientSettings?._id, {
-        sEventName: 'reqSetSetting',
-        oData: {
-          oGameSetting: {
-            iGameId: currentGameData?._id,
-            sName: currentGameData?.sName,
-            ...gameStructure,
-            oGlobalSettings: {
-              eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true),
-              oVergence: {
-                oHorizontal: {
-                  sLeftEye: watch('nHorizontalLeft'),
-                  sRightEye: watch('nHorizontalRight'),
+    if (socket !== undefined && socket?.connected) {
+      if (gameStarted === true) {
+        socket.emit(location?.state?.patientSettings?._id, {
+          sEventName: 'reqSetSetting',
+          oData: {
+            oGameSetting: {
+              iGameId: currentGameData?._id,
+              sName: currentGameData?.sName,
+              ...gameStructure,
+              oGlobalSettings: {
+                eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true),
+                oVergence: {
+                  oHorizontal: {
+                    sLeftEye: watch('nHorizontalLeft'),
+                    sRightEye: watch('nHorizontalRight'),
+                  },
+                  oVertical: {
+                    sLeftEye: watch('nVerticalLeft'),
+                    sRightEye: watch('nVerticalRight'),
+                  }
                 },
-                oVertical: {
-                  sLeftEye: watch('nVerticalLeft'),
-                  sRightEye: watch('nVerticalRight'),
-                }
-              },
-              oTorsion: {
-                sLeftEye: watch('nTorsionLeft'),
-                sRightEye: watch('nTorsionRight'),
-              },
-              bMonocularMode: watch('bMonocularMode'),
-              oVisions: {
-                nContrast: watch('nContrast'),
-                nOcclusion: watch('nOcclusion'),
-                nBlur: watch('nBlur')
-              },
-            }
-          },
-        }
-      }, (response) => {
-        if (response?.error) {
-          if (response?.error?.message === 'Game is in invalid state') {
-            ReactToastify('Please wait for the App connection!', 'error', 'invalid-status')
+                oTorsion: {
+                  sLeftEye: watch('nTorsionLeft'),
+                  sRightEye: watch('nTorsionRight'),
+                },
+                bMonocularMode: watch('bMonocularMode'),
+                oVisions: {
+                  nContrast: watch('nContrast'),
+                  nOcclusion: watch('nOcclusion'),
+                  nBlur: watch('nBlur')
+                },
+              }
+            },
           }
-          console.log('%cGame Settings (Error): ', 'color: red', response?.error?.message)
-        } else {
-          console.log('%cGame Settings: ', 'color: #1ba1bc', response)
-        }
-      })
+        }, (response) => {
+          if (response?.error) {
+            if (response?.error?.message === 'Game is in invalid state') {
+              ReactToastify('Please wait for the App connection!', 'error', 'invalid-status')
+            }
+            console.log('%cGame Settings (Error): ', 'color: red', response?.error?.message)
+          } else {
+            console.log('%cGame Settings: ', 'color: #1ba1bc', response)
+          }
+        })
+      }
     }
   }, [(gameStarted === true),
     dominantEyeButton,
     gameModeToggle,
+    tachMode,
   watch('nHorizontalLeft'),
   watch('nHorizontalRight'),
   watch('nVerticalLeft'),
@@ -168,30 +172,44 @@ const InternalGameSettings = () => {
   watch('nBlur'),
     gameStructure])
 
-  const onSubmit = (data) => {
-    socket.emit(location?.state?.patientSettings?._id, {
-      sEventName: 'reqEndGame',
-      oData: {
-        eState: 'finished',
-        dCheckUp: moment(data?.dDateTime?._d).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm:ss.000Z'), //  2024-02-19T15:00:00.000+05:30
-        aGamesId: data?.aGames?.map(item => item?._id), // [ { _id, sName, sUrl, eCategory } ]
-        aGamesName: data?.aGames?.map(item => item?.sName), // [ { _id, sName, sUrl, eCategory } ]
-        sComments: data?.sComment || '',
-      }
-    }, (response) => {
-      if (response?.error !== null) {
-        console.log('%cNot Able to save progress and Leaveing Room (Error)', 'color: red', response?.error)
-      }
+  const onSubmit = useCallback((data) => {
+    if (socket !== undefined && socket?.connected) {
+      socket.emit(location?.state?.patientSettings?._id, {
+        sEventName: 'reqEndGame',
+        oData: {
+          eState: 'finished',
+          dCheckUp: moment(data?.dDateTime?._d).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm:ss.000Z'), //  2024-02-19T15:00:00.000+05:30
+          aGamesId: data?.aGames?.map(item => item?._id), // [ { _id, sName, sUrl, eCategory } ]
+          aGamesName: data?.aGames?.map(item => item?.sName), // [ { _id, sName, sUrl, eCategory } ]
+          sComments: data?.sComment || '',
+        }
+      }, (response) => {
+        if (response?.error !== null) {
+          ReactToastify('Please wait for the App connection!', 'error', 'invalid-status')
+          console.log('%cNot Able to save progress and Leaveing Room (Error)', 'color: red', response?.error)
+        }
 
-      if (response?.oData?.message || response?.error === null) {
-        navigate(route?.viewPatient(id), { state: 'open-history' })
-        setModal({ open: false })
-        console.log('%cSaving progress and Leaveing Room...', 'color: #20a8c3', response?.oData?.message)
-      }
-    })
-  }
+        if (response?.oData?.message || response?.error === null) {
+          navigate(route?.viewPatient(id), { state: 'open-history' })
+          console.log('%cSaving progress and Leaveing Room...', 'color: #20a8c3', response?.oData?.message)
+        }
+      })
+    }
+    setModal({ open: false })
+  }, [modal, socket])
 
   const handleClear = useCallback(() => setModal(false), [setModal, modal])
+
+  // useEffect(() => {
+  //   if (modal?.open === false || modal === false) {
+  //     setButtonToggle({
+  //       hoopie: false,
+  //       ringRunner: false,
+  //       turbo: false,
+  //       bubbles: false
+  //     })
+  //   }
+  // }, [modal])
 
   /**
    * Handle the Start Game Button
@@ -201,68 +219,57 @@ const InternalGameSettings = () => {
   const handleStartGame = (e, buttonToggle) => {
     e?.preventDefault()
 
-    socket.emit(location?.state?.patientSettings?._id, {
-      sEventName: 'reqPlay',
-      oData: {
-        oGamePlay: {
-          iGameId: currentGameData?._id,
-          sName: currentGameData?.sName,
-          sBundle: currentGameData?.sUrl,
-          eGameState: 'playing',
-        },
-        oGameSetting: {
-          ...gameStructure,
-          oGlobalSettings: {
-            eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
-            oVergence: {
-              oHorizontal: {
-                sLeftEye: watch('nHorizontalLeft') || 0,
-                sRightEye: watch('nHorizontalRight') || 0,
+    if (socket !== undefined && socket?.connected) {
+      socket.emit(location?.state?.patientSettings?._id, {
+        sEventName: 'reqPlay',
+        oData: {
+          oGamePlay: {
+            iGameId: currentGameData?._id,
+            sName: currentGameData?.sName,
+            sBundle: currentGameData?.sUrl,
+            eGameState: 'playing',
+          },
+          oGameSetting: {
+            ...gameStructure,
+            oGlobalSettings: {
+              eDominantEye: Object.keys(dominantEyeButton).find(key => dominantEyeButton[key] === true) || 'left',
+              oVergence: {
+                oHorizontal: {
+                  sLeftEye: watch('nHorizontalLeft') || 0,
+                  sRightEye: watch('nHorizontalRight') || 0,
+                },
+                oVertical: {
+                  sLeftEye: watch('nVerticalLeft') || 0,
+                  sRightEye: watch('nVerticalRight') || 0,
+                }
               },
-              oVertical: {
-                sLeftEye: watch('nVerticalLeft') || 0,
-                sRightEye: watch('nVerticalRight') || 0,
+              oTorsion: {
+                sLeftEye: watch('nTorsionLeft') || 0,
+                sRightEye: watch('nTorsionRight') || 0,
+              },
+              bMonocularMode: watch('bMonocularMode') || true,
+              oVisions: {
+                nContrast: watch('nContrast') || 0,
+                nOcclusion: watch('nOcclusion') || 0,
+                nBlur: watch('nBlur') || 0
               }
-            },
-            oTorsion: {
-              sLeftEye: watch('nTorsionLeft') || 0,
-              sRightEye: watch('nTorsionRight') || 0,
-            },
-            bMonocularMode: watch('bMonocularMode') || true,
-            oVisions: {
-              nContrast: watch('nContrast') || 0,
-              nOcclusion: watch('nOcclusion') || 0,
-              nBlur: watch('nBlur') || 0
             }
           }
         }
-      }
-    }, (response) => {
-      if (response?.error) {
-        if (response?.error?.message === 'Game is in invalid state') {
-          ReactToastify('Please wait for the App connection!', 'error', 'invalid-status')
-          setGameStarted(false)
+      }, (response) => {
+        if (response?.error) {
+          if (response?.error?.message === 'Game is in invalid state') {
+            ReactToastify('Please wait for the App connection!', 'error', 'invalid-status')
+            setGameStarted(false)
+          }
+          console.log('%cWhich Game Started? (Error): ', 'color: red', response?.error?.message)
+        } else {
+          setGameStarted(true)
+          console.log('%cWhich Game Started? ', 'color: #1ba1bc', response)
         }
-        console.log('%cWhich Game Started? (Error): ', 'color: red', response?.error?.message)
-      } else {
-        setGameStarted(true)
-        console.log('%cWhich Game Started? ', 'color: #1ba1bc', response)
-      }
-    })
+      })
+    }
   }
-
-
-
-  useEffect(() => {
-    socket.on(location?.state?.patientSettings?._id, (response) => {
-      if (response?.sEventName === 'resEndParticularGame') {
-        console.log('Particular End Game', response)
-      }
-    })
-  }, [socket])
-
-
-
 
   /**
  * Handle the End Game Button
@@ -272,19 +279,21 @@ const InternalGameSettings = () => {
   const handleEndGame = (e, buttonData) => {
     e.preventDefault()
 
-    socket.emit(location?.state?.patientSettings?._id, {
-      sEventName: 'reqEndParticularGame',
-      oData: {
-        eGameState: 'finished'
-      }
-    }, (response) => {
-      if (response?.error) {
-        console.log('%cGame Ended (Error): ', 'color: red', response?.error?.message)
-      } else {
-        console.log('%cGame Ended: ', 'color: #fff', response)
-        setModal({ open: false })
-      }
-    })
+    if (socket !== undefined && socket?.connected) {
+      socket.emit(location?.state?.patientSettings?._id, {
+        sEventName: 'reqEndParticularGame',
+        oData: {
+          eGameState: 'finished'
+        }
+      }, (response) => {
+        if (response?.error) {
+          console.log('%cGame Ended (Error): ', 'color: red', response?.error?.message)
+        } else {
+          console.log('%cGame Ended: ', 'color: #fff', response)
+          setModal({ open: false })
+        }
+      })
+    }
 
     setModal({ open: false })
     setGameStarted(false)
@@ -313,7 +322,7 @@ const InternalGameSettings = () => {
                       <Wrapper>
                         <div className='settings'>
                           <div className='mx-3'>
-                            <PatientInfo data={location?.state?.patientDetails} status={connectivityStatus} />
+                            <PatientInfo data={location?.state?.patientDetails} status={connectivityStatus} location={location} modal={modal} setModal={setModal} socket={socket} />
                           </div>
 
                           <Row>
@@ -325,7 +334,8 @@ const InternalGameSettings = () => {
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} />
+                                <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} dominantEyeButton={dominantEyeButton}
+                                  setDominantEyeButton={setDominantEyeButton} />
                               </div>
                             </Col>
 
@@ -421,6 +431,7 @@ const InternalGameSettings = () => {
                               handleStartGame={handleStartGame}
                               modal={modal}
                               setModal={setModal}
+                              watch={watch}
                             />
                           </div>
 
@@ -507,6 +518,7 @@ const InternalGameSettings = () => {
                               handleStartGame={handleStartGame}
                               modal={modal}
                               setModal={setModal}
+                              watch={watch}
                             />
                           </div>
 
@@ -527,7 +539,7 @@ const InternalGameSettings = () => {
                       <Wrapper>
                         <div className='settings'>
                           <div className='mx-3'>
-                            <PatientInfo data={location?.state?.patientDetails} status={connectivityStatus} />
+                            <PatientInfo data={location?.state?.patientDetails} status={connectivityStatus} location={location} modal={modal} setModal={setModal} socket={socket} />
                           </div>
 
                           <div className='mt-4 mx-3'>
@@ -535,7 +547,8 @@ const InternalGameSettings = () => {
                           </div>
 
                           <div className='mt-3 mx-3'>
-                            <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} />
+                            <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} dominantEyeButton={dominantEyeButton}
+                              setDominantEyeButton={setDominantEyeButton} />
                           </div>
 
                           <div className='mt-4 mx-3'>

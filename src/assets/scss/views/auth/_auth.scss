@@ -42,12 +42,13 @@
     border-radius: 24px;
     position: relative;
     z-index: 2;
-    min-height: 580px;
+    height: 100%;
+    max-height: 560px;
     transition: 0.3s ease-in-out;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     box-shadow: 19px 19px 20px 3px rgba(4, 4, 4, 0.32);
 
     &:hover {

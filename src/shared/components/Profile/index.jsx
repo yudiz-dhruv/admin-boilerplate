@@ -16,7 +16,7 @@ function EditProfileComponent ({ register, errors, updateFlag }) {
           name='sUserName'
           label='User Name'
           disabled={!updateFlag}
-          updateFlag={updateFlag}
+          // updateFlag={!updateFlag}
           placeholder='Enter the user name'
           validation={{
             required: {
@@ -34,7 +34,7 @@ function EditProfileComponent ({ register, errors, updateFlag }) {
         />
       </Col>
 
-      <Col md={6}>
+      <Col md={6} className='mt-md-0 mt-2'>
         <CommonInput
           type='text'
           register={register}
@@ -43,7 +43,7 @@ function EditProfileComponent ({ register, errors, updateFlag }) {
           name='sEmail'
           label='Email'
           disabled={!updateFlag}
-          updateFlag={updateFlag}
+          // updateFlag={updateFlag}
           placeholder='Enter email address'
           validation={{
             pattern: {
@@ -62,7 +62,7 @@ function EditProfileComponent ({ register, errors, updateFlag }) {
         />
       </Col>
 
-      <Col md={6}>
+      <Col md={6} className='mt-md-3 mt-2'>
         <CommonInput
           type='text'
           register={register}
@@ -71,7 +71,7 @@ function EditProfileComponent ({ register, errors, updateFlag }) {
           name='sMobile'
           label='Phone Number'
           disabled={!updateFlag}
-          updateFlag={updateFlag}
+          // updateFlag={updateFlag}
           placeholder='Enter the phone number'
           validation={{
             required: {
@@ -94,12 +94,17 @@ function EditProfileComponent ({ register, errors, updateFlag }) {
           }}
           min={0}
           max={9999999999}
-          maxLength='12'
+          maxLength='10'
           minLength='10'
+          onChange={(e) => {
+            e.target.value =
+              e.target.value?.trim() &&
+              e.target.value.replace(/[^0-9]/g, '').slice(0, 10)
+          }}
         />
       </Col>
 
-      <Col md={6}>
+      <Col md={6} className='mt-md-3 mt-2'>
         <CommonInput
           type='text'
           register={register}

@@ -2,19 +2,21 @@
   width: 100%;
   font-size: 14px;
   padding: 6px 10px 5px 30px !important;
-  background-color: var(--input-background-color);
+  background-color: transparent;
   color: var(--text-color);
   height: 38px;
-  border: none;
+  border: 1px solid var(--secondary-300);
   border-radius: 5px;
   cursor: pointer;
 
   &.error {
-    border: 2px solid var(--error-color);
+    box-shadow: inset 0 0 0 1px #e64343;
+    border-color: var(--error-color) !important;
   }
 
   // border: 1px solid var(--text-color);
   &:focus-visible {
+    border: 1px solid var(--primary-color);
     outline: none;
   }
 
@@ -253,7 +255,8 @@ body.dark {
 .rdt {
   &.error {
     input {
-      border: 2px solid var(--error-color);
+      box-shadow: inset 0 0 0 1px #e64343;
+      border-color: var(--error-color);
     }
   }
 }

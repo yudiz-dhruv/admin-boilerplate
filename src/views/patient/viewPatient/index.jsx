@@ -52,11 +52,11 @@ const ViewPatient = () => {
         { label: 'Patient History', toggle: 'history' },
     ]
 
-    useEffect(() => {
-        if (location?.state === 'open-history') {
-            setButtonToggle({ history: true })
-        }
-    }, [location?.state, buttonToggle])
+    // useEffect(() => {
+    //     if (location?.state === 'open-history') {
+    //         setButtonToggle({ history: true })
+    //     }
+    // }, [location?.state, buttonToggle])
 
     // SPECIFIC PATIENT
     const { data, isLoading } = useQuery('patientDataById', () => getPatientById(id), {
@@ -82,6 +82,10 @@ const ViewPatient = () => {
         setRequestParams({ ...requestParams, pageNumber: page, nStart: page - 1 })
         appendParams({ pageNumber: page, nStart: page - 1 })
     }, [requestParams, setRequestParams])
+
+    useEffect(() => {
+        document.title = 'View Patient | Yantra Healthcare'
+    }, [])
 
     return (
         <>

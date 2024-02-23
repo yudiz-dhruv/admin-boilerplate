@@ -35,11 +35,15 @@
     border-bottom: 1px solid var(--secondary-100);
 
     .btn-close {
-      border-radius: 50%;
+      border-radius: 6px;
       margin: 0;
       background-color: var(--white-color);
       transition: all 0.3s ease-in-out;
+      // box-shadow: none;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.306);
+      position: absolute;
+      right: 5px;
+      top: 5px;
     }
   }
 

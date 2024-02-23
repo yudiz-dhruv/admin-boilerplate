@@ -216,7 +216,7 @@ const AddGame = () => {
                                             </Row>
                                         </Col>
 
-                                        <Col lg={6} md={12} sm={12} className='mt-lg-0 mt-md-2'>
+                                        <Col lg={6} md={12} sm={12} className='mt-lg-0 mt-md-0'>
                                             <CommonInput
                                                 type='textarea'
                                                 register={register}
@@ -240,7 +240,7 @@ const AddGame = () => {
                                             />
                                         </Col>
 
-                                        <Col xl={6} lg={6} className=''>
+                                        <Col xl={6} lg={6} className='mt-1'>
                                             <div className='fileinput'>
                                                 <label className='d-flex justify-content-between'>
                                                     <span>Game Assets File<span className='inputStar'>*</span></span>
@@ -297,7 +297,7 @@ const AddGame = () => {
                                             </div>
                                         </Col>
 
-                                        <Col xl={6} lg={6} className=''>
+                                        <Col xl={6} lg={6} className='mt-1'>
                                             <CommonInput
                                                 type='text'
                                                 register={register}

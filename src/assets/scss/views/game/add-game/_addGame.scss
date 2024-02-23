@@ -85,6 +85,8 @@
                                 background-color: rgba(59, 59, 59, 0.419);
                                 display: none;
                                 text-align: center;
+                                font-family: 'Helvetica-Bold';
+                                letter-spacing: 0.5px;
                                 justify-content: center;
                                 align-items: center;
                                 color: #ffffff;
@@ -146,6 +148,15 @@
             }
         }
 
+        .react-select {
+            height: auto !important;
+
+            &.error {
+                box-shadow: inset 0 0 0 1px #e64343;
+                border-color: var(--error-color) !important;
+            }
+        }
+
         .fileinput {
             label {
                 font-size: $fs-12;
@@ -173,7 +184,8 @@
                 margin-top: 3px;
                 padding: 5px;
                 position: relative;
-                background-color: var(--input-background-color);
+                border: 1px solid var(--secondary-300);
+                background-color: transparent;
                 border-radius: 4px;
 
                 .inputMSG {
@@ -201,6 +213,8 @@
                             height: 100%;
                             background-color: rgba(0, 0, 0, 0.512);
                             display: none;
+                            font-family: 'Helvetica-Bold';
+                            letter-spacing: 0.5px;
                             justify-content: center;
                             align-items: center;
                             color: #ffffff;
@@ -234,7 +248,7 @@
                         all: unset;
                         font-size: 11px;
                         color: var(--white-color);
-                        background-color: var(--input-select-background-color);
+                        background-color: var(--secondary-500);
                         padding: 5px 10px;
                         border-radius: 5px;
                         font-family: 'helvetica-regular';
@@ -262,6 +276,10 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+
+            textarea {
+                max-height: 115px;
+            }
 
             svg {
                 z-index: 1;

@@ -105,7 +105,7 @@ const EditDoctor = () => {
   const handleNewPasswordToggle = useCallback(() => setNewPassword(!showNewPassword), [showNewPassword, setNewPassword])
 
   useEffect(() => {
-    document.title = 'Edit Admin | Yantra Healthcare'
+    document.title = 'Edit Doctor | Yantra Healthcare'
   }, [])
 
   return (
@@ -123,7 +123,7 @@ const EditDoctor = () => {
                           <div className='inputMSG'>
                             {watch('sAvatar') ? <>
                               <div className="document-preview-group">
-                                <div className='img-over' onClick={handleFileInputClick}>Change Admin Profile</div>
+                                <div className='img-over' onClick={handleFileInputClick}>Change Profile</div>
                                 {watch('sAvatar') && (
                                   typeof (watch('sAvatar')) !== 'string'
                                     ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
@@ -221,7 +221,7 @@ const EditDoctor = () => {
                       />
                     </Col>
 
-                    <Col lg={6} md={12}>
+                    <Col lg={6} md={12} className='mt-lg-0 mt-2'>
                       <CommonInput
                         type='text'
                         register={register}
@@ -272,7 +272,7 @@ const EditDoctor = () => {
                       />
                     </Col>
 
-                    <Col lg={6} md={12} className='mt-2'>
+                    <Col lg={6} md={12} className='mt-3'>
                       <Form.Group className='form-group'>
                         <Form.Label>
                           <FormattedMessage id='Password' />
@@ -346,7 +346,7 @@ const EditDoctor = () => {
                         onChange={(e) => {
                           e.target.value =
                             e.target.value?.trim() &&
-                            e.target.value.replace(/^[a-zA-z]+$/g, '')
+                            e.target.value.replace(/[^0-9]/g, '').slice(0, 10)
                         }}
                       />
                     </Col>

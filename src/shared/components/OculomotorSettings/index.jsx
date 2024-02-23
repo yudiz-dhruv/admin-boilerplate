@@ -6,7 +6,7 @@ import { faCircleDot } from '@fortawesome/free-regular-svg-icons'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import Select from 'react-select'
-import { eButtonCount, eButtonSize, eHorizontalBiasOption, eTargetSpawnType, eTargetSpeed, eTargetStayDurationOption, eTurboGameType, eTurboHammerType, eVerticallBiasOption } from 'shared/constants/TableHeaders'
+import { eButtonCount, eButtonSize, eHorizontalBiasOption, eTargetSpawnType, eTargetSpeed, eTargetStayDurationOption, eTurboGameType, eTurboHammerType, eVerticalBiasOption } from 'shared/constants/TableHeaders'
 import { FaPlay } from "react-icons/fa"
 import CommonInput from '../CommonInput'
 import Skeleton from 'react-loading-skeleton'
@@ -133,7 +133,7 @@ const OculomotorSettings = (props) => {
                                             }}
                                         />
                                     </Col>
-                                    <Col md={6} sm={12}>
+                                    <Col md={6} sm={12} className='mt-md-0 mt-2'>
                                         <div className=''>
                                             <Form.Group className='form-group ringRunner'>
                                                 <Form.Label>Game Mode</Form.Label>
@@ -175,7 +175,8 @@ const OculomotorSettings = (props) => {
                                 {turboGameMode?.turbo && <>
                                     <motion.div initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
-                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                        className='mt-3'>
                                         <Wrapper>
                                             <Row>
                                                 <Col md={6} sm={12}>
@@ -210,7 +211,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col md={6} sm={12}>
+                                                <Col md={6} sm={12} className='mt-md-0 mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.BUTTON_COUNT}</Form.Label>
                                                         <Controller
@@ -284,8 +285,8 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select vertical bias'
                                                                     ref={ref}
-                                                                    defaultValue={eVerticallBiasOption?.find(bias => bias?.value === TURBO_NORMAL_GAME_STRUCTURE?.eVerticalBias)}
-                                                                    options={eVerticallBiasOption}
+                                                                    defaultValue={eVerticalBiasOption?.find(bias => bias?.value === TURBO_NORMAL_GAME_STRUCTURE?.eVerticalBias)}
+                                                                    options={eVerticalBiasOption}
                                                                     className={`react-select border-0 ${errors.sVerticalBias && 'error'}`}
                                                                     classNamePrefix='select'
                                                                     isSearchable={false}
@@ -438,7 +439,8 @@ const OculomotorSettings = (props) => {
                                 {turboGameMode?.hammer && <>
                                     <motion.div initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
-                                        transition={{ duration: 0.5, ease: 'easeInOut' }}>
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                        className='mt-3'>
                                         <Wrapper>
                                             <Row>
                                                 <Col md={6} sm={12}>
@@ -473,7 +475,7 @@ const OculomotorSettings = (props) => {
                                                     </Form.Group>
                                                 </Col>
 
-                                                <Col md={6} sm={12}>
+                                                <Col md={6} sm={12} className='mt-md-0 mt-2'>
                                                     <Form.Group className='form-group'>
                                                         <Form.Label>{LABELS?.GAME_TYPE}</Form.Label>
                                                         <Controller
