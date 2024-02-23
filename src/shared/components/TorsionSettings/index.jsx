@@ -9,13 +9,6 @@ import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 
 const TorsionSettings = ({ control, watch }) => {
     const { torsionSettings, setTorsionSettings } = useGlobalSettings(watch)
-
-    function valueLabelFormat (value) {
-        const units = '%'
-        const scaledValue = value
-
-        return `${scaledValue}${units}`
-    }
     return (
         <>
             <h3 className='data-title'><FontAwesomeIcon icon={faArrowsRotate} color='var(--secondary-500)' size='sm' /> Torsion</h3>
@@ -25,7 +18,7 @@ const TorsionSettings = ({ control, watch }) => {
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>Left Eye</span>
-                        <span className='value'>{torsionSettings?.left}%</span>
+                        <span className='value'>{torsionSettings?.left}</span>
                     </Form.Label>
                     <Controller
                         name='nTorsionLeft'
@@ -53,7 +46,7 @@ const TorsionSettings = ({ control, watch }) => {
                 <Form.Group>
                     <Form.Label className='slider-label'>
                         <span>Right Eye</span>
-                        <span className='value'>{torsionSettings?.right}%</span>
+                        <span className='value'>{torsionSettings?.right}</span>
                     </Form.Label>
                     <Controller
                         name='nTorsionRight'

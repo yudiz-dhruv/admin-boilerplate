@@ -42,7 +42,7 @@ const VergenceSettings = ({ control, watch }) => {
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Left Eye</span>
-                            <span className='value'>{horizontalEyeSettings?.left}%</span>
+                            <span className='value'>{horizontalEyeSettings?.left}</span>
                         </Form.Label>
                         <Controller
                             name='nHorizontalLeft'
@@ -71,7 +71,7 @@ const VergenceSettings = ({ control, watch }) => {
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Right Eye</span>
-                            <span className='value'>{horizontalEyeSettings?.right}%</span>
+                            <span className='value'>{horizontalEyeSettings?.right}</span>
                         </Form.Label>
                         <Controller
                             name='nHorizontalRight'
@@ -104,7 +104,7 @@ const VergenceSettings = ({ control, watch }) => {
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Left Eye</span>
-                            <span className='value'>{verticalEyeSettings?.left}%</span>
+                            <span className='value'>{verticalEyeSettings?.left}</span>
                         </Form.Label>
                         <Controller
                             name='nVerticalLeft'
@@ -133,7 +133,7 @@ const VergenceSettings = ({ control, watch }) => {
                     <Form.Group>
                         <Form.Label className='slider-label'>
                             <span>Right Eye</span>
-                            <span className='value'>{verticalEyeSettings?.right}%</span>
+                            <span className='value'>{verticalEyeSettings?.right}</span>
                         </Form.Label>
                         <Controller
                             name='nVerticalRight'
