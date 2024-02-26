@@ -180,7 +180,7 @@ export default function ChangePassword () {
                     render={({ field: { ref, value, onChange } }) => (
                       <Form.Control
                         className={`form-control ${errors.sConfirmPassword && 'error'}`}
-                        placeholder='Enter same new password'
+                        placeholder='Re-Enter same new password'
                         type={!showConfirmPassword ? 'password' : 'text'}
                         name='sConfirmPassword'
                         ref={ref}
@@ -192,7 +192,7 @@ export default function ChangePassword () {
                       />
                     )}
                     rules={{
-                      required: 'Confirm Password is required',
+                      required: 'Confirm New Password is required',
                       pattern: {
                         value: PASSWORD,
                         message: 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
@@ -218,7 +218,7 @@ export default function ChangePassword () {
                     onClick={() => navigate(route.dashboard)}
                     className='square'
                   >
-                    Cancel
+                    <FormattedMessage id='cancel' />
                   </Button>
                 </div>
               </Col>

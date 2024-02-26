@@ -195,10 +195,19 @@ const ViewPatient = () => {
                                                 <>
                                                     <tr key={history?._id}>
                                                         <td>{index + 1}</td>
-                                                        <td>{moment(history?.dCheckUp)?.format('DD MMM, YYYY') || '-'}</td>
-                                                        <td>{moment(history?.dCheckUp)?.format('h:mm a') || '-'}</td>
-                                                        <td>{history?.aGamesName?.length > 0 ? (history?.aGamesName) : 'No Game Played'}</td>
-                                                        <td>{history?.sComments || '-'}</td>
+                                                        <td className='single-line'>
+                                                            {history?.aGamesName?.length > 0 ?
+                                                                (history?.aGamesName?.length >= 2 ?
+                                                                    history?.aGamesName?.toString()?.replace(',', ', ')
+                                                                    : (history?.aGamesName?.toString()))
+                                                                : 'No Game Played'}
+                                                        </td>
+                                                        <td className='single-line comments text-truncate' style={{ maxWidth: '80px' }}>
+                                                            {history?.sComments?.length > 15 ?
+                                                                (history?.sComments.slice(0, 15).concat('...') || '-')
+                                                                : (history?.sComments || '-')}
+                                                        </td>
+                                                        <td className='single-line'>{moment(history?.dCheckUp)?.format('DD MMM, YYYY, h:mm a') || '-'}</td>
                                                     </tr>
                                                 </>
                                             )

@@ -29,10 +29,9 @@ export const AdminListColumn = [
 
 export const PatientHistory = [
     { name: 'No', isSort: true },
-    { name: 'Date', internalName: 'dDate', type: 1, isSort: false },
-    { name: 'Time', internalName: 'dDateTime', type: 1, isSort: false },
     { name: 'Games Played', internalName: 'nGamesPlayed', type: 1, isSort: false },
     { name: 'Comments', internalName: 'sComments', type: 1, isSort: false },
+    { name: 'Date & Time', internalName: 'dDate', type: 1, isSort: false },
 ]
 
 export const eDominantEyeFilters = [

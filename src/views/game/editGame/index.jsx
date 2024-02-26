@@ -15,6 +15,7 @@ import CommonInput from 'shared/components/CommonInput';
 import { validationErrors } from 'shared/constants/ValidationErrors';
 import Select from 'react-select'
 import { ReactToastify } from 'shared/utils';
+import { FormattedMessage } from 'react-intl';
 
 const EditGame = () => {
     const navigate = useNavigate()
@@ -356,10 +357,10 @@ const EditGame = () => {
                                     <Row className='mt-3'>
                                         <Col sm={12}>
                                             <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
-                                                Update Game {isLoading && <Spinner animation='border' size='sm' />}
+                                                <FormattedMessage id='updateGame' /> {isLoading && <Spinner animation='border' size='sm' />}
                                             </Button>
                                             <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
-                                                Cancel
+                                                <FormattedMessage id='cancel' />
                                             </Button>
                                         </Col>
                                     </Row>

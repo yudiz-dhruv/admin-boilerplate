@@ -11,6 +11,7 @@ import Select from 'react-select'
 import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { addPatient } from 'query/patient/patient.mutation'
 import { ReactToastify } from 'shared/utils'
+import { FormattedMessage } from 'react-intl'
 
 const AddPatient = () => {
     const navigate = useNavigate()
@@ -115,8 +116,8 @@ const AddPatient = () => {
                                                 errors={errors}
                                                 className={`form-control ${errors?.sMobile && 'error'}`}
                                                 name='sMobile'
-                                                label='Mobile'
-                                                placeholder='Enter mobile number'
+                                                label='Phone Number'
+                                                placeholder='Enter phone number'
                                                 required
                                                 validation={{
                                                     pattern: {
@@ -125,7 +126,7 @@ const AddPatient = () => {
                                                     },
                                                     required: {
                                                         value: true,
-                                                        message: 'Mobile number is required'
+                                                        message: 'Phone number is required'
                                                     },
                                                     // minLength: {
                                                     //     value: 10,
@@ -197,7 +198,7 @@ const AddPatient = () => {
                                                     }}
                                                     render={({ field: { onChange, value, ref } }) => (
                                                         <Select
-                                                            placeholder='Select Dominant Eye...'
+                                                            placeholder='Select Dominant Eye'
                                                             ref={ref}
                                                             options={eDominantEyeOptions}
                                                             className={`react-select border-0 ${errors.eDominantEye && 'error'}`}
@@ -237,7 +238,7 @@ const AddPatient = () => {
                                                     }}
                                                     render={({ field: { onChange, value, ref } }) => (
                                                         <Select
-                                                            placeholder="Select patient's Amblyopia status..."
+                                                            placeholder="Select patient's Amblyopia status"
                                                             ref={ref}
                                                             options={eIsPresent}
                                                             className={`react-select border-0 ${errors.eAmblyopia && 'error'}`}
@@ -277,7 +278,7 @@ const AddPatient = () => {
                                                     }}
                                                     render={({ field: { onChange, value, ref } }) => (
                                                         <Select
-                                                            placeholder="Select patient's Strabismus status..."
+                                                            placeholder="Select patient's Strabismus status"
                                                             ref={ref}
                                                             options={eIsPresent}
                                                             className={`react-select border-0 ${errors.eStrabismus && 'error'}`}
@@ -301,10 +302,10 @@ const AddPatient = () => {
                                         <Row className='mt-3'>
                                             <Col sm={12}>
                                                 <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
-                                                    Add Patient
+                                                    <FormattedMessage id='addPatient' />
                                                 </Button>
                                                 <Button variant='secondary' onClick={() => navigate(route.patient)} className='square'>
-                                                    Cancel
+                                                    <FormattedMessage id='cancel' />
                                                 </Button>
                                             </Col>
                                         </Row>

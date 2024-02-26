@@ -5,6 +5,7 @@ import { getGameById } from 'query/game/game.query'
 import { Col, Row, Spinner } from 'react-bootstrap'
 import moment from 'moment'
 import { motion } from 'framer-motion'
+import { FormattedMessage } from 'react-intl'
 
 const ViewGame = () => {
     const { id } = useParams()
@@ -44,33 +45,33 @@ const ViewGame = () => {
                         <div className='details-card-data'>
                             <Row className='details-data-row p-0 m-0'>
                                 <Col sm={12} className="p-0 m-0">
-                                    <span className='data-title'>Asset Url</span>
+                                    <span className='data-title'><FormattedMessage id='gameAssetUrl' /></span>
                                     <span className='data-value'>
                                         <a className='url' href={data?.sUrl} download={data?.sUrl} >{data?.sUrl || '-'}</a>
                                     </span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Asset Version</span>
+                                    <span className='data-title'><FormattedMessage id='assetVersion' /></span>
                                     <span className='data-value'>{data?.sVersion || '-'}</span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Description</span>
+                                    <span className='data-title'><FormattedMessage id='description' /></span>
                                     <span className='data-value'>{data?.sDescription || '-'}</span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Category</span>
+                                    <span className='data-title'><FormattedMessage id='category' /></span>
                                     <span className='data-value capitalize'>{data?.eCategory || '-'}</span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Game Status</span>
+                                    <span className='data-title'><FormattedMessage id='gameStatus' /></span>
                                     <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Created Date</span>
+                                    <span className='data-title'><FormattedMessage id='createdDate' /></span>
                                     <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
                                 </Col>
                                 <Col lg={6} md={6} sm={6} className="p-0 m-0">
-                                    <span className='data-title'>Last Activity on</span>
+                                    <span className='data-title'><FormattedMessage id='lastUpdatedDate' /></span>
                                     <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD-MM-YYYY') || '-'}</span>
                                 </Col>
                             </Row>

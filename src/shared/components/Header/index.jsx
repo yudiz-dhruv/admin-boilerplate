@@ -153,7 +153,7 @@ function Header () {
         handleClose={handleClose}
         handleConfirm={handleConfirmLogout}
         disableHeader
-        bodyTitle='Are you sure you want to logout ?'
+        bodyTitle={<FormattedMessage id='wantToLogout' />}
         isLoading={isLoading || isFetching}
       />
     </header>

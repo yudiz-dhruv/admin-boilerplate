@@ -13,6 +13,7 @@ import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
 import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
 import { ReactToastify } from 'shared/utils'
+import { FormattedMessage } from 'react-intl'
 
 const EditPatient = () => {
     const location = useLocation()
@@ -140,9 +141,9 @@ const EditPatient = () => {
                                                 errors={errors}
                                                 className={`form-control ${errors?.sMobile && 'error'}`}
                                                 name='sMobile'
-                                                label='Mobile'
+                                                label='Phone Number'
                                                 disabled={location?.state === 'edit'}
-                                                placeholder='Enter mobile number'
+                                                placeholder='Enter phone number'
                                                 required
                                                 validation={{
                                                     pattern: {
@@ -151,7 +152,7 @@ const EditPatient = () => {
                                                     },
                                                     required: {
                                                         value: true,
-                                                        message: 'Mobile number is required'
+                                                        message: 'Phone number is required'
                                                     },
                                                     // minLength: {
                                                     //     value: 10,
@@ -224,7 +225,7 @@ const EditPatient = () => {
                                                     }}
                                                     render={({ field: { onChange, value, ref } }) => (
                                                         <Select
-                                                            placeholder='Select Dominant Eye...'
+                                                            placeholder='Select Dominant Eye'
                                                             ref={ref}
                                                             options={eDominantEyeOptions}
                                                             className={`react-select border-0 ${errors.eDominantEye && 'error'}`}
@@ -264,7 +265,7 @@ const EditPatient = () => {
                                                     }}
                                                     render={({ field: { onChange, value, ref } }) => (
                                                         <Select
-                                                            placeholder="Select patient's Amblyopia status..."
+                                                            placeholder="Select patient's Amblyopia status"
                                                             ref={ref}
                                                             options={eIsPresent}
                                                             className={`react-select border-0 ${errors.eAmblyopia && 'error'}`}
@@ -304,7 +305,7 @@ const EditPatient = () => {
                                                     }}
                                                     render={({ field: { onChange, value, ref } }) => (
                                                         <Select
-                                                            placeholder="Select patient's Strabisums status..."
+                                                            placeholder="Select patient's Strabisums status"
                                                             ref={ref}
                                                             options={eIsPresent}
                                                             className={`react-select border-0 ${errors.eStrabismus && 'error'}`}
@@ -328,10 +329,10 @@ const EditPatient = () => {
                                         <Row className='mt-3'>
                                             <Col sm={12}>
                                                 <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
-                                                    Update Patient
+                                                    <FormattedMessage id='updatePatient' />
                                                 </Button>
                                                 <Button variant='secondary' onClick={() => navigate(route.patient)} className='square'>
-                                                    Cancel
+                                                    <FormattedMessage id='cancel' />
                                                 </Button>
                                             </Col>
                                         </Row>

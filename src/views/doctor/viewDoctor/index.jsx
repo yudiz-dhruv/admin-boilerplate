@@ -8,11 +8,12 @@ import { getAdminById } from 'query/admin/admin.query'
 import moment from 'moment'
 import { motion } from 'framer-motion'
 import { getGameDropdownList } from 'query/game/game.query'
+import { FormattedMessage } from 'react-intl'
 
 const ViewDoctor = () => {
     const { id } = useParams()
 
-    // SPEICIFC ADMIN
+    // SPEICIFC DOCTOR
     const { data, isLoading } = useQuery('adminDataById', () => getAdminById(id), {
         enabled: !!id,
         select: (data) => data?.data?.data,
@@ -23,7 +24,6 @@ const ViewDoctor = () => {
         enabled: !!data,
         select: (data) => data?.data?.data,
     })
-
 
     useEffect(() => {
         document.title = 'View Doctor | Yantra Healthcare'
@@ -49,11 +49,11 @@ const ViewDoctor = () => {
                                 <div className='line'></div>
                                 <Row className='details-data-row p-0 m-0'>
                                     <Col lg={12} md={6} sm={6} xs={12} className="p-0 m-0">
-                                        <span className='data-title'>Email Address</span>
+                                        <span className='data-title'><FormattedMessage id='emailAddress' /></span>
                                         <span className='data-value'>{data?.sEmail || '-'}</span>
                                     </Col>
                                     <Col lg={12} md={6} sm={6} xs={12} className="p-0 m-0">
-                                        <span className='data-title'>Mobile Number</span>
+                                        <span className='data-title'><FormattedMessage id='phoneNumber' /></span>
                                         <span className='data-value'>{data?.sMobile ? `+91 ${data?.sMobile}` : '-'}</span>
                                     </Col>
                                 </Row>
@@ -68,44 +68,44 @@ const ViewDoctor = () => {
                             <div className='details-card-data'>
                                 <Row className='details-data-row p-0 m-0'>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Company Name</span>
+                                        <span className='data-title'><FormattedMessage id='companyName' /></span>
                                         <span className='data-value'>{data?.sCompanyName || '-'}</span>
                                     </Col>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Doctor Status</span>
+                                        <span className='data-title'><FormattedMessage id='doctorStatus' /></span>
                                         <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : 'In-Active'}</span>
                                     </Col>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Package Price</span>
+                                        <span className='data-title'><FormattedMessage id='pkgPrice' /></span>
                                         <span className='data-value'><FontAwesomeIcon icon={faIndianRupee} size='sm' /> {data?.nPrice || '0'}</span>
                                     </Col>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Purchase Date</span>
+                                        <span className='data-title'><FormattedMessage id='purchaseDate' /></span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.oGameValidity?.dStartAt).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Expiry Date</span>
+                                        <span className='data-title'><FormattedMessage id='expiryDate' /></span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.oGameValidity?.dEndAt).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Created Date</span>
+                                        <span className='data-title'><FormattedMessage id='createdDate' /></span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD MMM, YYYY')}</span>
                                     </Col>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Last Updated Date</span>
+                                        <span className='data-title'><FormattedMessage id='lastUpdatedDate' /></span>
                                         <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD MMM, YYYY') || '-'}</span>
                                     </Col>
                                 </Row>
-                                <div className='title mt-3'>Game Details:-</div>
+                                <div className='title mt-3'><FormattedMessage id='gameDetails' />:-</div>
                                 <div className='line mt-1'></div>
                                 <Row className='details-data-row p-0 m-0'>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>No. of Games</span>
+                                        <span className='data-title'><FormattedMessage id='numberOfGames' /></span>
                                         <span className='data-value capitalize'>{data?.aGamesId?.length || '0'}</span>
                                     </Col>
                                     <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'>Games</span>
-                                        <span className='data-value capitalize'>{data?.aGamesId ? `[ ${eDropDown?.filter(obj => data?.aGamesId.includes(obj._id))?.map(game => game?.sName)} ]` : 'No Games'}</span>
+                                        <span className='data-title'><FormattedMessage id='games' /></span>
+                                        <span className='data-value capitalize'>{data?.aGamesId ? `[ ${eDropDown?.filter(obj => data?.aGamesId.includes(obj._id))?.map(game => game?.sName) || 'No Games'} ]` : '[ No Games ]'}</span>
                                     </Col>
                                 </Row>
                             </div>

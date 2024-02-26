@@ -7,34 +7,19 @@ import EditProfileComponent from 'shared/components/Profile'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { profile, UpdateProfile } from 'query/profile/profile.query'
 import { getDirtyFormValues } from 'helper/helper'
-import { useNavigate } from 'react-router-dom'
 import Wrapper from 'shared/components/Wrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { ReactToastify } from 'shared/utils'
 
 function EditProfile () {
-  const navigate = useNavigate()
   const query = useQueryClient()
 
   const [updateFlag, setUpdateFlag] = useState(false)
   const [profileData, setProfileData] = useState({})
   const [payload, setPayload] = useState()
 
-  const {
-    register,
-    control,
-    formState: { errors, isDirty, dirtyFields },
-    clearErrors,
-    trigger,
-    getValues,
-    reset,
-    handleSubmit,
-    setValue,
-    watch
-  } = useForm({
-    mode: 'all'
-  })
+  const { register, control, formState: { errors, isDirty, dirtyFields }, clearErrors, trigger, getValues, reset, handleSubmit, setValue, watch } = useForm({ mode: 'all' })
 
   // GET PROFILE DATA
   const { data } = useQuery('getProfile', profile, {
@@ -58,7 +43,7 @@ function EditProfile () {
     onSuccess: (response) => {
       ReactToastify(response?.data?.message || 'Profile updated successfully!', 'success')
       query.invalidateQueries({ queryKey: ['profile'] })
-      navigate('/dashboard')
+      setUpdateFlag(!updateFlag)
     }
   })
 

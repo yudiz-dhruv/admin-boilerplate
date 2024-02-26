@@ -59,11 +59,11 @@ const EditDoctor = () => {
     }
   }, [data, eGameDropdown, reset])
 
-  // EDIT ADMIN
+  // EDIT DOCTOR
   const { mutate: updateMutate, isLoading } = useMutation(updateAdmin, {
     onSettled: (response, err) => {
       if (response) {
-        ReactToastify('Admin Updated Successfully!', 'success')
+        ReactToastify('Doctor Updated Successfully!', 'success')
         navigate(route.admin)
 
         reset()
@@ -191,7 +191,7 @@ const EditDoctor = () => {
                         className={`form-control ${errors?.sUserName && 'error'}`}
                         name='sUserName'
                         defaultValue={data?.sUserName}
-                        label='Name'
+                        label='Doctor Name'
                         placeholder='Enter the name'
                         required
                         maxLength={50}
@@ -265,7 +265,7 @@ const EditDoctor = () => {
                         errors={errors}
                         className={`form-control ${errors?.sEmail && 'error'}`}
                         name='sEmail'
-                        label='Email ID'
+                        label='Email Address'
                         placeholder='Enter the email address'
                         required
                         disabled
@@ -325,7 +325,7 @@ const EditDoctor = () => {
                         errors={errors}
                         className={`form-control ${errors?.sMobile && 'error'}`}
                         name='sMobile'
-                        label='Mobile'
+                        label='Phone Number'
                         placeholder='Enter mobile number'
                         required
                         validation={{
@@ -506,10 +506,10 @@ const EditDoctor = () => {
                     <Row className='mt-4'>
                       <Col sm={12}>
                         <Button variant='primary' type='submit' className='me-2 square' disabled={!isDirty || isButtonDisabled}>
-                          Update Doctor {isLoading && <Spinner animation='border' size='sm' />}
+                          <FormattedMessage id='updateDoctor' /> {isLoading && <Spinner animation='border' size='sm' />}
                         </Button>
                         <Button variant='secondary' className='square' onClick={() => navigate(route.admin)}>
-                          Cancel
+                          <FormattedMessage id='cancel' />
                         </Button>
                       </Col>
                     </Row>

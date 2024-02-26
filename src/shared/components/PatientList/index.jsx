@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { route } from 'shared/constants/AllRoutes'
+import { FormattedMessage } from 'react-intl'
 
 const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
     const navigate = useNavigate()
@@ -30,10 +31,18 @@ const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
         <>
             <tr key={key}>
                 <td>{index + 1}</td>
-                <td><span className='single-line patient-name' onClick={() => navigate(route.viewPatient(patient?._id))}>{(patient?.sUserName?.length > 15 ? textTruncate(patient?.sUserName) : patient?.sUserName) || ''}</span></td>
+                <td>
+                    <span className='single-line patient-name text-truncate' style={{ maxWidth: '80px' }} onClick={() => navigate(route.viewPatient(patient?._id))}>
+                        {(patient?.sUserName?.length > 15 ? textTruncate(patient?.sUserName) : patient?.sUserName) || ''}
+                    </span>
+                </td>
                 <td className='dominant-eye'>{patient?.eDominantEye || ''}</td>
-                <td className='disease'>{patient?.eAmblyopia === 'yes' ? <span className='present'>{patient?.eAmblyopia || ''}</span> : <span className='not-present'>{patient?.eAmblyopia || ''}</span>}</td>
-                <td className='disease'>{patient?.eStrabismus === 'yes' ? <span className='present'>{patient?.eStrabismus || ''}</span> : <span className='not-present'>No</span>}</td>
+                <td className='disease'>
+                    {patient?.eAmblyopia === 'yes' ? <span className='present'>{patient?.eAmblyopia || ''}</span> : <span className='not-present'>{patient?.eAmblyopia || ''}</span>}
+                </td>
+                <td className='disease'>
+                    {patient?.eStrabismus === 'yes' ? <span className='present'>{patient?.eStrabismus || ''}</span> : <span className='not-present'>No</span>}
+                </td>
                 <td>
                     {patient.eStatus !== 'd' ? <Form.Check
                         type='switch'
@@ -64,7 +73,7 @@ const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
                                         <i className='icon-visibility d-block' />
                                     </div>
                                     <div className='dropdown-datatable-row-text'>
-                                        View
+                                        <FormattedMessage id='view' />
                                     </div>
                                 </Dropdown.Item>
                                 {patient.eStatus !== 'd' && (<>
@@ -73,7 +82,7 @@ const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
                                             <i className='icon-create d-block' />
                                         </div>
                                         <div className='dropdown-datatable-row-text'>
-                                            Update
+                                            <FormattedMessage id='update' />
                                         </div>
                                     </Dropdown.Item>
                                     <Dropdown.Item className='dropdown-datatable-items delete' onClick={() => onDelete(patient._id, patient?.sUserName)}>
@@ -81,7 +90,7 @@ const PatientList = ({ key, index, patient, onDelete, updateMutate }) => {
                                             <i className='icon-delete d-block' />
                                         </div>
                                         <div className='dropdown-datatable-row-text'>
-                                            Delete
+                                            <FormattedMessage id='delete' />
                                         </div>
                                     </Dropdown.Item>
                                 </>)}

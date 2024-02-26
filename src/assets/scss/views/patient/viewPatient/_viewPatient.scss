@@ -257,6 +257,21 @@
       }
     }
   }
+
+  .patient-history {
+    .data-table {
+      .single-line {
+        text-wrap: nowrap;
+      }
+
+      .comments {
+        white-space: nowrap;
+        width: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
 
 body.dark {

@@ -5,10 +5,15 @@ import { Button } from 'react-bootstrap'
 import CustomModal from '../Modal'
 import { useNavigate } from 'react-router-dom'
 import { route } from 'shared/constants/AllRoutes'
+import { FormattedMessage } from 'react-intl'
 
 const PatientInfo = ({ data, status, location, modal, setModal, socket }) => {
     const navigate = useNavigate()
 
+    /**
+     * @description This function will be called when the Doctor press the End Session Button beside the Patient Info Header
+     * @param {Object} e Event Object
+     */
     const handleEndSession = (e) => {
         e?.preventDefault()
 
@@ -52,7 +57,7 @@ const PatientInfo = ({ data, status, location, modal, setModal, socket }) => {
                         <span className='data-value'>{data?.sUserName}</span>
                     </div>
                     <div className='patient-content'>
-                        <span className='data-label'>Mobile Number</span>
+                        <span className='data-label'>Phone Number</span>
                         <span className='data-value'>{data?.sMobile}</span>
                     </div>
                     <div className='patient-content'>
@@ -78,7 +83,7 @@ const PatientInfo = ({ data, status, location, modal, setModal, socket }) => {
                 handleClose={handleCancel}
                 handleConfirm={handleEndSession}
                 disableHeader
-                bodyTitle='Are you sure you want to Quit the Game Session?'
+                bodyTitle={<FormattedMessage id='wantToEndSession' />}
             >
             </CustomModal>
         </>

@@ -42,7 +42,12 @@ function ForgotPassword () {
           </h2>
         </div>
         <div className='line'></div>
-        <Form.Group className='form-group'>
+
+        <div className='forgotPasswordText'>
+          <span><FormattedMessage id='forgotPasswordPageText' /></span>
+        </div>
+
+        <Form.Group className='form-group mt-2'>
           <Form.Label>
             <FormattedMessage id='emailAddress' />
           </Form.Label>

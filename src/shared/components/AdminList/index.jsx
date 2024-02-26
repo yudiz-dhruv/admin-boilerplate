@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import React, { useState } from 'react'
 import { Dropdown, Form } from 'react-bootstrap';
+import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import { route } from 'shared/constants/AllRoutes';
 
@@ -27,11 +28,19 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
             setButtonDisabled(false)
         }, 1000)
     }
+
+    function textTruncate (s) {
+        return s.slice(0, 10).concat('...')
+    }
     return (
         <>
             <tr key={key}>
                 <td>{index + 1}</td>
-                <td><span className='single-line admin-name capitalize' onClick={() => navigate(route.viewAdmin(admin?._id))}>{admin?.sUserName || '-'}</span></td>
+                <td>
+                    <span className='single-line admin-name capitalize' onClick={() => navigate(route.viewAdmin(admin?._id))}>
+                        {(admin?.sUserName?.length > 15 ? textTruncate(admin?.sUserName) : admin?.sUserName) || ''}
+                    </span>
+                </td>
                 <td className='single-line'>{admin?.sMobile ? '+91-' + admin?.sMobile : '-'}</td>
                 <td className='single-line'>{admin?.sEmail || '-'}</td>
                 <td className='single-line text-danger'>{moment(admin?.dEndAt)?.format('DD MMM, YYYY') || '-'}</td>
@@ -43,7 +52,7 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
                         checked={admin.eStatus === 'y'}
                         onChange={(e) => handleConfirmStatus(e.target.checked, admin._id)}
                         disabled={isButtonDisabled}
-                    /> : <span className='delete-user'>Delete</span>}
+                    /> : <span className='delete-user'><FormattedMessage id='delete' /></span>}
                 </td>
                 <td>
                     {admin?.eStatus === 'd' ?
@@ -64,7 +73,7 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
                                         <i className='icon-visibility d-block' />
                                     </div>
                                     <div className='dropdown-datatable-row-text'>
-                                        View
+                                        <FormattedMessage id='view' />
                                     </div>
                                 </Dropdown.Item>
                                 {admin.eStatus !== 'd' && (<>
@@ -73,7 +82,7 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
                                             <i className='icon-create d-block' />
                                         </div>
                                         <div className='dropdown-datatable-row-text'>
-                                            Update
+                                            <FormattedMessage id='update' />
                                         </div>
                                     </Dropdown.Item>
                                     <Dropdown.Item className='dropdown-datatable-items delete' onClick={() => onDelete(admin._id, admin?.sUserName)}>
@@ -81,7 +90,7 @@ const AdminList = ({ key, index, admin, updateMutate, onDelete }) => {
                                             <i className='icon-delete d-block' />
                                         </div>
                                         <div className='dropdown-datatable-row-text'>
-                                            Delete
+                                            <FormattedMessage id='delete' />
                                         </div>
                                     </Dropdown.Item>
                                 </>)}

@@ -159,8 +159,8 @@ const AddDoctor = () => {
                         errors={errors}
                         className={`form-control ${errors?.sUserName && 'error'}`}
                         name='sUserName'
-                        label='Name'
-                        placeholder='Enter the name'
+                        label='Doctor Name'
+                        placeholder='Enter the doctor name'
                         required
                         onChange={(e) => {
                           e.target.value =
@@ -171,7 +171,7 @@ const AddDoctor = () => {
                         validation={{
                           required: {
                             value: true,
-                            message: validationErrors.nameRequired
+                            message: validationErrors.doctorNameRequired
                           },
                           minLength: {
                             value: 2,
@@ -208,7 +208,7 @@ const AddDoctor = () => {
                         validation={{
                           required: {
                             value: true,
-                            message: 'Company name is required.'
+                            message: validationErrors?.companyNameRequired
                           },
                           minLength: {
                             value: 5,
@@ -233,7 +233,7 @@ const AddDoctor = () => {
                         errors={errors}
                         className={`form-control ${errors?.sEmail && 'error'}`}
                         name='sEmail'
-                        label='Email ID'
+                        label='Email Address'
                         placeholder='Enter the email address'
                         required
                         validation={{
@@ -491,10 +491,10 @@ const AddDoctor = () => {
                     <Row className='mt-3'>
                       <Col sm={12}>
                         <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
-                          Add Doctor {isLoading && <Spinner animation='border' size='sm' />}
+                          <FormattedMessage id='addDoctor' /> {isLoading && <Spinner animation='border' size='sm' />}
                         </Button>
                         <Button variant='secondary' className='square' onClick={() => navigate(route.admin)}>
-                          Cancel
+                          <FormattedMessage id='cancel' />
                         </Button>
                       </Col>
                     </Row>

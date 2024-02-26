@@ -28,6 +28,7 @@ import { useBubbleSetting } from 'shared/hooks/useBubbleSettings'
 import moment from 'moment-timezone'
 import { route } from 'shared/constants/AllRoutes'
 import SocketContext from 'context/SocketContext'
+import { FormattedMessage } from 'react-intl'
 
 const InternalGameSettings = () => {
   const location = useLocation()
@@ -50,12 +51,12 @@ const InternalGameSettings = () => {
     bubbles: false
   })
 
-  // ALL GAME SETTINGS
+  // ALL GAME SETTINGS HOOKS
   const { dominantEyeButton, setDominantEyeButton } = useGlobalSettings()
   const { gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, tachMode, setTachMode, HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
   const { ringrunnerMode, setRingRunnerMode, RINGRUNNER_GAME_STRUCTURE } = useRingRunnerSettings(watch)
   const { headLockMode, setHeadLockMode, turboGameMode, setTurboGameMode, TURBO_GAME_STRUCTURE } = useTurboSettings(watch)
-  const { BUBBLES_GAME_STRUCTURE } = useBubbleSetting(watch)
+  const { bubbleMode, setBubbleMode, BUBBLES_GAME_STRUCTURE } = useBubbleSetting(watch)
 
   // DROPDOWN GAME LIST
   const { data: eGameDropdown, isLoading } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
@@ -111,7 +112,8 @@ const InternalGameSettings = () => {
   // Game setting UserEffect
   useEffect(() => {
     if (socket !== undefined && socket?.connected) {
-      if (gameStarted === true) {
+      if (gameStarted) {
+        console.log('hiiii')
         socket.emit(location?.state?.patientSettings?._id, {
           sEventName: 'reqSetSetting',
           oData: {
@@ -156,7 +158,7 @@ const InternalGameSettings = () => {
         })
       }
     }
-  }, [(gameStarted === true),
+  }, [(gameStarted),
     dominantEyeButton,
     gameModeToggle,
     tachMode,
@@ -170,8 +172,11 @@ const InternalGameSettings = () => {
   watch('nContrast'),
   watch('nOcclusion'),
   watch('nBlur'),
-    gameStructure])
+    gameStructure, bubbleMode])
 
+  /**
+   * @description It will call when the patient does the Save Progress process.
+   */
   const onSubmit = useCallback((data) => {
     if (socket !== undefined && socket?.connected) {
       socket.emit(location?.state?.patientSettings?._id, {
@@ -425,21 +430,21 @@ const InternalGameSettings = () => {
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
-                              setGameStarted={setGameStarted}
-                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
                               modal={modal}
                               setModal={setModal}
                               watch={watch}
+                              bubbleMode={bubbleMode}
+                              setBubbleMode={setBubbleMode}
                             />
                           </div>
 
                           {Object.values(buttonToggle).some(Boolean) ?
                             <Row className='mt-3 text-end'>
                               <Col sm={12}>
-                                <Button variant='primary' type='button' className='square' disabled={gameStarted} onClick={() => setModal({ open: true, type: 'save-progress' })}>
-                                  Save Progress
+                                <Button variant='primary' type='button' className='square' disabled={gameStarted || (connectivityStatus === 'waiting')} onClick={() => setModal({ open: true, type: 'save-progress' })}>
+                                  <FormattedMessage id='saveProgress' />
                                 </Button>
                               </Col>
                             </Row>
@@ -512,21 +517,21 @@ const InternalGameSettings = () => {
                               games={eGameDropdown}
                               isLoading={isLoading}
                               gameStarted={gameStarted}
-                              setGameStarted={setGameStarted}
-                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
                               modal={modal}
                               setModal={setModal}
                               watch={watch}
+                              bubbleMode={bubbleMode}
+                              setBubbleMode={setBubbleMode}
                             />
                           </div>
 
                           {Object.values(buttonToggle).some(Boolean) ?
                             <Row className='mt-3 text-end'>
                               <Col sm={12}>
-                                <Button variant='primary' type='button' className='square' disabled={gameStarted} onClick={() => setModal({ open: true, type: 'save-progress' })}>
-                                  Save Progress
+                                <Button variant='primary' type='button' className='square' disabled={gameStarted || (connectivityStatus === 'waiting')} onClick={() => setModal({ open: true, type: 'save-progress' })}>
+                                  <FormattedMessage id='saveProgress' />
                                 </Button>
                               </Col>
                             </Row>
@@ -621,6 +626,7 @@ const InternalGameSettings = () => {
                   )}
                 </Form.Group>
               </Col>
+
               <Col sm={6}>
                 <Form.Group className='form-group'>
                   <Form.Label>
@@ -661,6 +667,7 @@ const InternalGameSettings = () => {
                   )}
                 </Form.Group>
               </Col>
+
               <Col sm={6}>
                 <CommonInput
                   type='textarea'
@@ -688,10 +695,10 @@ const InternalGameSettings = () => {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" type='submit' className='square' >
-              Save
+              <FormattedMessage id='save' />
             </Button>
             <Button variant="secondary" className='square' onClick={() => handleClear()}>
-              Cancel
+              <FormattedMessage id='cancel' />
             </Button>
           </Modal.Footer>
         </Form >

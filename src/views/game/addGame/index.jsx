@@ -14,6 +14,7 @@ import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { eGameCategoryOption } from 'shared/constants/TableHeaders'
 import Select from 'react-select'
 import { ReactToastify } from 'shared/utils'
+import { FormattedMessage } from 'react-intl'
 
 const AddGame = () => {
     const navigate = useNavigate()
@@ -79,7 +80,7 @@ const AddGame = () => {
                                                     <div className='inputMSG'>
                                                         {watch('sAvatar') ? <>
                                                             <div className="document-preview-group">
-                                                                <div className='img-over' onClick={handleFileInputClick}>Change Game Logo</div>
+                                                                <div className='img-over' onClick={handleFileInputClick}><FormattedMessage id='changeGameLogo' /></div>
                                                                 {watch('sAvatar') && (
                                                                     typeof (watch('sAvatar')) !== 'string'
                                                                         ? <div className="document-preview"> <img src={URL.createObjectURL(watch('sAvatar'))} alt='altImage' /> </div>
@@ -248,7 +249,7 @@ const AddGame = () => {
                                                 <div className='inputtypefile'>
                                                     <div className='inputMSG'>
                                                         {watch('sUrl') ?
-                                                            <span className='bundle-name'>File: {watch('sUrl')?.name}</span> : <span>Upload Game Assets file</span>
+                                                            <span className='bundle-name'>File: {watch('sUrl')?.name}</span> : <span><FormattedMessage id='uploadGameAssets' /></span>
                                                         }
                                                     </div>
                                                     <Controller
@@ -329,10 +330,10 @@ const AddGame = () => {
                                     <Row className='mt-3'>
                                         <Col sm={12}>
                                             <Button variant='primary' type='submit' className='me-2 square' disabled={isButtonDisabled}>
-                                                Add Game {isLoading && <Spinner animation='border' size='sm' />}
+                                                <FormattedMessage id='addGame' /> {isLoading && <Spinner animation='border' size='sm' />}
                                             </Button>
                                             <Button variant='secondary' className='square' onClick={() => navigate(route.game)}>
-                                                Cancel
+                                                <FormattedMessage id='cancel' />
                                             </Button>
                                         </Col>
                                     </Row>

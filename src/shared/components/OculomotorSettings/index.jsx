@@ -11,6 +11,7 @@ import { FaPlay } from "react-icons/fa"
 import CommonInput from '../CommonInput'
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
+import { FormattedMessage } from 'react-intl'
 
 const OculomotorSettings = (props) => {
     const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, headLockMode, setHeadLockMode, data, handleStartGame, handleEndGame, modal, setModal } = props
@@ -85,7 +86,7 @@ const OculomotorSettings = (props) => {
                         <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
-                    )) : <span className='no-games'>No games in Oculomotor</span>
+                    )) : <span className='no-games'><FormattedMessage id='noOculomotorGame' /></span>
                 }
 
                 {buttonToggle?.turbo && (
@@ -641,10 +642,10 @@ const OculomotorSettings = (props) => {
                             </Modal.Body>
                             <Modal.Footer className='mt-4'>
                                 <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
-                                    Start Game
+                                    <FormattedMessage id='startGame' />
                                 </Button>
                                 <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
-                                    End Game
+                                    <FormattedMessage id='endGame' />
                                 </Button>
                             </Modal.Footer>
                         </Form>

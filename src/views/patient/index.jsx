@@ -11,6 +11,7 @@ import TopBar from 'shared/components/Topbar'
 import { route } from 'shared/constants/AllRoutes'
 import { PatientListColumn } from 'shared/constants/TableHeaders'
 import { ReactToastify, appendParams, parseParams } from 'shared/utils'
+import { FormattedMessage } from 'react-intl'
 
 const PatientManagement = () => {
     const location = useLocation()
@@ -176,15 +177,13 @@ const PatientManagement = () => {
                     handleClose={() => setModal({ open: false, type: '' })}
                     handleConfirm={handleConfirmDelete}
                     disableHeader
-                    bodyTitle='Confirm Delete?'
+                    bodyTitle={<FormattedMessage id='confirmDelete' />}
                     isLoading={deleteLoading}
                     confirmValue={modal?.id}
                 >
                     <article>
                         <h5>
-                            <div>
-                                Are you sure you want to Delete this Patient record?
-                            </div>
+                            <div> <FormattedMessage id='wantToDeletePatient' /> </div>
                         </h5>
                     </article>
                 </CustomModal>

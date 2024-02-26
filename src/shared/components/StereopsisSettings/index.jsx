@@ -4,18 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCube } from '@fortawesome/free-solid-svg-icons'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import { FaPlay } from "react-icons/fa"
-import { eBubbleGameMode, eBubbleImageSize, eBubblePattern, eShipSpeed, eSpawnRate } from 'shared/constants/TableHeaders'
+import { eBubbleImageSize, eBubblePattern, eShipSpeed, eSpawnRate } from 'shared/constants/TableHeaders'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import Skeleton from 'react-loading-skeleton'
 import CommonInput from '../CommonInput'
 import { useBubbleSetting } from 'shared/hooks/useBubbleSettings'
+import { motion } from 'framer-motion'
+import { FormattedMessage } from 'react-intl'
 
-const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, setGameStarted, data, handleStartGame, handleEndGame, modal, setModal, watch }) => {
+const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameStarted, handleStartGame, handleEndGame, modal, setModal, watch, bubbleMode, setBubbleMode }) => {
     const [tabButtons, setTabButtons] = useState([])
 
     const { BUBBLES_GAME_STRUCTURE } = useBubbleSetting(watch)
-    // const BUBBLE_BURST_GAME_STRUCTURE = data?.find(item => item?.sName === 'bubbleBurst')
 
     useEffect(() => {
         if (!games) {
@@ -71,7 +72,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                         <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
-                    )) : <span className='no-games'>No games in Stereopsis</span>
+                    )) : <span className='no-games'><FormattedMessage id='noStereopsisGame' /></span>
                 }
 
             </div>
@@ -118,35 +119,37 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                     />
                                 </Col>
                                 <Col md={6} sm={12} className='mt-md-0 mt-2'>
-                                    <Form.Group className='form-group'>
+                                    <Form.Group className='form-group ringRunner'>
                                         <Form.Label>{LABELS?.GAME_MODE}</Form.Label>
-                                        <Controller
-                                            name='sBubbleGameMode'
-                                            control={control}
-                                            render={({ field: { ref, onChange, value } }) => (
-                                                <Select
-                                                    ref={ref}
-                                                    placeholder='Select bubble size'
-                                                    defaultValue={eBubbleGameMode?.find(mode => mode?.value === BUBBLES_GAME_STRUCTURE?.sMode)}
-                                                    options={eBubbleGameMode}
-                                                    className={`react-select border-0 ${errors.sBubbleGameMode && 'error'}`}
-                                                    classNamePrefix='select'
-                                                    onChange={(e) => {
-                                                        // if (gameStarted) {
-                                                        //     setGameStarted(false)
-                                                        // }
-                                                        onChange(e)
-                                                    }}
-                                                    value={value}
-                                                    isDisabled={gameStarted}
-                                                    isSearchable={false}
-                                                    isMulti={false}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionValue={(option) => option.value}
-                                                />
-                                            )}
-                                        />
-                                        {errors.sBubbleGameMode && (<Form.Control.Feedback type='invalid'>{errors.sBubbleGameMode.message}</Form.Control.Feedback>)}
+                                        <div className='tabs'>
+                                            <motion.div
+                                                whileTap={{ scale: 0.9 }}>
+                                                <Button type='button' className={`${bubbleMode?.series ? 'checked' : ''}`} onClick={() => {
+                                                    setBubbleMode({ series: true, oddOneOut: false })
+                                                    // if (gameStarted) {
+                                                    //     setGameStarted(false)
+                                                    // }
+                                                }}
+                                                    disabled={gameStarted}
+                                                >
+                                                    <span className='tab'>Series</span>
+                                                </Button>
+                                            </motion.div>
+
+                                            <motion.div
+                                                whileTap={{ scale: 0.9 }}>
+                                                <Button type='button' className={`${bubbleMode?.oddOneOut ? 'checked' : ''}`} onClick={() => {
+                                                    setBubbleMode({ series: false, oddOneOut: true })
+                                                    // if (gameStarted) {
+                                                    //     setGameStarted(false)
+                                                    // }
+                                                }}
+                                                    disabled={gameStarted}
+                                                >
+                                                    <span className='tab'>Odd One Out</span>
+                                                </Button>
+                                            </motion.div>
+                                        </div>
                                     </Form.Group>
                                 </Col>
 
@@ -160,7 +163,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                                                 <Select
                                                     ref={ref}
                                                     placeholder='Select bubble distance'
-                                                    options={eBubblePattern}
+                                                    options={bubbleMode?.series ? eBubblePattern : eBubblePattern?.slice(1)}
                                                     defaultValue={eBubblePattern?.find(mode => mode?.value === BUBBLES_GAME_STRUCTURE?.sPattern)}
                                                     className={`react-select border-0 ${errors.sBubblePattern && 'error'}`}
                                                     classNamePrefix='select'
@@ -313,10 +316,10 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
                             <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
-                                Start Game
+                                <FormattedMessage id='startGame' />
                             </Button>
                             <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
-                                End Game
+                                <FormattedMessage id='endGame' />
                             </Button>
                         </Modal.Footer>
                     </Form>

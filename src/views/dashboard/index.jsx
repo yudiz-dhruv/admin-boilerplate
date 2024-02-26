@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Card, Col, Row, Spinner } from 'react-bootstrap'
 import Cards from 'shared/components/Card'
-import { faUserDoctor, faUser, faUserSlash, faGamepad, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faUserDoctor, faUser, faUserSlash, faGamepad, faUserPlus, faUserMinus } from '@fortawesome/free-solid-svg-icons'
 import Wrapper from 'shared/components/Wrap'
 import ReactApexChart from 'react-apexcharts'
 import { GRAPH_OPTIONS } from 'shared/constants'
 import { useQuery } from 'react-query'
 import { getSuperAdminStats } from 'query/dashboard/dashboard.query'
 import { motion } from 'framer-motion';
+import { FormattedMessage } from 'react-intl'
 
 function Dashboard () {
   const [statsData, setStatsData] = useState({})
@@ -53,7 +54,7 @@ function Dashboard () {
               <>
                 <Col xxl={6} xl={6} lg={6} className='active-user'>
                   <Wrapper>
-                    <h3>Active Users</h3>
+                    <h3><FormattedMessage id='activeUsers' /></h3>
                     <Row>
                       <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
                         <motion.div
@@ -79,7 +80,7 @@ function Dashboard () {
 
                 <Col xxl={6} xl={6} lg={6} className='active-user mt-lg-0 mt-3'>
                   <Wrapper>
-                    <h3>Accounts <span className='current-month'>(Current Month)</span></h3>
+                    <h3><FormattedMessage id='doctorAccounts' /> <span className='current-month'>(<FormattedMessage id='currentMonth' />)</span></h3>
                     <Row>
                       <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
                         <motion.div
@@ -87,7 +88,7 @@ function Dashboard () {
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
                         >
-                          <Cards cardtitle='New Added' cardtext={statsData?.totalCurrentMonthDoctor || '0'} cardIcon={faUsers} className={'dashboard-card-icon-3'} />
+                          <Cards cardtitle='New Added' cardtext={statsData?.totalCurrentMonthDoctor || '0'} cardIcon={faUserPlus} className={'dashboard-card-icon-3'} />
                         </motion.div>
                       </Col>
                       <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
@@ -96,7 +97,7 @@ function Dashboard () {
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
                         >
-                          <Cards cardtitle='Going to expire' cardtext={statsData?.totalExpireMonthDoctor || '0'} cardIcon={faUserSlash} className={'dashboard-card-icon-6'} />
+                          <Cards cardtitle='Going to expire' cardtext={statsData?.totalExpireMonthDoctor || '0'} cardIcon={faUserMinus} className={'dashboard-card-icon-6'} />
                         </motion.div>
                       </Col>
                     </Row>
@@ -105,7 +106,7 @@ function Dashboard () {
 
                 <Col xxl={6} xl={6} lg={6} className='active-user mt-3'>
                   <Wrapper>
-                    <h3>Games</h3>
+                    <h3><FormattedMessage id='games' /></h3>
                     <Row>
                       <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
                         <motion.div
@@ -122,7 +123,7 @@ function Dashboard () {
               </> : <>
                 <Col xxl={3} xl={6} lg={6} md={6} sm={6} className='active-user'>
                   <Wrapper>
-                    <h3>Active Users</h3>
+                    <h3><FormattedMessage id='activePatients' /></h3>
                     <Row>
                       <Col xxl={12} xl={8} md={12} sm={12} className='card-box' >
                         <motion.div
@@ -130,7 +131,7 @@ function Dashboard () {
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
                         >
-                          <Cards cardtitle='Total Patient' cardtext={123} cardIcon={faUser} className={'dashboard-card-icon-4'} />
+                          <Cards cardtitle='Total Patient' cardtext={statsData?.totalActivePatients || '0'} cardIcon={faUser} className={'dashboard-card-icon-4'} />
                         </motion.div>
                       </Col>
                     </Row>
@@ -139,7 +140,7 @@ function Dashboard () {
 
                 <Col xxl={3} xl={6} lg={6} md={6} sm={6} className='active-user mt-md-0 mt-sm-0 mt-3'>
                   <Wrapper>
-                    <h3>Games</h3>
+                    <h3><FormattedMessage id='games' /></h3>
                     <Row>
                       <Col xxl={12} xl={8} md={12} sm={12} className='card-box' >
                         <motion.div
@@ -147,7 +148,7 @@ function Dashboard () {
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
                         >
-                          <Cards cardtitle='Total Games' cardtext={10} cardIcon={faGamepad} className={'dashboard-card-icon-7'} />
+                          <Cards cardtitle='Total Games' cardtext={statsData?.totalGames || '0'} cardIcon={faGamepad} className={'dashboard-card-icon-7'} />
                         </motion.div>
                       </Col>
                     </Row>
@@ -156,7 +157,7 @@ function Dashboard () {
 
                 <Col xxl={6} xl={6} lg={12} className='active-user mt-xxl-0 mt-xl-3  mt-3'>
                   <Wrapper>
-                    <h3>Accounts</h3>
+                    <h3><FormattedMessage id='patientAccounts' /></h3>
                     <Row>
                       <Col sm={6} className='card-box' >
                         <motion.div
@@ -164,7 +165,7 @@ function Dashboard () {
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
                         >
-                          <Cards cardtitle='New Added' cardtext={100} cardIcon={faUsers} className={'dashboard-card-icon-3'} />
+                          <Cards cardtitle='Active' cardtext={statsData?.totalActivePatients || '0'} cardIcon={faUser} className={'dashboard-card-icon-3'} />
                         </motion.div>
                       </Col>
                       <Col sm={6} className='card-box' >
@@ -173,7 +174,7 @@ function Dashboard () {
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
                         >
-                          <Cards cardtitle='Going to expire' cardtext={8} cardIcon={faUserSlash} className={'dashboard-card-icon-6'} />
+                          <Cards cardtitle='In-Active' cardtext={statsData?.totalBlockedPatients || '0'} cardIcon={faUserSlash} className={'dashboard-card-icon-6'} />
                         </motion.div>
                       </Col>
                     </Row>

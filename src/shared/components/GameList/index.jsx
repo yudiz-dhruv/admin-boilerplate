@@ -12,6 +12,7 @@ import { ReactToastify } from 'shared/utils'
 const GameList = ({ key, index, game, onDelete }) => {
     const query = useQueryClient()
     const navigate = useNavigate()
+
     const [modal, setModal] = useState({ open: false })
     const [isButtonDisabled, setButtonDisabled] = useState(false)
 

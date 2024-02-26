@@ -61,6 +61,7 @@
                     gap: 8px;
                     margin-bottom: 5px;
                     position: relative;
+                    overflow: hidden;
 
                     .user-name {
                         margin-top: 10px;
@@ -69,6 +70,7 @@
                         text-transform: capitalize;
                         font-weight: 600;
                         color: var(--primary-color);
+                        word-break: break-all;
 
                         &::selection {
                             background-color: var(--primary-color);

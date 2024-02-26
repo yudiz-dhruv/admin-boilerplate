@@ -12,6 +12,7 @@ import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 import { MdFormatAlignCenter } from "react-icons/md"
 import { useHoopieSettings } from 'shared/hooks/useHoopieSettings'
+import { FormattedMessage } from 'react-intl'
 
 const AntiSupGameSettings = (props) => {
     const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setTachMode, data, handleStartGame, handleEndGame, watch, modal, setModal } = props
@@ -19,7 +20,6 @@ const AntiSupGameSettings = (props) => {
     const [tabButtons, setTabButtons] = useState([])
 
     const { HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
-    // const HOOPIE_GAME_STRUCTURE = data?.find(item => item?.sName === 'hoopie')
     const RING_RUNNER_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'normal')
     const RING_RUNNER_GABOR_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'gabor')
 
@@ -101,7 +101,7 @@ const AntiSupGameSettings = (props) => {
                         >
                             <FaPlay color='var(--text-hover)' /> {tab?.label}
                         </Button>
-                    )) : <span className='no-games'>No games in Anti-Suppression</span>
+                    )) : <span className='no-games'><FormattedMessage id='noAntiSuppressionGame' /></span>
                 }
 
             </div >
@@ -126,7 +126,6 @@ const AntiSupGameSettings = (props) => {
                                                         <OverlayTrigger
                                                             placement='top'
                                                             overlay={renderTooltip('Head')}
-                                                            // show={gameModeToggle.head === true}
                                                             delay={{ show: 250, hide: 250 }}
                                                         >
                                                             <Button
@@ -134,7 +133,6 @@ const AntiSupGameSettings = (props) => {
                                                                 type='button'
                                                                 name='eHeadMode'
                                                                 disabled={gameStarted}
-                                                                // defaultValue={setGameModeToggle({ [HOOPIE_GAME_STRUCTURE?.sMode]: true })}
                                                                 className={`${gameModeToggle?.head ? 'checked' : ''}`}
                                                                 value={value}
                                                                 onClick={(e) => {
@@ -153,7 +151,6 @@ const AntiSupGameSettings = (props) => {
                                                         <OverlayTrigger
                                                             placement='top'
                                                             overlay={renderTooltip('Hand')}
-                                                            // show={gameModeToggle.hand === true}
                                                             delay={{ show: 250, hide: 250 }}
                                                         >
                                                             <Button
@@ -161,7 +158,6 @@ const AntiSupGameSettings = (props) => {
                                                                 type='button'
                                                                 name='eHandMode'
                                                                 disabled={gameStarted}
-                                                                // defaultValue={setGameModeToggle({ [HOOPIE_GAME_STRUCTURE?.sMode]: true })}
                                                                 className={`${gameModeToggle?.hand ? 'checked' : ''}`}
                                                                 value={value}
                                                                 onClick={(e) => {
@@ -475,10 +471,10 @@ const AntiSupGameSettings = (props) => {
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
                             <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
-                                Start Game
+                                <FormattedMessage id='startGame' />
                             </Button>
                             <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
-                                End Game
+                                <FormattedMessage id='endGame' />
                             </Button>
                         </Modal.Footer>
                     </Form>
@@ -853,10 +849,10 @@ const AntiSupGameSettings = (props) => {
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
                             <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
-                                Start Game
+                                <FormattedMessage id='startGame' />
                             </Button>
                             <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
-                                End Game
+                                <FormattedMessage id='endGame' />
                             </Button>
                         </Modal.Footer>
                     </Form>

@@ -11,6 +11,7 @@ import { AdminListColumn } from 'shared/constants/TableHeaders'
 import { ReactToastify, appendParams, parseParams } from 'shared/utils'
 import AdminList from 'shared/components/AdminList'
 import AdminListFilters from 'shared/components/AdminListFilters'
+import { FormattedMessage } from 'react-intl'
 
 const AdminManagement = () => {
     const location = useLocation()
@@ -51,11 +52,11 @@ const AdminManagement = () => {
         }
     })
 
-    // EDIT ADMIN
+    // EDIT DOCTOR
     const { mutate: updateMutate } = useMutation(updateAdmin, {
         onSettled: (response, err) => {
             if (response) {
-                ReactToastify('Admin Status Updated Successfully!', 'success')
+                ReactToastify('Doctor Status Updated Successfully!', 'success')
                 query.invalidateQueries('adminList')
             } else {
                 ReactToastify(err.data.message, 'error')
@@ -63,12 +64,12 @@ const AdminManagement = () => {
         }
     })
 
-    // DELETE ADMIN
+    // DELETE DOCTOR
     const { isLoading: deleteLoading, mutate } = useMutation(deleteAdmin, {
         onSettled: (res, err) => {
             if (res) {
                 query.invalidateQueries('adminList')
-                ReactToastify('Admin Deleted Successfully!', 'success')
+                ReactToastify('Doctor Deleted Successfully!', 'success')
                 setModal({ open: false, type: '' })
             } else {
                 ReactToastify(err?.response?.data?.message, 'error')
@@ -182,15 +183,13 @@ const AdminManagement = () => {
                     handleClose={() => setModal({ open: false, type: '' })}
                     handleConfirm={handleConfirmDelete}
                     disableHeader
-                    bodyTitle='Confirm Delete?'
+                    bodyTitle={<FormattedMessage id='confirmDelete' />}
                     isLoading={deleteLoading}
                     confirmValue={modal?.id}
                 >
                     <article>
                         <h5>
-                            <div>
-                                Are you sure you want to Delete this Doctor?
-                            </div>
+                            <div><FormattedMessage id='wantToDeleteDoctor' /></div>
                         </h5>
                     </article>
                 </CustomModal>

@@ -4,7 +4,6 @@ import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { motion } from 'framer-motion'
-import { useGlobalSettings } from 'shared/hooks/useGlobalSettings'
 
 const DominantEyeSettings = ({ defaultData, watch, dominantEyeButton, setDominantEyeButton }) => {
 
