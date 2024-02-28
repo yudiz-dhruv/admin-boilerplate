@@ -74,7 +74,13 @@ const AdminGame = () => {
 
     const payloadData = getDirtyFormValues(dirtyFields, isDirtyData)
     if (Object.keys(payloadData).length !== 0) {
-      setButtonDisabled(true)
+      setTimeout(() => {
+        setButtonDisabled(true)
+      }, 1000)
+    }
+
+    return () => {
+      clearTimeout()
     }
   }, [dirtyFields, watch('ePatientName')])
 

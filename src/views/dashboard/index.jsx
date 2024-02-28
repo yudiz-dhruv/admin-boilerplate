@@ -62,7 +62,7 @@ function Dashboard () {
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.5, ease: 'easeInOut' }}
                         >
-                          <Cards cardtitle='Total Doctor' cardtext={statsData?.totalDoctors || '0'} cardIcon={faUserDoctor} className={'dashboard-card-icon-3'} />
+                          <Cards cardtitle='Total Doctor' cardtext={statsData?.totalActiveDoctors || '0'} cardIcon={faUserDoctor} className={'dashboard-card-icon-3'} />
                         </motion.div>
                       </Col>
                       <Col xxl={6} xl={12} lg={12} sm={6} className='card-box' >
@@ -123,7 +123,7 @@ function Dashboard () {
               </> : <>
                 <Col xxl={3} xl={6} lg={6} md={6} sm={6} className='active-user'>
                   <Wrapper>
-                    <h3><FormattedMessage id='activePatients' /></h3>
+                    <h3><FormattedMessage id='Patients' /></h3>
                     <Row>
                       <Col xxl={12} xl={8} md={12} sm={12} className='card-box' >
                         <motion.div

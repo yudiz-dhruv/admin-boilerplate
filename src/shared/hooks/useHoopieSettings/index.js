@@ -16,7 +16,7 @@ export const useHoopieSettings = (watch) => {
   const HOOPIE_GAME_STRUCTURE = {
     sMode: Object.keys(gameModeToggle).find(key => gameModeToggle[key] === true) || 'head',
     bTachMode: watch('bTachMode') || false,
-    nDuration: watch('sHoopieGameDuration') || '20',
+    nDuration: watch('sHoopieGameDuration') ? ( (/[^0-9]/.test(watch('sHoopieGameDuration')) || watch('sHoopieGameDuration') >= 30) ? '30' : watch('sHoopieGameDuration') ) : '20',
     sBasketSize: watch('sHoopSize')?.value || 'medium',
     nTargetRadius: watch('nHoopieTargetRadius')?.value || 0,
     nSpeed: watch('nHoopieBallSpeed')?.value || 1,

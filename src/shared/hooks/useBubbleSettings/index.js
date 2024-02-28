@@ -7,7 +7,7 @@ export const useBubbleSetting = (watch) => {
       }))
 
     const BUBBLES_GAME_STRUCTURE = {
-        nDuration: watch('sBubbleGameDuration') || 5,
+        nDuration: watch('sBubbleGameDuration') ? ( (/[^0-9]/.test(watch('sBubbleGameDuration')) || watch('sBubbleGameDuration') >= 30) ? '30' : watch('sBubbleGameDuration') ) : '20',
         sMode: Object.keys(bubbleMode).find(key => bubbleMode[key] === true) || 'series',
         sPattern: watch('sBubblePattern')?.value || 'duplet',
         nStimulusSize: watch('nBubbleStimulusSize')?.value || 1,

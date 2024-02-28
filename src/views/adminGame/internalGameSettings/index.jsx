@@ -29,6 +29,7 @@ import moment from 'moment-timezone'
 import { route } from 'shared/constants/AllRoutes'
 import SocketContext from 'context/SocketContext'
 import { FormattedMessage } from 'react-intl'
+import CustomModal from 'shared/components/Modal'
 
 const InternalGameSettings = () => {
   const location = useLocation()
@@ -113,7 +114,6 @@ const InternalGameSettings = () => {
   useEffect(() => {
     if (socket !== undefined && socket?.connected) {
       if (gameStarted) {
-        console.log('hiiii')
         socket.emit(location?.state?.patientSettings?._id, {
           sEventName: 'reqSetSetting',
           oData: {
@@ -203,24 +203,11 @@ const InternalGameSettings = () => {
     setModal({ open: false })
   }, [modal, socket])
 
-  const handleClear = useCallback(() => setModal(false), [setModal, modal])
-
-  // useEffect(() => {
-  //   if (modal?.open === false || modal === false) {
-  //     setButtonToggle({
-  //       hoopie: false,
-  //       ringRunner: false,
-  //       turbo: false,
-  //       bubbles: false
-  //     })
-  //   }
-  // }, [modal])
-
   /**
-   * Handle the Start Game Button
+   * @description Handle the Start Game Button
    * @param {Event} e - The event object
-   * @param {Object} buttonToggle - The button toggle value
-   */
+   * @param {object} buttonToggle - The button toggle value
+  */
   const handleStartGame = (e, buttonToggle) => {
     e?.preventDefault()
 
@@ -233,6 +220,7 @@ const InternalGameSettings = () => {
             sName: currentGameData?.sName,
             sBundle: currentGameData?.sUrl,
             eGameState: 'playing',
+            sVersion: currentGameData?.sVersion
           },
           oGameSetting: {
             ...gameStructure,
@@ -277,9 +265,9 @@ const InternalGameSettings = () => {
   }
 
   /**
- * Handle the End Game Button
+ * @description Handle the End Game Button
  * @param {Event} e - The event object
- * @param {Object} buttonToggle - The button toggle value
+ * @param {object} buttonToggle - The button toggle value
  */
   const handleEndGame = (e, buttonData) => {
     e.preventDefault()
@@ -303,6 +291,34 @@ const InternalGameSettings = () => {
     setModal({ open: false })
     setGameStarted(false)
   }
+
+  /**
+   * @description This function will be called when the Doctor press the End Session Button beside the Patient Info Header
+   * @param {event} e Event Object
+   */
+  const handleEndSession = (e) => {
+    e?.preventDefault()
+
+    if (socket !== undefined && socket?.connected) {
+      socket.emit(location?.state?.patientSettings?._id, {
+        sEventName: 'reqEndGame',
+        oData: {
+          eState: 'finished'
+        }
+      }, (response) => {
+        console.warn('Leaveing Room...', response)
+      })
+    }
+
+    navigate(route?.adminGame)
+
+    setModal(false)
+  }
+
+  /**
+   * @description This function will be called whenever the Doctor tries to close the Modal
+   */
+  const handleModalClose = useCallback(() => setModal(false), [setModal, modal])
 
   useEffect(() => {
     document.title = 'Game Settings | Yantra Healthcare'
@@ -389,7 +405,6 @@ const InternalGameSettings = () => {
                               setGameStarted={setGameStarted}
                               tachMode={tachMode}
                               setTachMode={setTachMode}
-                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
                               modal={modal}
@@ -412,10 +427,10 @@ const InternalGameSettings = () => {
                               setGameStarted={setGameStarted}
                               headLockMode={headLockMode}
                               setHeadLockMode={setHeadLockMode}
-                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
                               modal={modal}
+                              watch={watch}
                               setModal={setModal}
                             />
                           </div>
@@ -476,7 +491,6 @@ const InternalGameSettings = () => {
                               setGameStarted={setGameStarted}
                               tachMode={tachMode}
                               setTachMode={setTachMode}
-                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
                               modal={modal}
@@ -499,10 +513,10 @@ const InternalGameSettings = () => {
                               setGameStarted={setGameStarted}
                               headLockMode={headLockMode}
                               setHeadLockMode={setHeadLockMode}
-                              data={location?.state?.patientSettings?.oSetting?.aGameStructure}
                               handleEndGame={handleEndGame}
                               handleStartGame={handleStartGame}
                               modal={modal}
+                              watch={watch}
                               setModal={setModal}
                             />
                           </div>
@@ -577,7 +591,7 @@ const InternalGameSettings = () => {
         </Row>
       </Form >
 
-      <Modal show={modal?.type === 'save-progress' && modal?.open} onHide={() => setModal(false)} id='add-ticket' size='lg'>
+      <Modal show={modal?.type === 'save-progress' && modal?.open} onHide={() => handleModalClose()} id='add-ticket' size='lg'>
         <Form className='step-one' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
           <Modal.Header closeButton>
             <Modal.Title className='add-ticket-header'>Enter Patient Progress</Modal.Title>
@@ -697,12 +711,21 @@ const InternalGameSettings = () => {
             <Button variant="primary" type='submit' className='square' >
               <FormattedMessage id='save' />
             </Button>
-            <Button variant="secondary" className='square' onClick={() => handleClear()}>
+            <Button variant="secondary" className='square' onClick={() => handleModalClose()}>
               <FormattedMessage id='cancel' />
             </Button>
           </Modal.Footer>
         </Form >
       </Modal>
+
+      <CustomModal
+        open={modal?.type === 'end-session' && modal?.open}
+        handleClose={handleModalClose}
+        handleConfirm={handleEndSession}
+        disableHeader
+        bodyTitle={<FormattedMessage id='wantToEndSession' />}
+      >
+      </CustomModal>
     </>
   )
 }

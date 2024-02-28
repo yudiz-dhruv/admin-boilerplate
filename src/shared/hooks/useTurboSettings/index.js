@@ -9,7 +9,7 @@ export const useTurboSettings = (watch) => {
   }))
 
   const TURBO_GAME_STRUCTURE = {
-    nDuration: watch('nTurboGameDuration') || 1,
+    nDuration: watch('nTurboGameDuration') ? ( (/[^0-9]/.test(watch('nTurboGameDuration')) || watch('nTurboGameDuration') >= 30) ? '30' : watch('nTurboGameDuration') ) : '20',
     sMode: Object.keys(turboGameMode).find(key => turboGameMode[key] === true) || 'turbo',
     sButtonSize: watch('sTurboButtonSize')?.value || 'small',
     sButtonCount: watch('sTurboButtonCount')?.value || 'veryLess',

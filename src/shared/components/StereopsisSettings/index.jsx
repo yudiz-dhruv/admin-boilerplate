@@ -315,7 +315,7 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                             </Row>
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
-                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
+                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted || Object.keys(errors)?.length > 0} onClick={(e) => handleStartGame(e, buttonToggle)}>
                                 <FormattedMessage id='startGame' />
                             </Button>
                             <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>

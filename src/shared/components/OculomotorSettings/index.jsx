@@ -12,14 +12,14 @@ import CommonInput from '../CommonInput'
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 import { FormattedMessage } from 'react-intl'
+import { useTurboSettings } from 'shared/hooks/useTurboSettings'
 
 const OculomotorSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, headLockMode, setHeadLockMode, data, handleStartGame, handleEndGame, modal, setModal } = props
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, turboGameMode, setTurboGameMode, gameStarted, headLockMode, setHeadLockMode, handleStartGame, handleEndGame, modal, setModal, watch } = props
 
     const [tabButtons, setTabButtons] = useState([])
 
-    const TURBO_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'turbo' && item?.sMode === 'turbo')
-    const TURBO_HAMMER_GAME_STRUCTURE = data?.find(item => item?.sName === 'turbo' && item?.sMode === 'hammer')
+    const { TURBO_GAME_STRUCTURE } = useTurboSettings(watch)
 
     const LABELS = {
         TITLE: 'Oculomotor',
@@ -105,8 +105,9 @@ const OculomotorSettings = (props) => {
                                             errors={errors}
                                             className={`form-control ${errors?.nTurboGameDuration && 'error'}`}
                                             name='nTurboGameDuration'
-                                            defaultValue={TURBO_NORMAL_GAME_STRUCTURE?.nDuration}
+                                            defaultValue={TURBO_GAME_STRUCTURE?.nDuration}
                                             placeholder='Game duration (i.e.: in minutes)'
+                                            disabled={gameStarted}
                                             validation={{
                                                 pattern: {
                                                     value: /^[0-9]+$/,
@@ -190,7 +191,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select button size'
                                                                     ref={ref}
-                                                                    defaultValue={eButtonSize?.find(size => size?.value === TURBO_NORMAL_GAME_STRUCTURE?.sButtonSize)}
+                                                                    defaultValue={eButtonSize?.find(size => size?.value === TURBO_GAME_STRUCTURE?.sButtonSize)}
                                                                     options={eButtonSize}
                                                                     className={`react-select border-0 ${errors.sTurboButtonSize && 'error'}`}
                                                                     classNamePrefix='select'
@@ -222,7 +223,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select button counts'
                                                                     ref={ref}
-                                                                    defaultValue={eButtonCount?.find(count => count?.value === TURBO_NORMAL_GAME_STRUCTURE?.sButtonCount)}
+                                                                    defaultValue={eButtonCount?.find(count => count?.value === TURBO_GAME_STRUCTURE?.sButtonCount)}
                                                                     options={eButtonCount}
                                                                     className={`react-select border-0 ${errors.sTurboButtonCount && 'error'}`}
                                                                     classNamePrefix='select'
@@ -254,7 +255,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select horizontal bias'
                                                                     ref={ref}
-                                                                    defaultValue={eHorizontalBiasOption?.find(bias => bias?.value === TURBO_NORMAL_GAME_STRUCTURE?.eHorizontalBias)}
+                                                                    defaultValue={eHorizontalBiasOption?.find(bias => bias?.value === TURBO_GAME_STRUCTURE?.eHorizontalBias)}
                                                                     options={eHorizontalBiasOption}
                                                                     className={`react-select border-0 ${errors.sHorizontalBias && 'error'}`}
                                                                     classNamePrefix='select'
@@ -286,7 +287,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select vertical bias'
                                                                     ref={ref}
-                                                                    defaultValue={eVerticalBiasOption?.find(bias => bias?.value === TURBO_NORMAL_GAME_STRUCTURE?.eVerticalBias)}
+                                                                    defaultValue={eVerticalBiasOption?.find(bias => bias?.value === TURBO_GAME_STRUCTURE?.eVerticalBias)}
                                                                     options={eVerticalBiasOption}
                                                                     className={`react-select border-0 ${errors.sVerticalBias && 'error'}`}
                                                                     classNamePrefix='select'
@@ -318,7 +319,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select target stay duration'
                                                                     ref={ref}
-                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_NORMAL_GAME_STRUCTURE?.eTargetStayDuration)}
+                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_GAME_STRUCTURE?.eTargetStayDuration)}
                                                                     options={eTargetStayDurationOption}
                                                                     className={`react-select border-0 ${errors.sTurboTargetStayDuration && 'error'}`}
                                                                     classNamePrefix='select'
@@ -351,7 +352,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_NORMAL_GAME_STRUCTURE?.sNextTargetDelay)}
+                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_GAME_STRUCTURE?.sNextTargetDelay)}
                                                                     options={eTargetStayDurationOption}
                                                                     className={`react-select border-0 ${errors.sTurboNextTargetDelay && 'error'}`}
                                                                     classNamePrefix='select'
@@ -383,7 +384,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eButtonSize?.find(size => size?.value === TURBO_NORMAL_GAME_STRUCTURE?.sTargetSpread)}
+                                                                    defaultValue={eButtonSize?.find(size => size?.value === TURBO_GAME_STRUCTURE?.sTargetSpread)}
                                                                     options={eButtonSize}
                                                                     className={`react-select border-0 ${errors.sTurboTargetSpread && 'error'}`}
                                                                     classNamePrefix='select'
@@ -454,7 +455,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_HAMMER_GAME_STRUCTURE?.eTargetStayDuration)}
+                                                                    defaultValue={eTargetStayDurationOption?.find(duration => duration?.value === TURBO_GAME_STRUCTURE?.eTargetStayDuration)}
                                                                     options={eTargetStayDurationOption}
                                                                     className={`react-select border-0 ${errors.nHammerTargetStayDuration && 'error'}`}
                                                                     classNamePrefix='select'
@@ -486,7 +487,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eTurboGameType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eGameType)}
+                                                                    defaultValue={eTurboGameType?.find(type => type?.value === TURBO_GAME_STRUCTURE?.eGameType)}
                                                                     options={eTurboGameType}
                                                                     className={`react-select border-0 ${errors.sHammerGameType && 'error'}`}
                                                                     classNamePrefix='select'
@@ -518,7 +519,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eTurboHammerType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eHammerType)}
+                                                                    defaultValue={eTurboHammerType?.find(type => type?.value === TURBO_GAME_STRUCTURE?.eHammerType)}
                                                                     options={eTurboHammerType}
                                                                     className={`react-select border-0 ${errors.sHammerType && 'error'}`}
                                                                     classNamePrefix='select'
@@ -550,7 +551,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eTargetSpawnType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eMobSpawnType)}
+                                                                    defaultValue={eTargetSpawnType?.find(type => type?.value === TURBO_GAME_STRUCTURE?.eMobSpawnType)}
                                                                     options={eTargetSpawnType}
                                                                     className={`react-select border-0 ${errors.sTargetSpawnType && 'error'}`}
                                                                     classNamePrefix='select'
@@ -582,7 +583,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eTurboHammerType?.find(type => type?.value === TURBO_HAMMER_GAME_STRUCTURE?.eMobColorType)}
+                                                                    defaultValue={eTurboHammerType?.find(type => type?.value === TURBO_GAME_STRUCTURE?.eMobColorType)}
                                                                     options={eTurboHammerType}
                                                                     className={`react-select border-0 ${errors.sTargetColorType && 'error'}`}
                                                                     classNamePrefix='select'
@@ -614,7 +615,7 @@ const OculomotorSettings = (props) => {
                                                                 <Select
                                                                     placeholder='Select gabor frequency'
                                                                     ref={ref}
-                                                                    defaultValue={eTargetSpeed?.find(speed => speed?.value === TURBO_HAMMER_GAME_STRUCTURE?.sTargetSpeed)}
+                                                                    defaultValue={eTargetSpeed?.find(speed => speed?.value === TURBO_GAME_STRUCTURE?.sTargetSpeed)}
                                                                     options={eTargetSpeed}
                                                                     className={`react-select border-0 ${errors.sHammerTargetSpeed && 'error'}`}
                                                                     classNamePrefix='select'
@@ -641,7 +642,7 @@ const OculomotorSettings = (props) => {
                                 </>}
                             </Modal.Body>
                             <Modal.Footer className='mt-4'>
-                                <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
+                                <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted || Object.keys(errors)?.length > 0} onClick={(e) => handleStartGame(e, buttonToggle)}>
                                     <FormattedMessage id='startGame' />
                                 </Button>
                                 <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>

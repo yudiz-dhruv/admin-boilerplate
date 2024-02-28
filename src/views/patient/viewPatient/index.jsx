@@ -52,12 +52,6 @@ const ViewPatient = () => {
         { label: 'Patient History', toggle: 'history' },
     ]
 
-    // useEffect(() => {
-    //     if (location?.state === 'open-history') {
-    //         setButtonToggle({ history: true })
-    //     }
-    // }, [location?.state, buttonToggle])
-
     // SPECIFIC PATIENT
     const { data, isLoading } = useQuery('patientDataById', () => getPatientById(id), {
         enabled: !!id,
@@ -202,10 +196,8 @@ const ViewPatient = () => {
                                                                     : (history?.aGamesName?.toString()))
                                                                 : 'No Game Played'}
                                                         </td>
-                                                        <td className='single-line comments text-truncate' style={{ maxWidth: '80px' }}>
-                                                            {history?.sComments?.length > 15 ?
-                                                                (history?.sComments.slice(0, 15).concat('...') || '-')
-                                                                : (history?.sComments || '-')}
+                                                        <td className='single-line text-truncate' style={{ maxWidth: '150px' }}>
+                                                            {history?.sComments || '-'}
                                                         </td>
                                                         <td className='single-line'>{moment(history?.dCheckUp)?.format('DD MMM, YYYY, h:mm a') || '-'}</td>
                                                     </tr>

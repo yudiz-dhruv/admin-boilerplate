@@ -16,11 +16,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'))
 
 root.render(
   <>
-  {/* <React.StrictMode> */}
+  <React.StrictMode>
     <IntlProvider messages={en} locale='en' defaultLocale='en'>
       <App />
     </IntlProvider>
     <ToastContainer stacked />
-   {/* </React.StrictMode> */}
+   </React.StrictMode>
   </>
 )

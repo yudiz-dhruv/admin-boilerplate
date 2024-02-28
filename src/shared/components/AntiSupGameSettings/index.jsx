@@ -13,15 +13,15 @@ import { motion } from 'framer-motion'
 import { MdFormatAlignCenter } from "react-icons/md"
 import { useHoopieSettings } from 'shared/hooks/useHoopieSettings'
 import { FormattedMessage } from 'react-intl'
+import { useRingRunnerSettings } from 'shared/hooks/useRingRunnerSettings'
 
 const AntiSupGameSettings = (props) => {
-    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setTachMode, data, handleStartGame, handleEndGame, watch, modal, setModal } = props
+    const { buttonToggle, setButtonToggle, control, errors, register, games, isLoading, gameModeToggle, setGameModeToggle, textPositionToggle, setTextPositionToggle, ringrunnerMode, setRingRunnerMode, gameStarted, setTachMode, handleStartGame, handleEndGame, watch, modal, setModal } = props
 
     const [tabButtons, setTabButtons] = useState([])
 
     const { HOOPIE_GAME_STRUCTURE } = useHoopieSettings(watch)
-    const RING_RUNNER_NORMAL_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'normal')
-    const RING_RUNNER_GABOR_GAME_STRUCTURE = data?.find(item => item?.sName === 'ringRunner' && item?.sMode === 'gabor')
+    const { RINGRUNNER_GAME_STRUCTURE } = useRingRunnerSettings(watch)
 
     const LABELS = {
         TITLE: 'Anti-Suppression',
@@ -52,7 +52,13 @@ const AntiSupGameSettings = (props) => {
 
         const gameTabs = games?.filter(game => game?.eCategory === 'antiSupression')?.map(game => ({ key: game?.sName?.toLowerCase(), label: game?.sName }))
         const modifiedTabs = [...(gameTabs || [])]
+
         setTabButtons(modifiedTabs)
+        // const modifiedButtonToggle = gameTabs.reduce((acc, game) => {
+        //     acc[game.key] = false;
+        //     return acc;
+        // }, {});
+        // setButtonToggle(modifiedButtonToggle)
     }, [games])
 
     const handleConfirmStatus = (status, id) => {
@@ -514,7 +520,7 @@ const AntiSupGameSettings = (props) => {
                                             }
                                         }}
                                         min={1}
-                                        defaultValue={RING_RUNNER_NORMAL_GAME_STRUCTURE?.nDuration}
+                                        defaultValue={RINGRUNNER_GAME_STRUCTURE?.nDuration}
                                         maxLength={2}
                                         onChange={(e) => {
                                             e.target.value =
@@ -582,7 +588,7 @@ const AntiSupGameSettings = (props) => {
                                                             <Select
                                                                 placeholder='Select size of stimulus'
                                                                 ref={ref}
-                                                                defaultValue={eStimulusSizes?.find(size => size?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.nStimulusSize)}
+                                                                defaultValue={eStimulusSizes?.find(size => size?.value === +RINGRUNNER_GAME_STRUCTURE?.nStimulusSize)}
                                                                 options={eStimulusSizes}
                                                                 className={`react-select border-0 ${errors.nRRStimulusSize && 'error'}`}
                                                                 classNamePrefix='select'
@@ -615,7 +621,7 @@ const AntiSupGameSettings = (props) => {
                                                                 placeholder='Select speed of ship'
                                                                 ref={ref}
                                                                 options={eShipSpeed}
-                                                                defaultValue={eShipSpeed?.find(shipeSpeed => shipeSpeed?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.nShipSpeed)}
+                                                                defaultValue={eShipSpeed?.find(shipeSpeed => shipeSpeed?.value === +RINGRUNNER_GAME_STRUCTURE?.nShipSpeed)}
                                                                 className={`react-select border-0 ${errors.nShipSpeed && 'error'}`}
                                                                 classNamePrefix='select'
                                                                 isSearchable={false}
@@ -647,7 +653,7 @@ const AntiSupGameSettings = (props) => {
                                                                 placeholder='Select power up duration'
                                                                 ref={ref}
                                                                 options={ePowerUpDuration}
-                                                                defaultValue={ePowerUpDuration?.find(duration => duration?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.sPowerDuration)}
+                                                                defaultValue={ePowerUpDuration?.find(duration => duration?.value === RINGRUNNER_GAME_STRUCTURE?.sPowerDuration)}
                                                                 className={`react-select border-0 ${errors.sPowerDuration && 'error'}`}
                                                                 classNamePrefix='select'
                                                                 isSearchable={false}
@@ -679,7 +685,7 @@ const AntiSupGameSettings = (props) => {
                                                                 placeholder='Select next power up delay'
                                                                 ref={ref}
                                                                 options={ePowerUpDelay}
-                                                                defaultValue={ePowerUpDelay?.find(duration => duration?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.sPowerUpSpawnRate)}
+                                                                defaultValue={ePowerUpDelay?.find(duration => duration?.value === RINGRUNNER_GAME_STRUCTURE?.sPowerUpSpawnRate)}
                                                                 className={`react-select border-0 ${errors.sPowerUpDelay && 'error'}`}
                                                                 classNamePrefix='select'
                                                                 isSearchable={false}
@@ -711,7 +717,7 @@ const AntiSupGameSettings = (props) => {
                                                                 placeholder='Select next obstacle delay'
                                                                 ref={ref}
                                                                 options={ePowerUpDelay}
-                                                                defaultValue={ePowerUpDelay?.find(duration => duration?.value === RING_RUNNER_NORMAL_GAME_STRUCTURE?.sObstacleSpawnRate)}
+                                                                defaultValue={ePowerUpDelay?.find(duration => duration?.value === RINGRUNNER_GAME_STRUCTURE?.sObstacleSpawnRate)}
                                                                 className={`react-select border-0 ${errors.sObstacleDelay && 'error'}`}
                                                                 classNamePrefix='select'
                                                                 isSearchable={false}
@@ -752,7 +758,7 @@ const AntiSupGameSettings = (props) => {
                                                     name='sLocalOrientation'
                                                     label={LABELS?.LOCAL_ORIENTATION}
                                                     placeholder='Enter local orientation in degree'
-                                                    defaultValue={RING_RUNNER_GABOR_GAME_STRUCTURE?.nLocalOrientation}
+                                                    defaultValue={RINGRUNNER_GAME_STRUCTURE?.nLocalOrientation}
                                                     validation={{
                                                         pattern: {
                                                             value: /^[0-9]+$/,
@@ -786,7 +792,7 @@ const AntiSupGameSettings = (props) => {
                                                     name='sGlobalOrientation'
                                                     label={LABELS?.GLOBAL_ORIENTATION}
                                                     placeholder='Enter global orientation in degree'
-                                                    defaultValue={RING_RUNNER_GABOR_GAME_STRUCTURE?.nGlobalOrientation}
+                                                    defaultValue={RINGRUNNER_GAME_STRUCTURE?.nGlobalOrientation}
                                                     validation={{
                                                         pattern: {
                                                             value: /^[0-9]+$/,
@@ -821,7 +827,7 @@ const AntiSupGameSettings = (props) => {
                                                             <Select
                                                                 placeholder='Select gabor frequency'
                                                                 ref={ref}
-                                                                defaultValue={eGaborFrequency?.find(frequency => frequency?.value === RING_RUNNER_GABOR_GAME_STRUCTURE?.nFrequency)}
+                                                                defaultValue={eGaborFrequency?.find(frequency => frequency?.value === +RINGRUNNER_GAME_STRUCTURE?.nFrequency)}
                                                                 options={eGaborFrequency}
                                                                 className={`react-select border-0 ${errors.nGaborFrequency && 'error'}`}
                                                                 classNamePrefix='select'
@@ -848,7 +854,7 @@ const AntiSupGameSettings = (props) => {
                             }
                         </Modal.Body>
                         <Modal.Footer className='mt-4'>
-                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted} onClick={(e) => handleStartGame(e, buttonToggle)}>
+                            <Button variant='primary' type='button' className='me-2 square' disabled={gameStarted || Object.keys(errors)?.length > 0} onClick={(e) => handleStartGame(e, buttonToggle)}>
                                 <FormattedMessage id='startGame' />
                             </Button>
                             <Button variant='secondary' type='button' className='square' disabled={!gameStarted} onClick={(e) => handleEndGame(e, buttonToggle)}>
