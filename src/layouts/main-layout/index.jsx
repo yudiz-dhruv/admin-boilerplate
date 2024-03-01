@@ -9,8 +9,14 @@ import { Spinner } from 'react-bootstrap'
 import { useQuery } from 'react-query'
 import { io } from 'socket.io-client'
 import SocketContextProvider from 'context/SocketContextProvider'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { route } from 'shared/constants/AllRoutes'
+import { ReactToastify } from 'shared/utils'
 
 function MainLayout ({ children }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const [isOpen, setIsOpen] = useState(true)
   const width = useMediaQuery('(max-width: 800px)')
 
@@ -34,14 +40,25 @@ function MainLayout ({ children }) {
         if (reason === 'io server disconnect' || reason === 'io client disconnect') {
           socket.connect()
         }
-        console.log("Disconnected:", reason, details);
+
+        if (location?.pathname?.includes('/admin-game-management/settings/') && details?.description === 'network connection lost') {
+          setTimeout(() => {
+            ReactToastify('Network Connection Lost', 'error')
+            navigate(route?.adminGame)
+          }, 2000)
+        }
+        console.log("%cDisconnected:", 'color: orange', reason, details);
       })
 
       socket.connect()
     } else {
       console.warn('Socket Connected Successfuly.')
     }
-  }, [socket])
+
+    return () => {
+      clearTimeout()
+    }
+  }, [location?.pathname, navigate, socket])
 
   return (
     <div className='main-layout'>

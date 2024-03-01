@@ -81,20 +81,50 @@
                     letter-spacing: 1px;
                     transition: 0.3s ease-in-out;
 
-                    &.btn-primary {
+                    &.tabButton {
+                        background: var(--white-color);
+                        border-color: var(--primary-color);
+                        font-family: 'Helvetica-Bold';
+                        letter-spacing: 1px;
+                        color: var(--text-hover);
+                        cursor: pointer;
+                        font-weight: 600;
+
+                        &:hover {
+                            background: var(--primary-color);
+                            color: var(--white-color) !important;
+                        }
+                    }
+
+                    &.startedGame {
+                        background: rgba(0, 36, 23, 0.617) !important;
+                        background: linear-gradient(135deg, rgba(0, 36, 23, 0.564) 0%, rgba(9, 121, 78, 1) 35%, rgba(0, 255, 171, 1) 100%) !important;
+                        font-family: 'Helvetica-Bold' !important;
+
                         svg {
                             transition: 0.5s ease-in-out;
                             // transform: rotate(90deg);
                             color: var(--secondary-100) !important;
                         }
 
+
                         &:hover {
                             box-shadow: none !important;
+                            background: var(--white-color) !important;
 
                             svg {
                                 color: var(--primary-color) !important;
                             }
                         }
+                    }
+
+                    &:hover {
+                        background: rgba(0, 36, 23, 0.617) !important;
+                        background: linear-gradient(135deg, rgba(0, 36, 23, 0.564) 0%, rgba(9, 121, 78, 1) 35%, rgba(0, 255, 171, 1) 100%) !important;
+                        color: var(--text-hover) !important;
+                        // background: var(--white-color);
+                        border-color: var(--primary-color) !important;
+                        transform: translateY(-5px);
                     }
                 }
             }

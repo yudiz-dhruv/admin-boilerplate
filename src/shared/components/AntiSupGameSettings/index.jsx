@@ -7,7 +7,7 @@ import { Controller } from 'react-hook-form'
 import Select from 'react-select'
 import { eBallSpeed, eGaborFrequency, eHoopSize, eHoopieStimulusSizes, ePowerUpDelay, ePowerUpDuration, eShipSpeed, eSpawnRate, eStimulusSizes, eTargetRadius } from 'shared/constants/TableHeaders'
 import CommonInput from '../CommonInput'
-import { FaPlay } from "react-icons/fa"
+import { FaPause, FaPlay } from "react-icons/fa"
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 import { MdFormatAlignCenter } from "react-icons/md"
@@ -100,12 +100,12 @@ const AntiSupGameSettings = (props) => {
                     : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
                         <Button
                             key={index}
-                            className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'}
+                            className={buttonToggle[tab.key] ? 'startedGame' : 'tabButton'}
                             variant={buttonToggle[tab.key] ? 'primary' : 'secondary'}
                             onClick={(e) => handleTabs(e, tab)}
                             disabled={buttonToggle[tab.key] !== true && gameStarted}
                         >
-                            <FaPlay color='var(--text-hover)' /> {tab?.label}
+                            {(buttonToggle[tab.key] && gameStarted) ? (<><FaPause color='var(--text-hover)' /> {tab?.label}</>) : (<><FaPlay color='var(--text-hover)' /> {tab?.label}</>)}
                         </Button>
                     )) : <span className='no-games'><FormattedMessage id='noAntiSuppressionGame' /></span>
                 }

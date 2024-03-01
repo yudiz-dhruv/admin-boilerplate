@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { getPatientById, getPatientHistory } from 'query/patient/patient.query'
 import { Col, Row } from 'react-bootstrap'
 import { useQuery } from 'react-query'
@@ -67,15 +67,30 @@ const ViewPatient = () => {
     })
 
     // PATIENT HISTORY
-    const { data: patientHistoryData, isLoading: patientHistoryLoading, isFetching } = useQuery('patientHistory', () => getPatientHistory(requestParams, id), {
+    const { data: patientHistoryData, isLoading: patientHistoryLoading, isFetching } = useQuery(['patientHistory', requestParams], () => getPatientHistory(requestParams, id), {
         enabled: !!(buttonToggle?.history),
         select: (data) => data?.data?.data,
     })
 
-    const handlePageEvent = useCallback((page) => {
+    const handleHeaderEvent = (name, value) => {
+        switch (name) {
+            case 'rows':
+                setRequestParams({ ...requestParams, nLimit: Number(value), pageNumber: 1 })
+                appendParams({ nLimit: Number(value), pageNumber: 1 })
+                break
+            case 'search':
+                setRequestParams({ ...requestParams, search: value, pageNumber: 1 })
+                appendParams({ pageNumber: 1 })
+                break
+            default:
+                break
+        }
+    }
+
+    const handlePageEvent = (page) => {
         setRequestParams({ ...requestParams, pageNumber: page, nStart: page - 1 })
         appendParams({ pageNumber: page, nStart: page - 1 })
-    }, [requestParams, setRequestParams])
+    }
 
     useEffect(() => {
         document.title = 'View Patient | Yantra Healthcare'
@@ -172,13 +187,14 @@ const ViewPatient = () => {
                                         header={{
                                             left: {
                                                 rows: true,
-                                                search: true
+                                                component: false
                                             },
                                             right: {
+                                                search: true,
                                                 filter: false,
-                                                component: true
                                             }
                                         }}
+                                        headerEvent={(name, value) => handleHeaderEvent(name, value)}
                                         totalRecord={patientHistoryData?.count?.totalData || 0}
                                         pageChangeEvent={handlePageEvent}
                                         isLoading={patientHistoryLoading || isFetching}

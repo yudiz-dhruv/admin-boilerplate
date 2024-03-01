@@ -7,7 +7,7 @@ import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import Select from 'react-select'
 import { eButtonCount, eButtonSize, eHorizontalBiasOption, eTargetSpawnType, eTargetSpeed, eTargetStayDurationOption, eTurboGameType, eTurboHammerType, eVerticalBiasOption } from 'shared/constants/TableHeaders'
-import { FaPlay } from "react-icons/fa"
+import { FaPause, FaPlay } from "react-icons/fa"
 import CommonInput from '../CommonInput'
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
@@ -83,8 +83,8 @@ const OculomotorSettings = (props) => {
                     </div>
                 </>
                     : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
-                            <FaPlay color='var(--text-hover)' /> {tab?.label}
+                        <Button key={index} className={buttonToggle[tab.key] ? 'startedGame' : 'tabButton'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
+                            {(buttonToggle[tab.key] && gameStarted) ? (<><FaPause color='var(--text-hover)' /> {tab?.label}</>) : (<><FaPlay color='var(--text-hover)' /> {tab?.label}</>)}
                         </Button>
                     )) : <span className='no-games'><FormattedMessage id='noOculomotorGame' /></span>
                 }

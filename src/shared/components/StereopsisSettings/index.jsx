@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCube } from '@fortawesome/free-solid-svg-icons'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
-import { FaPlay } from "react-icons/fa"
+import { FaPause, FaPlay } from "react-icons/fa"
 import { eBubbleImageSize, eBubblePattern, eShipSpeed, eSpawnRate } from 'shared/constants/TableHeaders'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
@@ -69,8 +69,8 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                     </div>
                 </>
                     : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'square btn-primary' : 'square btn-secondary'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
-                            <FaPlay color='var(--text-hover)' /> {tab?.label}
+                        <Button key={index} className={buttonToggle[tab.key] ? 'startedGame' : 'tabButton'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
+                            {(buttonToggle[tab.key] && gameStarted) ? (<><FaPause color='var(--text-hover)' /> {tab?.label}</>) : (<><FaPlay color='var(--text-hover)' /> {tab?.label}</>)}
                         </Button>
                     )) : <span className='no-games'><FormattedMessage id='noStereopsisGame' /></span>
                 }

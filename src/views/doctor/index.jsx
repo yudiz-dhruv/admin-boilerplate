@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { deleteAdmin, updateAdmin } from 'query/admin/admin.mutation'
 import { getAdminList } from 'query/admin/admin.query'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -15,7 +15,6 @@ import { FormattedMessage } from 'react-intl'
 
 const AdminManagement = () => {
     const location = useLocation()
-    const parsedData = parseParams(location.search)
     const params = useRef(parseParams(location.search))
 
     const navigate = useNavigate()
@@ -35,12 +34,8 @@ const AdminManagement = () => {
         }
     }
 
-    function getSortedColumns (adminTableColumns, urlData) {
-        return adminTableColumns?.map((column) => (column.internalName === urlData?.sort ? { ...column, type: +urlData?.orderBy } : column))
-    }
-
     const [requestParams, setRequestParams] = useState(getRequestParams())
-    const [columns, setColumns] = useState(getSortedColumns(AdminListColumn, parsedData))
+    const columns = useMemo(() => AdminListColumn, [])
     const [modal, setModal] = useState({ open: false, type: '' })
     const [data, setData] = useState(null)
 
@@ -77,32 +72,6 @@ const AdminManagement = () => {
             }
         }
     })
-
-    const handleSort = useCallback((field) => {
-        let selectedFilter
-        const filter = columns.map((data) => {
-            if (data.internalName === field.internalName) {
-                data.type = +data.type === 1 ? -1 : 1
-                selectedFilter = data
-            } else {
-                data.type = 1
-            }
-            return data
-        })
-        setColumns(filter)
-        const params = {
-            ...requestParams,
-            page: 0,
-            sort: selectedFilter?.internalName,
-            orderBy: selectedFilter.type === 1 ? 'ASC' : 'DESC',
-            isEmailVerified: selectedFilter?.isEmailVerified
-        }
-        setRequestParams(params)
-        appendParams({
-            sort: selectedFilter.type !== 0 ? selectedFilter.internalName : '',
-            orderBy: selectedFilter.type
-        })
-    }, [columns, requestParams, setColumns, setRequestParams])
 
     const handleHeaderEvent = useCallback((name, value) => {
         switch (name) {
@@ -157,7 +126,6 @@ const AdminManagement = () => {
                             filter: false,
                         }
                     }}
-                    sortEvent={handleSort}
                     headerEvent={(name, value) => handleHeaderEvent(name, value)}
                     totalRecord={data?.count?.totalData || 0}
                     pageChangeEvent={handlePageEvent}

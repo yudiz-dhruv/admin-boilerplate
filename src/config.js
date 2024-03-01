@@ -1,3 +1,4 @@
+// use this file when there is not .env file
 const dev = {
   FEATURE_ID: '63b3bc4423a3a35e19548f51',
   s3: 'https://runtolearn-assets-dev.s3.eu-central-1.amazonaws.com/'

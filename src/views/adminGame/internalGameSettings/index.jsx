@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
+import { Button, Col, Form, Modal, Row, Spinner } from 'react-bootstrap'
 import Wrapper from 'shared/components/Wrap'
 import { useForm, Controller } from 'react-hook-form'
 import DominantEyeSettings from 'shared/components/DominantEyeSettings'
@@ -81,11 +81,22 @@ const InternalGameSettings = () => {
           if (response?.oData) {
             console.log('%cJoin Room: ', 'color: orange', response?.oData)
           } else {
-            console.log('%cJoin Room Error: ', 'color: red', response?.message)
+            console.log('%cJoin Room Error: ', 'color: red', response?.error?.message)
+            if (response?.error?.message === 'table not found') {
+              setTimeout(() => {
+                <Spinner />
+                ReactToastify('Game Session expiried', 'error')
+                navigate(route?.adminGame)
+              }, 2000)
+            }
           }
         })
       }
     }, 600)
+
+    return () => {
+      clearTimeout()
+    }
   }, [socket, location?.state?.patientSettings, setTimeout])
 
   /**
@@ -240,7 +251,7 @@ const InternalGameSettings = () => {
                 sLeftEye: watch('nTorsionLeft') || 0,
                 sRightEye: watch('nTorsionRight') || 0,
               },
-              bMonocularMode: watch('bMonocularMode') || true,
+              bMonocularMode: watch('bMonocularMode') || false,
               oVisions: {
                 nContrast: watch('nContrast') || 0,
                 nOcclusion: watch('nOcclusion') || 0,
