@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import Select from 'react-select'
-import { eDominantEyeFilters } from 'shared/constants/TableHeaders'
+import { eAmblyopiaTypeFilter, eDominantEyeFilters } from 'shared/constants/TableHeaders'
 
 const PatientListFilters = ({ defaultValue, setRequestParams }) => {
     const { control, reset } = useForm({})
@@ -19,7 +19,8 @@ const PatientListFilters = ({ defaultValue, setRequestParams }) => {
     useEffect(() => {
         reset({
             eDominantEye: eDominantEyeFilters?.find(item => item?.value === defaultValue?.eDominantEye),
-            eStatus: eStatusOption?.find(item => item?.value === defaultValue?.eStatus)
+            eStatus: eStatusOption?.find(item => item?.value === defaultValue?.eStatus),
+            eAmblyopiaType: eAmblyopiaTypeFilter?.find(item => item?.value === defaultValue?.eAmblyopiaType),
         })
     }, [defaultValue])
 
@@ -43,6 +44,30 @@ const PatientListFilters = ({ defaultValue, setRequestParams }) => {
                                 closeMenuOnSelect={true}
                                 onChange={(e) => {
                                     setRequestParams({ ...defaultValue, eDominantEye: e?.value })
+                                    onChange(e)
+                                }}
+                            />
+                        )}
+                    />
+                </Form.Group>
+
+                <Form.Group className='form-group'>
+                    <Form.Label>
+                        Amblyopia Type
+                    </Form.Label>
+                    <Controller
+                        name='eAmblyopiaType'
+                        control={control}
+                        render={({ field: { onChange, value = [], ref } }) => (
+                            <Select
+                                ref={ref}
+                                value={value}
+                                options={eAmblyopiaTypeFilter}
+                                className='react-select'
+                                classNamePrefix='select'
+                                closeMenuOnSelect={true}
+                                onChange={(e) => {
+                                    setRequestParams({ ...defaultValue, eAmblyopiaType: e?.value })
                                     onChange(e)
                                 }}
                             />

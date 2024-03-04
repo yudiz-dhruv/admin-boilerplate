@@ -69,12 +69,17 @@ const StereopsisSettings = ({ buttonToggle, setButtonToggle, control, errors, re
                     </div>
                 </>
                     : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
-                        <Button key={index} className={buttonToggle[tab.key] ? 'startedGame' : 'tabButton'} variant={buttonToggle[tab.key] ? 'primary' : 'secondary'} onClick={(e) => handleTabs(e, tab)} disabled={buttonToggle[tab.key] !== true && gameStarted}>
+                        <Button
+                            key={index}
+                            className={(buttonToggle[tab.key] && gameStarted) ? 'startedGame' : 'tabButton'}
+                            variant={buttonToggle[tab.key] ? 'primary' : 'secondary'}
+                            onClick={(e) => handleTabs(e, tab)}
+                            disabled={buttonToggle[tab.key] !== true && gameStarted}
+                        >
                             {(buttonToggle[tab.key] && gameStarted) ? (<><FaPause color='var(--text-hover)' /> {tab?.label}</>) : (<><FaPlay color='var(--text-hover)' /> {tab?.label}</>)}
                         </Button>
                     )) : <span className='no-games'><FormattedMessage id='noStereopsisGame' /></span>
                 }
-
             </div>
 
             {buttonToggle?.bubbles && (

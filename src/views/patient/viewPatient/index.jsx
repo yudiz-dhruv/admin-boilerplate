@@ -132,6 +132,11 @@ const ViewPatient = () => {
                                                             <span className='data-title'>Mobile Number</span>
                                                             <span className='data-value'>{data?.sMobile ? `+91 ${data?.sMobile}` : '-'}</span>
                                                         </Col>
+
+                                                        <Col lg={12} md={6} sm={6} xs={12} className="p-0 m-0">
+                                                            <span className='data-title'>Gender</span>
+                                                            <span className='data-value capitalize'>{data?.eGender || '-'}</span>
+                                                        </Col>
                                                     </Row>
                                                 </div>
                                             </motion.div>
@@ -155,6 +160,10 @@ const ViewPatient = () => {
                                                             <span className='data-value capitalize'>{data?.eAmblyopia || '-'}</span>
                                                         </Col>
                                                         <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Amblyopia Type</span>
+                                                            <span className='data-value capitalize'>{data?.eAmblyopiaType || 'None'}</span>
+                                                        </Col>
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
                                                             <span className='data-title'>Has Strabismus?</span>
                                                             <span className='data-value capitalize'>{data?.eStrabismus || '-'}</span>
                                                         </Col>
@@ -163,12 +172,53 @@ const ViewPatient = () => {
                                                             <span className='data-value'>{data?.eStatus === 'y' ? 'Active' : data?.eStatus === 'd' ? 'Deleted' : 'In Active'}</span>
                                                         </Col>
                                                         <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
+                                                            <span className='data-title'>Clinical Diagnosis</span>
+                                                            <span className='data-value'>{data?.sClinicalDiagnosis || '-'}</span>
+                                                        </Col>
+
+                                                        <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
                                                             <span className='data-title'>Created Date</span>
                                                             <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
                                                         </Col>
                                                         <Col xxl={4} xl={4} lg={6} md={4} sm={6} className="p-0 m-0">
                                                             <span className='data-title'>Last Activity on</span>
                                                             <span className='data-value'>{isLoading ? '-' : moment(data?.dUpdatedDate).format('DD-MM-YYYY') || '-'}</span>
+                                                        </Col>
+
+
+                                                        <Col xl={6} lg={12} className="p-0 m-0">
+                                                            <div className='sub-heading'>
+                                                                Visual Acuity:-
+                                                                <div className='heading-line'></div>
+                                                            </div>
+                                                            <Row className='mx-0'>
+                                                                <Col xs={6} className="p-0 m-0">
+                                                                    <span className='data-title'>Left Eye</span>
+                                                                    <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
+                                                                </Col>
+                                                                <Col xs={6} className="p-0 m-0">
+                                                                    <span className='data-title'>Right Eye</span>
+                                                                    <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
+                                                                </Col>
+                                                            </Row>
+                                                        </Col>
+
+                                                        <Col xl={6} lg={12} className="p-0 m-0">
+                                                            <div className='sub-heading'>
+                                                                Partial Eye:-
+                                                                <div className='heading-line'></div>
+                                                            </div>
+
+                                                            <Row className='mx-0'>
+                                                                <Col xs={6} className="p-0 m-0">
+                                                                    <span className='data-title'>Left Eye</span>
+                                                                    <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
+                                                                </Col>
+                                                                <Col xs={6} className="p-0 m-0">
+                                                                    <span className='data-title'>Right Eye</span>
+                                                                    <span className='data-value'>{isLoading ? '-' : moment(data?.dCreatedDate).format('DD-MM-YYYY')}</span>
+                                                                </Col>
+                                                            </Row>
                                                         </Col>
                                                     </Row>
                                                 </div>

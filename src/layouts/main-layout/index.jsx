@@ -31,34 +31,37 @@ function MainLayout ({ children }) {
   })
 
   useEffect(() => {
-    if (!socket?.connected && socket !== undefined) {
-      socket?.on("connect_error", (error) => {
-        console.log("Connection Error:", error);
-      })
+    if (token) {
+      if (!socket?.connected && socket !== undefined) {
+        socket?.on("connect_error", (error) => {
+          console.log("Connection Error:", error);
+        })
 
-      socket.on("disconnect", (reason, details) => {
-        if (reason === 'io server disconnect' || reason === 'io client disconnect') {
-          socket.connect()
-        }
+        socket.on("disconnect", (reason, details) => {
+          if (reason === 'io server disconnect' || reason === 'io client disconnect') {
+            socket.connect()
+          }
 
-        if (location?.pathname?.includes('/admin-game-management/settings/') && details?.description === 'network connection lost') {
-          setTimeout(() => {
-            ReactToastify('Network Connection Lost', 'error')
-            navigate(route?.adminGame)
-          }, 2000)
-        }
-        console.log("%cDisconnected:", 'color: orange', reason, details);
-      })
+          if (location?.pathname?.includes('/admin-game-management/settings/') && details?.description === 'network connection lost') {
+            setTimeout(() => {
+              ReactToastify('Network Connection Lost', 'error')
+              navigate(route?.adminGame)
+            }, 2000)
+          }
 
-      socket.connect()
-    } else {
-      console.warn('Socket Connected Successfuly.')
+          console.log("%cDisconnected:", 'color: orange', reason, details);
+        })
+
+        socket.connect()
+      } else {
+        console.warn('Socket Connected Successfuly.')
+      }
     }
 
     return () => {
       clearTimeout()
     }
-  }, [location?.pathname, navigate, socket])
+  }, [location?.pathname, navigate, socket, token])
 
   return (
     <div className='main-layout'>

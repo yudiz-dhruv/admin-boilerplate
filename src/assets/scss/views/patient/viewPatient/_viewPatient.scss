@@ -2,6 +2,31 @@
   gap: 20px 0;
   padding: 20px 0px;
 
+  .heading-line {
+    display: block;
+    content: '';
+    width: 100%;
+    height: 1px;
+    background-color: var(--secondary-300);
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .sub-heading {
+    font-size: 0.9rem;
+    padding: 0;
+    text-transform: uppercase;
+    font-family: 'helvetica-bold';
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: var(--primary-color);
+
+    &::selection {
+      background-color: var(--primary-color);
+      color: var(--secondary-800);
+    }
+  }
+
   .details-card {
     color: var(--text-color);
     background: var(--boxes-color);
@@ -120,44 +145,6 @@
 
       .details-card-data {
         padding: 25px;
-
-        .patient-img {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          flex-wrap: nowrap;
-          gap: 8px;
-          margin-bottom: 5px;
-
-          .user-name {
-            margin-top: 5px;
-            font-size: 1.6rem;
-            text-align: center;
-            text-transform: capitalize;
-            font-weight: 600;
-            color: var(--primary-color);
-
-            &::selection {
-              background-color: var(--primary-color);
-              color: var(--secondary-800);
-            }
-          }
-
-          .img-content {
-            width: 110px;
-            height: 110px;
-            border: 2px solid var(--secondary-500);
-            border-radius: 100%;
-            padding: 20px;
-            overflow: hidden;
-            text-align: center;
-
-            svg {
-              font-size: 65px;
-            }
-          }
-        }
 
         .details-data-row {
           gap: 20px 0;

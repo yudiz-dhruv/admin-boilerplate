@@ -84,7 +84,7 @@ const AdminGame = () => {
     }
   }, [dirtyFields, watch('ePatientName')])
 
-  const onSubmit = async (data) => joinRoomMutate(await patientDetails?._id)
+  const onSubmit = async () => joinRoomMutate(await patientDetails?._id)
 
   useEffect(() => {
     document.title = 'Game Management | Yantra Healthcare'

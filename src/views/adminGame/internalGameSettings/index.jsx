@@ -360,16 +360,17 @@ const InternalGameSettings = () => {
                           <Row>
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <MonocularModeSettings control={control} errors={errors} reset={reset} defaultData={location?.state?.patientSettings} />
+                                <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} dominantEyeButton={dominantEyeButton}
+                                  setDominantEyeButton={setDominantEyeButton} />
                               </div>
                             </Col>
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
-                                <DominantEyeSettings watch={watch} defaultData={location?.state?.patientSettings} dominantEyeButton={dominantEyeButton}
-                                  setDominantEyeButton={setDominantEyeButton} />
+                                <MonocularModeSettings control={control} errors={errors} reset={reset} defaultData={location?.state?.patientSettings} />
                               </div>
                             </Col>
+
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
@@ -379,15 +380,16 @@ const InternalGameSettings = () => {
 
                             <Col xl={12} lg={6} md={6}>
                               <div className='mt-4 mx-3'>
+                                <TorsionSettings control={control} watch={watch} />
+                              </div>
+                            </Col>
+
+                            <Col xl={12} lg={6} md={12}>
+                              <div className='mt-4 mx-3'>
                                 <VergenceSettings control={control} watch={watch} />
                               </div>
                             </Col>
 
-                            <Col xl={12} lg={6} md={6}>
-                              <div className='mt-4 mx-3'>
-                                <TorsionSettings control={control} watch={watch} />
-                              </div>
-                            </Col>
                           </Row>
                         </div>
                       </Wrapper>

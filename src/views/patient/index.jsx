@@ -32,6 +32,7 @@ const PatientManagement = () => {
             orderBy: 'ASC',
             totalElements: +data?.totalElements || 0,
             eDominantEye: data?.eDominantEye || '',
+            eAmblyopiaType: data?.eAmblyopiaType || '',
             eStatus: data?.eStatus || 'y'
         }
     }

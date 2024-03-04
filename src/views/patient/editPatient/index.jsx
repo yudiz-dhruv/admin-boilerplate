@@ -9,11 +9,13 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CommonInput from 'shared/components/CommonInput'
 import Wrapper from 'shared/components/Wrap'
 import { route } from 'shared/constants/AllRoutes'
-import { eDominantEyeOptions, eIsPresent } from 'shared/constants/TableHeaders'
+import { eAmblyopiaTypeOptions, eDominantEyeOptions, eGenderOptions, eIsPresent, eVisualAcuityOptions } from 'shared/constants/TableHeaders'
 import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
 import { ReactToastify } from 'shared/utils'
 import { FormattedMessage } from 'react-intl'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faUser } from '@fortawesome/free-solid-svg-icons'
 
 const EditPatient = () => {
     const location = useLocation()
@@ -24,6 +26,15 @@ const EditPatient = () => {
 
     const [isButtonDisabled, setButtonDisabled] = useState(false)
     const [payload, setPayload] = useState()
+    const [buttonToggle, setButtonToggle] = useState({
+        left: true,
+        right: false
+    })
+
+    const tabs = [
+        { key: 'left', label: 'Left' },
+        { key: 'right', label: 'Right' },
+    ]
 
     // SPEICIFC PATIENT
     const { data } = useQuery('patientDataById', () => getPatientById(id), {
@@ -96,6 +107,8 @@ const EditPatient = () => {
                         <Row className='d-flex justify-content-center'>
                             <Col xxl={8}>
                                 <Wrapper>
+                                    <div className='profile_icon'><FontAwesomeIcon icon={faUser} /></div>
+                                    <p>Patient Details</p>
                                     <Row>
                                         <Col lg={6} md={12}>
                                             <CommonInput
@@ -210,6 +223,46 @@ const EditPatient = () => {
                                             <Form.Group className='form-group'>
                                                 <Form.Label>
                                                     <span>
+                                                        Gender
+                                                        <span className='inputStar'>*</span>
+                                                    </span>
+                                                </Form.Label>
+                                                <Controller
+                                                    name='eGender'
+                                                    control={control}
+                                                    rules={{
+                                                        required: {
+                                                            value: true,
+                                                            message: 'Patient gender is required'
+                                                        }
+                                                    }}
+                                                    render={({ field: { onChange, value, ref } }) => (
+                                                        <Select
+                                                            placeholder='Select the gender'
+                                                            ref={ref}
+                                                            options={eGenderOptions}
+                                                            className={`react-select border-0 ${errors.eGender && 'error'}`}
+                                                            classNamePrefix='select'
+                                                            isSearchable={false}
+                                                            value={value}
+                                                            onChange={onChange}
+                                                            getOptionLabel={(option) => option.label}
+                                                            getOptionValue={(option) => option.value}
+                                                        />
+                                                    )}
+                                                />
+                                                {errors.eGender && (
+                                                    <Form.Control.Feedback type='invalid'>
+                                                        {errors.eGender.message}
+                                                    </Form.Control.Feedback>
+                                                )}
+                                            </Form.Group>
+                                        </Col>
+
+                                        <Col lg={6} md={12} className='mt-2'>
+                                            <Form.Group className='form-group'>
+                                                <Form.Label>
+                                                    <span>
                                                         Dominant Eye
                                                         <span className='inputStar'>*</span>
                                                     </span>
@@ -286,6 +339,48 @@ const EditPatient = () => {
                                             </Form.Group>
                                         </Col>
 
+                                        {watch('eAmblyopia')?.value === 'yes' &&
+                                            <Col lg={6} md={12} className='mt-2'>
+                                                <Form.Group className='form-group'>
+                                                    <Form.Label>
+                                                        <span>
+                                                            Amblyopia Type
+                                                            <span className='inputStar'>*</span>
+                                                        </span>
+                                                    </Form.Label>
+                                                    <Controller
+                                                        name='eAmblyopiaType'
+                                                        control={control}
+                                                        rules={{
+                                                            required: {
+                                                                value: true,
+                                                                message: 'Amblyopia type is required'
+                                                            }
+                                                        }}
+                                                        render={({ field: { onChange, value, ref } }) => (
+                                                            <Select
+                                                                placeholder="Select Amblyopia type"
+                                                                ref={ref}
+                                                                options={eAmblyopiaTypeOptions}
+                                                                className={`react-select border-0 ${errors.eAmblyopiaType && 'error'}`}
+                                                                classNamePrefix='select'
+                                                                isSearchable={false}
+                                                                value={value}
+                                                                onChange={onChange}
+                                                                getOptionLabel={(option) => option.label}
+                                                                getOptionValue={(option) => option.value}
+                                                            />
+                                                        )}
+                                                    />
+                                                    {errors.eAmblyopiaType && (
+                                                        <Form.Control.Feedback type='invalid'>
+                                                            {errors.eAmblyopiaType.message}
+                                                        </Form.Control.Feedback>
+                                                    )}
+                                                </Form.Group>
+                                            </Col>
+                                        }
+
                                         <Col lg={6} md={12} className='mt-2'>
                                             <Form.Group className='form-group'>
                                                 <Form.Label>
@@ -324,6 +419,209 @@ const EditPatient = () => {
                                                     </Form.Control.Feedback>
                                                 )}
                                             </Form.Group>
+                                        </Col>
+
+                                        <Col lg={6} md={12} className='mt-2'>
+                                            <CommonInput
+                                                type='textarea'
+                                                register={register}
+                                                errors={errors}
+                                                className={`for m-control ${errors?.sClinicalDiagnosis && 'error'}`}
+                                                name='sClinicalDiagnosis'
+                                                label='Clinical Diagnosis'
+                                                placeholder='Enter the clinical diagnosis'
+                                                required
+                                                style={{ height: '90px' }}
+                                                validation={{
+                                                    required: {
+                                                        value: true,
+                                                        message: 'Clinical Diagnosis is required'
+                                                    },
+                                                }}
+                                                onChange={(e) => {
+                                                    e.target.value =
+                                                        e.target.value?.trim() &&
+                                                        e.target.value.replace(/^[0-9]+$/g, '')
+                                                }}
+                                            />
+                                        </Col>
+
+                                        <h3 className='data-title mt-3'><FontAwesomeIcon icon={faEye} color='var(--secondary-500)' size='sm' /> Visual Acuity</h3>
+                                        <Col sm={12}>
+                                            <div className='visual-acuity'>
+                                                <Row>
+                                                    <Col lg={12} md={12}>
+                                                        <Form.Group className='form-group'>
+                                                            <Form.Label>
+                                                                <span>
+                                                                    Eye Type
+                                                                    <span className='inputStar'>*</span>
+                                                                </span>
+                                                            </Form.Label>
+                                                            <div className='mt-2 tabs'>
+                                                                {tabs?.map(tab => (
+                                                                    <div key={tab.key}
+                                                                        whileTap={{ scale: 0.9 }}
+                                                                        className='tab-wrapper'>
+                                                                        <Button key={tab.key} type='button' className={`${buttonToggle[tab?.key] ? 'checked' : ''}`} onClick={() => setButtonToggle({ [tab?.key]: true })}>
+                                                                            <span className='tab'>{tab?.label}</span>
+                                                                        </Button>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+
+                                                            {buttonToggle?.left && <div className='mt-2'>
+                                                                <Row>
+                                                                    <Col lg={6} md={12} className=''>
+                                                                        <Form.Group className='form-group'>
+                                                                            <Form.Label>
+                                                                                <span>
+                                                                                    Left Visual Acuity
+                                                                                    <span className='inputStar'>*</span>
+                                                                                </span>
+                                                                                <span className='subTitle'>(LOGMAR BASES)</span>
+                                                                            </Form.Label>
+                                                                            <Controller
+                                                                                name='eLeftVisualAcuity'
+                                                                                control={control}
+                                                                                rules={{
+                                                                                    required: {
+                                                                                        value: true,
+                                                                                        message: 'Left Visual Acuity is required'
+                                                                                    }
+                                                                                }}
+                                                                                render={({ field: { onChange, value, ref } }) => (
+                                                                                    <Select
+                                                                                        placeholder='Select Visual Acuity'
+                                                                                        ref={ref}
+                                                                                        options={eVisualAcuityOptions}
+                                                                                        className={`react-select border-0 ${errors.eLeftVisualAcuity && 'error'}`}
+                                                                                        classNamePrefix='select'
+                                                                                        isSearchable={false}
+                                                                                        value={value}
+                                                                                        onChange={onChange}
+                                                                                        getOptionLabel={(option) => option.label}
+                                                                                        getOptionValue={(option) => option.value}
+                                                                                    />
+                                                                                )}
+                                                                            />
+                                                                            {errors.eLeftVisualAcuity && (
+                                                                                <Form.Control.Feedback type='invalid'>
+                                                                                    {errors.eLeftVisualAcuity.message}
+                                                                                </Form.Control.Feedback>
+                                                                            )}
+                                                                        </Form.Group>
+                                                                    </Col>
+
+                                                                    <Col lg={6} md={12} className=''>
+                                                                        <CommonInput
+                                                                            type='text'
+                                                                            register={register}
+                                                                            errors={errors}
+                                                                            className={`form-control ${errors?.sLeftPartialEye && 'error'}`}
+                                                                            name='sLeftPartialEye'
+                                                                            label='Left Partial Eye'
+                                                                            placeholder='Enter left partial eye data'
+                                                                            required
+                                                                            onChange={(e) => {
+                                                                                e.target.value =
+                                                                                    e.target.value?.trim() &&
+                                                                                    e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')
+                                                                            }}
+                                                                            maxLength={10}
+                                                                            validation={{
+                                                                                required: {
+                                                                                    value: true,
+                                                                                    message: 'Left Partial eye is required.'
+                                                                                },
+                                                                                pattern: {
+                                                                                    value: /^[0-9]+(\.[0-9]+)?$/,
+                                                                                    message: 'Only integer or float values are allowed'
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    </Col>
+                                                                </Row>
+                                                            </div>}
+
+                                                            {buttonToggle?.right && <div className='mt-2'>
+                                                                <Row>
+                                                                    <Col lg={6} md={12} className=''>
+                                                                        <Form.Group className='form-group'>
+                                                                            <Form.Label>
+                                                                                <span>
+                                                                                    Right Visual Acuity
+                                                                                    <span className='inputStar'>*</span>
+                                                                                </span>
+                                                                                <span className='subTitle'>(LOGMAR BASES)</span>
+                                                                            </Form.Label>
+                                                                            <Controller
+                                                                                name='eRightVisualAcuity'
+                                                                                control={control}
+                                                                                rules={{
+                                                                                    required: {
+                                                                                        value: true,
+                                                                                        message: 'Visual Acuity is required'
+                                                                                    }
+                                                                                }}
+                                                                                render={({ field: { onChange, value, ref } }) => (
+                                                                                    <Select
+                                                                                        placeholder='Select Visual Acuity'
+                                                                                        ref={ref}
+                                                                                        options={eVisualAcuityOptions}
+                                                                                        className={`react-select border-0 ${errors.eRightVisualAcuity && 'error'}`}
+                                                                                        classNamePrefix='select'
+                                                                                        isSearchable={false}
+                                                                                        value={value}
+                                                                                        onChange={onChange}
+                                                                                        getOptionLabel={(option) => option.label}
+                                                                                        getOptionValue={(option) => option.value}
+                                                                                    />
+                                                                                )}
+                                                                            />
+                                                                            {errors.eRightVisualAcuity && (
+                                                                                <Form.Control.Feedback type='invalid'>
+                                                                                    {errors.eRightVisualAcuity.message}
+                                                                                </Form.Control.Feedback>
+                                                                            )}
+                                                                        </Form.Group>
+                                                                    </Col>
+
+                                                                    <Col lg={6} md={12} className=''>
+                                                                        <CommonInput
+                                                                            type='text'
+                                                                            register={register}
+                                                                            errors={errors}
+                                                                            className={`form-control ${errors?.sRightPartialEye && 'error'}`}
+                                                                            name='sRightPartialEye'
+                                                                            label='Right Partial Eye'
+                                                                            placeholder='Enter right partial eye data'
+                                                                            required
+                                                                            onChange={(e) => {
+                                                                                e.target.value =
+                                                                                    e.target.value?.trim() &&
+                                                                                    e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')
+                                                                            }}
+                                                                            maxLength={10}
+                                                                            validation={{
+                                                                                required: {
+                                                                                    value: true,
+                                                                                    message: 'Right Partial eye is required.'
+                                                                                },
+                                                                                pattern: {
+                                                                                    value: /^[0-9]+(\.[0-9]+)?$/,
+                                                                                    message: 'Only integer or float values are allowed'
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    </Col>
+                                                                </Row>
+                                                            </div>}
+                                                        </Form.Group>
+                                                    </Col>
+
+                                                </Row>
+                                            </div>
                                         </Col>
 
                                         <Row className='mt-3'>

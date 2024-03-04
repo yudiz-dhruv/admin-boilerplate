@@ -47,9 +47,42 @@ export const eDominantEyeOptions = [
     { label: 'None', value: 'none' },
 ]
 
+export const eGenderOptions = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+    { label: 'Prefer not to say', value: '-' },
+]
+
+export const eVisualAcuityOptions = [
+    { label: '6/6', value: '6/6' },
+    { label: '6/9', value: '6/9' },
+    { label: '6/12', value: '6/12' },
+    { label: '6/18', value: '6/18' },
+    { label: '6/24', value: '6/24' },
+    { label: '6/36', value: '6/36' },
+    { label: '6/60', value: '6/60' },
+]
+
 export const eIsPresent = [
     { label: 'Yes', value: 'yes' },
     { label: 'No', value: 'no' }
+]
+
+export const eAmblyopiaTypeOptions = [
+    { label: 'Strabismic', value: 'strabismic' },
+    { label: 'Stimulus Deprivation', value: 'stimulusDeprivation' },
+    { label: 'Anisometropic', value: 'anisometropic' },
+    { label: 'Isometropic', value: 'isometropic' },
+    { label: 'Meridonial', value: 'meridonial' },
+]
+
+export const eAmblyopiaTypeFilter = [
+    { label: 'Strabismic', value: 'strabismic' },
+    { label: 'Stimulus Deprivation', value: 'stimulusDeprivation' },
+    { label: 'Anisometropic', value: 'anisometropic' },
+    { label: 'Isometropic', value: 'isometropic' },
+    { label: 'Meridonial', value: 'meridonial' },
+    { label: 'None', value: '' },
 ]
 
 export const eIsStrabismus = [

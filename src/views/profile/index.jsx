@@ -81,7 +81,7 @@ function EditProfile () {
             }
             <div className='edit-profile'>
               <div className='profile_icon'>{data?.eUserType === 'admin' ? <img src={data?.sAvatar} alt={data?.sUserName} className='img-content' /> : <FontAwesomeIcon icon={faUser} />}</div>
-              <p>Profile Details</p>
+              <p>Patient Details</p>
               <Form onSubmit={handleSubmit(onsubmit)} autoComplete='off'>
                 <EditProfileComponent
                   register={register}

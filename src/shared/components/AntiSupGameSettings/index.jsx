@@ -54,11 +54,6 @@ const AntiSupGameSettings = (props) => {
         const modifiedTabs = [...(gameTabs || [])]
 
         setTabButtons(modifiedTabs)
-        // const modifiedButtonToggle = gameTabs.reduce((acc, game) => {
-        //     acc[game.key] = false;
-        //     return acc;
-        // }, {});
-        // setButtonToggle(modifiedButtonToggle)
     }, [games])
 
     const handleConfirmStatus = (status, id) => {
@@ -86,7 +81,7 @@ const AntiSupGameSettings = (props) => {
             <div className='line'></div>
 
             <div className='antisuppresion-details-button-group mt-4'>
-                {isLoading ? <>
+                {isLoading ? (<>
                     <div className='skeleton-button'>
                         <Skeleton count={1} width='110px' height={37} />
                     </div>
@@ -96,20 +91,19 @@ const AntiSupGameSettings = (props) => {
                     <div className='skeleton-button'>
                         <Skeleton count={1} width='110px' height={37} />
                     </div>
-                </>
-                    : (tabButtons?.length > 0) ? tabButtons?.map((tab, index) => (
+                </>)
+                    : (tabButtons?.length > 0) ? (tabButtons?.map((tab, index) => (
                         <Button
                             key={index}
-                            className={buttonToggle[tab.key] ? 'startedGame' : 'tabButton'}
+                            className={(buttonToggle[tab.key] && gameStarted) ? 'startedGame' : 'tabButton'}
                             variant={buttonToggle[tab.key] ? 'primary' : 'secondary'}
                             onClick={(e) => handleTabs(e, tab)}
                             disabled={buttonToggle[tab.key] !== true && gameStarted}
                         >
                             {(buttonToggle[tab.key] && gameStarted) ? (<><FaPause color='var(--text-hover)' /> {tab?.label}</>) : (<><FaPlay color='var(--text-hover)' /> {tab?.label}</>)}
                         </Button>
-                    )) : <span className='no-games'><FormattedMessage id='noAntiSuppressionGame' /></span>
+                    ))) : (<span className='no-games'><FormattedMessage id='noAntiSuppressionGame' /></span>)
                 }
-
             </div >
 
             {buttonToggle?.hoopie && (
