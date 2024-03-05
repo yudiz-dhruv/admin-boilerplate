@@ -97,7 +97,7 @@ const AdminManagement = () => {
     const onDelete = useCallback((id) => setModal({ open: true, type: 'delete', id }), [])
 
     useEffect(() => {
-        document.title = 'Doctor Management | Yantra Healthcare'
+        document.title = 'Doctor Management | RFOX'
     }, [])
 
     return (

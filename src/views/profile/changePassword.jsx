@@ -32,7 +32,7 @@ export default function ChangePassword () {
   sNewPassword.current = watch('sNewPassword')
 
   useEffect(() => {
-    document.title = 'Change Password | Yantra Healthcare'
+    document.title = 'Change Password | RFOX'
   }, [])
 
   const { mutate, isLoading } = useMutation(changePassWord, {

@@ -9,7 +9,7 @@ import { validationErrors } from 'shared/constants/ValidationErrors'
 import { useMutation, useQuery } from 'react-query'
 import { EMAIL } from 'shared/constants'
 import { profile } from 'query/profile/profile.query'
-import textLogo from 'assets/images/Yantra.Care Logo.svg'
+// import textLogo from 'assets/images/RFOX Logo.svg'
 import { ReactToastify } from 'shared/utils'
 
 function Login () {
@@ -70,14 +70,15 @@ function Login () {
   }
 
   useEffect(() => {
-    document.title = 'Login | Yantra Healthcare'
+    document.title = 'Login | RFOX'
   }, [])
 
   return (
     <>
       <Form noValidate onSubmit={handleSubmit(onSubmit)} className='login-form'>
-        <div className='yantra-logo'>
-          <img src={textLogo} className="textLogo img-fluid" alt='Yantra Healthcare' />
+        <div className='rfox-logo'>
+          RFOX Logo
+          {/* <img src={textLogo} className="textLogo img-fluid" alt='RFOX Logo' /> */}
         </div>
         <div className='title-b mt-5'>
           <div className=''>

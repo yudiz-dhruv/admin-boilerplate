@@ -3,7 +3,6 @@ import { Spinner } from 'react-bootstrap'
 import { Route, BrowserRouter, Routes, Navigate } from 'react-router-dom'
 
 import Router from 'routes/Router'
-import Toaster from 'shared/components/Toaster'
 
 function AllRoutes () {
   function allPaths (children) {

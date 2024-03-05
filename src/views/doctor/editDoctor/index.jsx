@@ -9,13 +9,10 @@ import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import CommonInput from 'shared/components/CommonInput'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { route } from 'shared/constants/AllRoutes'
-import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import { useMutation, useQuery } from 'react-query'
 import { getAdminById } from 'query/admin/admin.query'
-import makeAnimated from 'react-select/animated'
 import { updateAdmin } from 'query/admin/admin.mutation'
-import { getGameDropdownList } from 'query/game/game.query'
 import { FormattedMessage } from 'react-intl'
 import { PASSWORD } from 'shared/constants'
 import { ReactToastify } from 'shared/utils'
@@ -30,34 +27,11 @@ const EditDoctor = () => {
   const [showNewPassword, setNewPassword] = useState(false)
   const [isButtonDisabled, setButtonDisabled] = useState(false)
 
-  // DROPDOWN GAME LIST
-  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
-
   // SPECIFIC DOCTOR
   const { data } = useQuery('adminDataById', () => getAdminById(id), {
     enabled: !!id,
     select: (data) => data?.data?.data,
   })
-
-  useEffect(() => {
-    if (data && eGameDropdown?.length > 0) {
-      const temp = data ? [...data?.aGamesId] : []
-
-      const gameData = []
-      for (let key of eGameDropdown?.filter(obj => data?.aGamesId.includes(obj._id))) {
-        if (temp?.length > 0) {
-          gameData?.push(key)
-        }
-      }
-      reset({
-        ...data,
-        aGamesName: gameData,
-        dStartAt: new Date(data?.oGameValidity?.dStartAt) || '',
-        dEndAt: new Date(data?.oGameValidity?.dEndAt) || '',
-        sPassword: ''
-      })
-    }
-  }, [data, eGameDropdown, reset])
 
   // EDIT DOCTOR
   const { mutate: updateMutate, isLoading } = useMutation(updateAdmin, {
@@ -105,7 +79,7 @@ const EditDoctor = () => {
   const handleNewPasswordToggle = useCallback(() => setNewPassword(!showNewPassword), [showNewPassword, setNewPassword])
 
   useEffect(() => {
-    document.title = 'Edit Doctor | Yantra Healthcare'
+    document.title = 'Edit Doctor | RFOX'
   }, [])
 
   return (
@@ -351,49 +325,6 @@ const EditDoctor = () => {
                       />
                     </Col>
 
-                    <Col lg={6} md={12} className='mt-2'>
-                      <Form.Group className='form-group'>
-                        <Form.Label>
-                          <span>
-                            Games
-                            <span className='inputStar'>*</span>
-                          </span>
-                        </Form.Label>
-                        <Controller
-                          name='aGamesName'
-                          control={control}
-                          rules={{
-                            required: {
-                              value: true,
-                              message: 'Game name(s) are required'
-                            }
-                          }}
-                          render={({ field: { onChange, value, ref } }) => {
-                            return (
-                              <Select
-                                placeholder='Select Games...'
-                                ref={ref}
-                                options={eGameDropdown}
-                                className={`react-select border-0 ${errors.aGamesName && 'error'}`}
-                                classNamePrefix='select'
-                                isSearchable={true}
-                                value={value}
-                                components={makeAnimated()}
-                                onChange={onChange}
-                                isMulti={true}
-                                getOptionLabel={(option) => option.sName}
-                                getOptionValue={(option) => option._id}
-                              />
-                            )
-                          }}
-                        />
-                        {errors.aGamesName && (
-                          <Form.Control.Feedback type='invalid'>
-                            {errors.aGamesName.message}
-                          </Form.Control.Feedback>
-                        )}
-                      </Form.Group>
-                    </Col>
 
                     <Col lg={6} md={12} className='mt-2'>
                       <CommonInput

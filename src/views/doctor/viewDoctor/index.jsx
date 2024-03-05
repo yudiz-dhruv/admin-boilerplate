@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIndianRupee } from '@fortawesome/free-solid-svg-icons'
 import { getAdminById } from 'query/admin/admin.query'
 import moment from 'moment'
-import { motion } from 'framer-motion'
-import { getGameDropdownList } from 'query/game/game.query'
 import { FormattedMessage } from 'react-intl'
 
 const ViewDoctor = () => {
@@ -19,14 +17,8 @@ const ViewDoctor = () => {
         select: (data) => data?.data?.data,
     })
 
-    // GAME DROPDOWN
-    const { data: eDropDown } = useQuery('dropdownGame', () => getGameDropdownList(), {
-        enabled: !!data,
-        select: (data) => data?.data?.data,
-    })
-
     useEffect(() => {
-        document.title = 'View Doctor | Yantra Healthcare'
+        document.title = 'View Doctor | RFOX'
     }, [])
 
     return (
@@ -34,7 +26,7 @@ const ViewDoctor = () => {
             <div className='view-admin'>
                 <Row className='details-row justify-content-center'>
                     <Col xxl={3} xl={4} lg={5} md={12} sm={12}>
-                        <motion.div className='details-card' initial={{ x: -20, opacity: 0 }}
+                        <div className='details-card' initial={{ x: -20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.6, ease: 'easeInOut' }}>
                             <div className='details-card-data'>
@@ -58,11 +50,11 @@ const ViewDoctor = () => {
                                     </Col>
                                 </Row>
                             </div>
-                        </motion.div>
+                        </div>
                     </Col>
 
                     <Col xxl={9} xl={8} lg={7} md={12} sm={12}>
-                        <motion.div className='details-card' initial={{ x: 20, opacity: 0 }}
+                        <div className='details-card' initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.6, ease: 'easeInOut' }}>
                             <div className='details-card-data'>
@@ -103,13 +95,9 @@ const ViewDoctor = () => {
                                         <span className='data-title'><FormattedMessage id='numberOfGames' /></span>
                                         <span className='data-value capitalize'>{data?.aGamesId?.length || '0'}</span>
                                     </Col>
-                                    <Col xl={4} lg={6} md={6} sm={6} className="p-0 m-0">
-                                        <span className='data-title'><FormattedMessage id='games' /></span>
-                                        <span className='data-value capitalize'>{data?.aGamesId ? `[ ${eDropDown?.filter(obj => data?.aGamesId.includes(obj._id))?.map(game => game?.sName) || 'No Games'} ]` : '[ No Games ]'}</span>
-                                    </Col>
                                 </Row>
                             </div>
-                        </motion.div>
+                        </div>
                     </Col>
                 </Row>
             </div>

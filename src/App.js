@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { Spinner } from 'react-bootstrap'
 import { MutationCache, QueryClient, QueryClientProvider } from 'react-query'
 const AllRoutes = React.lazy(() => import('routes'))
@@ -49,17 +49,8 @@ function App() {
   // const temp = localStorage.getItem('mode') === 'true'
 
   // useEffect(() => {
-    // window.onunhandledrejection = (ex, e) => {
-    //   console.log(`Unhandled Error:`, ex, e)
-    // };
-
-    // window.onerror = (ex, e) => {
-    //   console.log(`Uncaught Error:`, ex, e)
-    // }
-  // }, [])
-
-  // useEffect(() => {
   //   localStorage.setItem('mode', temp)
+
   //   document.body.classList.remove(!temp ? 'light' : 'dark')
   //   document.body.classList.add(temp ? 'light' : 'dark');
   // }, [temp])
@@ -69,12 +60,6 @@ function App() {
         <div className='d-flex align-items-center justify-content-center top-0 left-0 position-fixed h-100 w-100'>
           <Spinner animation='border' size='lg' variant='success' />
         </div>
-          // <div className='loading-screen'>
-          //   <section className="call-buton">
-          //     <span className="cc-calto-action-ripple"><img src={logo} alt="" />
-          //     </span>
-          //   </section>
-          // </div>
         }>
         <AllRoutes />
       </Suspense>

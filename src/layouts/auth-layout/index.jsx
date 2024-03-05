@@ -9,7 +9,8 @@ function AuthLayout ({ children }) {
       <div className='child-box-second row'>
         <Col xl={6} lg={6} md={6} sm={12} className='side-logo'>
           <div className='logo-container'>
-            <DoctorCharacter />
+            {/* <DoctorCharacter /> */}
+            Animated Character
           </div>
         </Col>
         <Col xl={6} lg={6} md={6} sm={12} className='login-form-container'>

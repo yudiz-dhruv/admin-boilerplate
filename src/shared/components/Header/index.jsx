@@ -6,27 +6,24 @@ import { useQuery, useQueryClient } from 'react-query'
 import { logout } from 'query/auth/auth.query'
 import { route } from 'shared/constants/AllRoutes'
 import CustomModal from 'shared/components/Modal'
-import textLogo from 'assets/images/Yantra.Care Logo.svg'
 import { profile } from 'query/profile/profile.query'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faUser } from '@fortawesome/free-solid-svg-icons'
 import { ReactToastify } from 'shared/utils'
 import { Controller, useForm } from 'react-hook-form'
-import SocketContext from 'context/SocketContext'
 
 function Header () {
   const navigate = useNavigate()
   const query = useQueryClient()
   const location = useLocation()
 
-  // const { control } = useForm({ mode: 'all' })
+  const { control } = useForm({ mode: 'all' })
 
-  // const temp = localStorage.getItem('mode') === 'true'
+  const temp = localStorage.getItem('mode') === 'true'
 
-  // const [mode, setMode] = useState(temp)
+  const [mode, setMode] = useState(temp)
   const [clickedLogOut, setClickedLogOut] = useState(false)
   const [show, setShow] = useState(false)
-  const socket = useContext(SocketContext)
 
   // LOGOUT QUERY
   const { isLoading, isFetching } = useQuery('logoutUser', logout, {
@@ -36,19 +33,6 @@ function Header () {
       localStorage.removeItem('type')
       navigate('/login')
       ReactToastify(res?.data?.message, 'success')
-
-      if (socket !== undefined) {
-        socket.emit(location?.state?.patientSettings?._id, {
-          sEventName: 'reqEndGame',
-          oData: {
-            eState: 'finished'
-          }
-        }, (response) => {
-          console.warn('Socket Disconnecting and Leaveing Room.', response)
-          console.warn('Socket disconnected successfully.');
-          socket.disconnect()
-        })
-      }
     },
     onError: () => {
       localStorage.removeItem('token')
@@ -81,7 +65,8 @@ function Header () {
     <header className='header'>
       <div className='header-left'>
         <Link className='logo' to={route.dashboard}>
-          <img src={textLogo} className="textLogo" alt='Yantra Healthcare Logo' />
+          {/* <img src={textLogo} className="textLogo" alt='RFOX Logo' /> */}
+          RFOX Logo
         </Link>
       </div>
       <div className='header-right'>

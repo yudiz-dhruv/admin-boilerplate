@@ -9,7 +9,7 @@ import { resetPassWord } from 'query/auth/auth.query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { checkToken } from 'query/profile/profile.query'
 import NotFound from 'shared/components/404'
-import textLogo from 'assets/images/Yantra.Care Logo.svg'
+// import textLogo from 'assets/images/RFOX Logo.svg'
 import { ReactToastify } from 'shared/utils'
 
 function ResetPassword () {
@@ -77,13 +77,14 @@ function ResetPassword () {
   }
 
   useEffect(() => {
-    document.title = 'Reset Password | Yantra Healthcare'
+    document.title = 'Reset Password | RFOX'
   }, [])
 
   return (
     <Form noValidate onSubmit={handleSubmit(onSubmit)} className='login-form'>
-      <div className='yantra-logo'>
-        <img src={textLogo} className="textLogo" alt='Yantra Healthcare' />
+      <div className='rfox-logo'>
+        {/* <img src={textLogo} className="textLogo" alt='RFOX logo' /> */}
+        RFOX Logo
       </div>
       <div className='title-b mt-5'>
         <h2 className='title'>

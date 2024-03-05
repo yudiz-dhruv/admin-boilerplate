@@ -68,7 +68,7 @@ function EditProfile () {
   }
 
   useEffect(() => {
-    document.title = 'My Profile | Yantra Healthcare'
+    document.title = 'My Profile | RFOX'
   }, [])
   return (
     <>

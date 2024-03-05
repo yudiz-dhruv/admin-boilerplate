@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { forgotPassword } from 'query/auth/auth.query'
 import { EMAIL } from 'shared/constants'
 import { validationErrors } from 'shared/constants/ValidationErrors'
-import textLogo from 'assets/images/Yantra.Care Logo.svg'
+// import textLogo from 'assets/images/RFOX Logo.svg'
 import { ReactToastify } from 'shared/utils'
 
 function ForgotPassword () {
@@ -28,13 +28,14 @@ function ForgotPassword () {
   }
 
   useEffect(() => {
-    document.title = 'Forgot Password | Yantra Healthcare'
+    document.title = 'Forgot Password |  RFOX'
   }, [])
   return (
     <>
       <Form noValidate className='login-form' onSubmit={handleSubmit(onSubmit)}>
-        <div className='yantra-logo'>
-          <img src={textLogo} className="textLogo" alt='Yantra Healthcare' />
+        <div className='rfox-logo'>
+          {/* <img src={textLogo} className="textLogo" alt='RFOX logo' /> */}
+          RFOX Logo
         </div>
         <div className='title-b mt-5'>
           <h2 className='title me-2 m-0'>

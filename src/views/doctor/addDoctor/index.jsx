@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap'
@@ -8,14 +8,11 @@ import CommonInput from 'shared/components/CommonInput'
 import { validationErrors } from 'shared/constants/ValidationErrors'
 import { EMAIL, PASSWORD } from 'shared/constants'
 import { route } from 'shared/constants/AllRoutes'
-import Select from 'react-select'
 import DatePicker from 'react-datepicker';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import { addAdmin } from 'query/admin/admin.mutation'
-import { getGameDropdownList } from 'query/game/game.query'
 import { FormattedMessage } from 'react-intl'
-import makeAnimated from 'react-select/animated'
 import { ReactToastify } from 'shared/utils'
 
 const AddDoctor = () => {
@@ -26,9 +23,6 @@ const AddDoctor = () => {
 
   const [isButtonDisabled, setButtonDisabled] = useState(false)
   const [showNewPassword, setNewPassword] = useState(false)
-
-  // DROPDOWN GAME LIST
-  const { data: eGameDropdown } = useQuery('dropdownGame', getGameDropdownList, { select: (data) => data?.data?.data, })
 
   // ADD DOCTOR
   const { mutate, isLoading } = useMutation(addAdmin, {
@@ -74,7 +68,7 @@ const AddDoctor = () => {
   const handleNewPasswordToggle = useCallback(() => setNewPassword(!showNewPassword), [showNewPassword, setNewPassword])
 
   useEffect(() => {
-    document.title = 'Add Doctor | Yantra Healthcare'
+    document.title = 'Add Doctor | RFOX'
   }, [])
 
   return (
@@ -334,50 +328,6 @@ const AddDoctor = () => {
                             e.target.value.replace(/[^0-9]/g, '').slice(0, 10)
                         }}
                       />
-                    </Col>
-
-                    <Col lg={6} md={12} className='mt-2'>
-                      <Form.Group className='form-group'>
-                        <Form.Label>
-                          <span>
-                            Games
-                            <span className='inputStar'>*</span>
-                          </span>
-                        </Form.Label>
-                        <Controller
-                          name='aGamesName'
-                          control={control}
-                          rules={{
-                            required: {
-                              value: true,
-                              message: 'Game name(s) are required.'
-                            }
-                          }}
-                          render={({ field: { onChange, value, ref } }) => {
-                            return (
-                              <Select
-                                placeholder='Select Games...'
-                                ref={ref}
-                                options={eGameDropdown}
-                                components={makeAnimated()}
-                                className={`react-select border-0 ${errors.aGamesName && 'error'}`}
-                                classNamePrefix='select'
-                                isSearchable={false}
-                                value={value}
-                                onChange={onChange}
-                                isMulti={true}
-                                getOptionLabel={(option) => option.sName}
-                                getOptionValue={(option) => option?._id}
-                              />
-                            )
-                          }}
-                        />
-                        {errors.aGamesName && (
-                          <Form.Control.Feedback type='invalid'>
-                            {errors.aGamesName.message}
-                          </Form.Control.Feedback>
-                        )}
-                      </Form.Group>
                     </Col>
 
                     <Col lg={6} md={12} className='mt-2'>

@@ -7,7 +7,6 @@ import 'bootstrap/scss/bootstrap.scss'
 import 'assets/scss/main.scss'
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datetime/css/react-datetime.css';
-import 'react-loading-skeleton/dist/skeleton.css'
 import 'react-toastify/dist/ReactToastify.css'
 
 import en from './lang/en.json'

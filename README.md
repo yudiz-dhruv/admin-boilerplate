@@ -1,6 +1,6 @@
-# Yantra Healthcare:
+# RFOX - Meme Racer React:
 
-Yantra Healthcare Admin panel in ReactJs.
+RFOX meme racer in ReactJs.
 
 - node version: 
 v18.17.1
